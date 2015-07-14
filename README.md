@@ -12,9 +12,7 @@ Install:
 Uninstall:
  - Enter into the NotEngine project directory type "make -f Makefile.psp2 uninstall"
 
-
 TODO:
- - Add rotation & scale to sprites (computed inside the shader?)
  - Make SpriteSheet & json loading (see here: http://www.leshylabs.com/apps/sstool/)
  - Add animation to sprite
  - Wrap playptmod & StSoundLibrary into Audio classes
