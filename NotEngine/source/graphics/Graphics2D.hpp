@@ -31,6 +31,8 @@ namespace NotEngine {
 				const SceGxmProgramParameter* shaderPositionAttr;
 				const SceGxmProgramParameter* shaderTextureAttr;
 				const SceGxmProgramParameter* shaderColorAttr;
+				const SceGxmProgramParameter* shaderAngleAttr;
+				const SceGxmProgramParameter* shaderTranslationAttr;
 				const SceGxmProgramParameter* shaderMatrixProjUnif;
 
 				SceGxmVertexProgram* g2dVertexProgram;
@@ -38,14 +40,17 @@ namespace NotEngine {
 
 				/// Internal sprite vertice layout
 				struct SpriteVertice {
-					float x;
+					float x; // vertices coords
 					float y;
-					float s;
+					float s; // tex coords
 					float t;
-					unsigned char r;
+					unsigned char r; // color
 					unsigned char g;
 					unsigned char b;
 					unsigned char a;
+					float angle; // angle
+					float tx; // translation
+					float ty;
 				} __attribute__((packed));
 
 				/// Pointer to use for sprite batching

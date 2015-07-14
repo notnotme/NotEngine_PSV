@@ -53,11 +53,13 @@ namespace NotEngine {
 			shaderPositionAttr = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "aPosition");
 			shaderTextureAttr = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "aTexcoord");
 			shaderColorAttr = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "aColor");
+			shaderAngleAttr = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "aAngle");
+			shaderTranslationAttr = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "aTranslation");
 			// gte uniforms
 			shaderMatrixProjUnif = sceGxmProgramFindParameterByName(g2dVertexProgramGxp, "pm");
 
 			// create the 2d vertex format
-			SceGxmVertexAttribute g2dVertexAttributes[3];
+			SceGxmVertexAttribute g2dVertexAttributes[5];
 			// Position fmt
 			g2dVertexAttributes[0].streamIndex = 0;
 			g2dVertexAttributes[0].offset = 0;
@@ -76,6 +78,18 @@ namespace NotEngine {
 			g2dVertexAttributes[2].format = SCE_GXM_ATTRIBUTE_FORMAT_U8N;
 			g2dVertexAttributes[2].componentCount = 4;
 			g2dVertexAttributes[2].regIndex = sceGxmProgramParameterGetResourceIndex(shaderColorAttr);
+			// Angle fmt
+			g2dVertexAttributes[3].streamIndex = 0;
+			g2dVertexAttributes[3].offset = g2dVertexAttributes[2].offset + sizeof(unsigned char)*4;
+			g2dVertexAttributes[3].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
+			g2dVertexAttributes[3].componentCount = 1;
+			g2dVertexAttributes[3].regIndex = sceGxmProgramParameterGetResourceIndex(shaderAngleAttr);
+			// Translation fmt
+			g2dVertexAttributes[4].streamIndex = 0;
+			g2dVertexAttributes[4].offset = g2dVertexAttributes[3].offset + sizeof(float);
+			g2dVertexAttributes[4].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
+			g2dVertexAttributes[4].componentCount = 2;
+			g2dVertexAttributes[4].regIndex = sceGxmProgramParameterGetResourceIndex(shaderTranslationAttr);
 			// Indices fmt
 			SceGxmVertexStream g2dVertexStreams[1];
 			g2dVertexStreams[0].stride = sizeof(SpriteVertice);
@@ -86,7 +100,7 @@ namespace NotEngine {
 				base->shaderPatcher,
 				g2dVertexProgramId,
 				g2dVertexAttributes,
-				3,
+				5,
 				g2dVertexStreams,
 				1,
 				&g2dVertexProgram);
@@ -218,56 +232,56 @@ namespace NotEngine {
 			float wdth = sprite->size.w/2;
 			float hght = sprite->size.h/2;
 
-			batchVertices[index].x = sprite->position.x - wdth * sprite->scale.w;
-			batchVertices[index].y = sprite->position.y - hght * sprite->scale.h;
+			batchVertices[index].x = -wdth * sprite->scale.w;
+			batchVertices[index].y = -hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.t;
 			batchVertices[index].r = sprite->color.r;
 			batchVertices[index].g = sprite->color.g;
 			batchVertices[index].b = sprite->color.b;
 			batchVertices[index].a = sprite->color.a;
-			//batchVertices[index].angle = angle;
-			//batchVertices[index].px = sprite->position.x;
-			//batchVertices[index].py = sprite->position.y;
+			batchVertices[index].angle = sprite->rotation;
+			batchVertices[index].tx = sprite->position.x;
+			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = sprite->position.x + wdth * sprite->scale.w;
-			batchVertices[index].y = sprite->position.y - hght * sprite->scale.h;
+			batchVertices[index].x = wdth * sprite->scale.w;
+			batchVertices[index].y = -hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.t;
 			batchVertices[index].r = sprite->color.r;
 			batchVertices[index].g = sprite->color.g;
 			batchVertices[index].b = sprite->color.b;
 			batchVertices[index].a = sprite->color.a;
-			//batchVertices[index].angle = angle;
-			//batchVertices[index].px = sprite->position.x;
-			//batchVertices[index].py = sprite->position.y;
+			batchVertices[index].angle = sprite->rotation;
+			batchVertices[index].tx = sprite->position.x;
+			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = sprite->position.x + wdth * sprite->scale.w;
-			batchVertices[index].y = sprite->position.y + hght * sprite->scale.h;
+			batchVertices[index].x = wdth * sprite->scale.w;
+			batchVertices[index].y = hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.v;
 			batchVertices[index].r = sprite->color.r;
 			batchVertices[index].g = sprite->color.g;
 			batchVertices[index].b = sprite->color.b;
 			batchVertices[index].a = sprite->color.a;
-			//batchVertices[index].angle = angle;
-			//batchVertices[index].px = sprite->position.x;
-			//batchVertices[index].py = sprite->position.y;
+			batchVertices[index].angle = sprite->rotation;
+			batchVertices[index].tx = sprite->position.x;
+			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = sprite->position.x - wdth * sprite->scale.w;
-			batchVertices[index].y = sprite->position.y + hght * sprite->scale.h;
+			batchVertices[index].x = -wdth * sprite->scale.w;
+			batchVertices[index].y = hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.v;
 			batchVertices[index].r = sprite->color.r;
 			batchVertices[index].g = sprite->color.g;
 			batchVertices[index].b = sprite->color.b;
 			batchVertices[index].a = sprite->color.a;
-			//batchVertices[index].angle = angle;
-			//batchVertices[index].px = sprite->position.x;
-			//batchVertices[index].py = sprite->position.y;
+			batchVertices[index].angle = sprite->rotation;
+			batchVertices[index].tx = sprite->position.x;
+			batchVertices[index].ty = sprite->position.y;
 
 			batchCount++;
 		}
