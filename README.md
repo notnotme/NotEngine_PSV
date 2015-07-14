@@ -25,7 +25,7 @@ This project embed some code that i've not wrote. It may be slightly modified.
 
 Greetings:
  - StSoundLibrary & playptmod authors
- - PSP2DEV team
+ - PSP2SDK team
 
 
 A Sample will be available inside the "vitamine",
