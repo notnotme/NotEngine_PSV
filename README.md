@@ -10,7 +10,7 @@ Install:
  - You're up to go
 
 Uninstall:
-- Enter into the NotEngine project directory type "make -f Makefile.psp2 uninstall"
+ - Enter into the NotEngine project directory type "make -f Makefile.psp2 uninstall"
 
 
 TODO:
@@ -24,8 +24,8 @@ This project embed some code that i've not wrote. It may be slightly modified.
  - playptmod (http://16-bits.org/)
 
 Greetings:
-	- StSoundLibrary & playptmod authors
-	- PSP2DEV team
+ - StSoundLibrary & playptmod authors
+ - PSP2DEV team
 
 
 A Sample will be available inside the "vitamine",
