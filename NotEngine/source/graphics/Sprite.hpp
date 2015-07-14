@@ -23,12 +23,15 @@ namespace NotEngine {
 				struct SpriteScale {
 					float w,h;
 				};
+				struct SpriteColor {
+					unsigned char r,g,b,a;
+				};
 
 				SpritePosition position;
 				SpriteSize size;
 				SpriteFrame frame;
 				SpriteScale scale;
-				unsigned int color;
+				SpriteColor color;
 				float rotation;
 
 				Sprite() :
@@ -36,7 +39,7 @@ namespace NotEngine {
 					size((SpriteSize){64,64}),
 					frame((SpriteFrame){0,0,1,1}),
 					scale((SpriteScale){1,1}),
-					color(0xffffffff),
+					color((SpriteColor) {0xff, 0xff, 0xff, 0xff}),
 					rotation(0) {
 				};
 

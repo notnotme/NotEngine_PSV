@@ -42,8 +42,11 @@ namespace NotEngine {
 					float y;
 					float s;
 					float t;
-					unsigned int color;
-				};
+					unsigned char r;
+					unsigned char g;
+					unsigned char b;
+					unsigned char a;
+				} __attribute__((packed));
 
 				/// Pointer to use for sprite batching
 				SpriteVertice* batchVertices;
@@ -79,8 +82,8 @@ namespace NotEngine {
 				void unuse();
 
 				/* RENDER ************************************************/
-				/// Clear the screen. be warned: this function actually unbind the current texture!
-				void clear(unsigned int color);
+				/// Clear the screen. be warned: this function actually unbind the current texture! Should be avoided if possible!!!
+				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
 				void setTexture(unsigned int unit, const Graphics::Texture2D* texture);
 				/// Call it first in each render call

@@ -120,19 +120,18 @@ namespace NotEngine {
 
 			// Allocate buffers
 			batchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
-												SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-												batchCapacity*(sizeof(SpriteVertice)*4),
-												SCE_GXM_MEMORY_ATTRIB_READ,
-												&batchVerticesUID);
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				batchCapacity*(sizeof(SpriteVertice)*4),
+				SCE_GXM_MEMORY_ATTRIB_READ,
+				&batchVerticesUID);
 
 			batchIndices = (unsigned short*) GraphicsBase::gpuAlloc(
-												SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-												batchCapacity*(sizeof(unsigned short)*6),
-												SCE_GXM_MEMORY_ATTRIB_READ,
-												&batchIndicesUID);
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				batchCapacity*(sizeof(unsigned short)*6),
+				SCE_GXM_MEMORY_ATTRIB_READ,
+				&batchIndicesUID);
 
 			// Fill the indices buffer as it will never change
-			// Pre render the indices as they never change
 			unsigned int size = batchCapacity*6;
 			unsigned short j = 0;
 			for (unsigned int i=0; i<size; i+=6, j+=4) {
@@ -166,11 +165,11 @@ namespace NotEngine {
 			sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dFragmentProgramId);
 			sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dVertexProgramId);
 
-			clearTexture->finalize();
-			delete clearTexture;
-
 			GraphicsBase::gpuFree(batchIndicesUID);
 			GraphicsBase::gpuFree(batchVerticesUID);
+
+			clearTexture->finalize();
+			delete clearTexture;
 		}
 
 		void Graphics2D::setTexture(unsigned int unit, const Graphics::Texture2D* texture) {
@@ -209,7 +208,7 @@ namespace NotEngine {
 		}
 
 		void Graphics2D::addToBatch(const Graphics::Sprite* sprite) {
-			if (batchCount >= batchCapacity) {
+			if (batchOffset + batchCount >= batchCapacity) {
 				printf("%s", "addToBatch discard. Capacity overflow");
 				return;
 			}
@@ -223,7 +222,10 @@ namespace NotEngine {
 			batchVertices[index].y = sprite->position.y - hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].color = sprite->color;
+			batchVertices[index].r = sprite->color.r;
+			batchVertices[index].g = sprite->color.g;
+			batchVertices[index].b = sprite->color.b;
+			batchVertices[index].a = sprite->color.a;
 			//batchVertices[index].angle = angle;
 			//batchVertices[index].px = sprite->position.x;
 			//batchVertices[index].py = sprite->position.y;
@@ -233,7 +235,10 @@ namespace NotEngine {
 			batchVertices[index].y = sprite->position.y - hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].color = sprite->color;
+			batchVertices[index].r = sprite->color.r;
+			batchVertices[index].g = sprite->color.g;
+			batchVertices[index].b = sprite->color.b;
+			batchVertices[index].a = sprite->color.a;
 			//batchVertices[index].angle = angle;
 			//batchVertices[index].px = sprite->position.x;
 			//batchVertices[index].py = sprite->position.y;
@@ -243,7 +248,10 @@ namespace NotEngine {
 			batchVertices[index].y = sprite->position.y + hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].color = sprite->color;
+			batchVertices[index].r = sprite->color.r;
+			batchVertices[index].g = sprite->color.g;
+			batchVertices[index].b = sprite->color.b;
+			batchVertices[index].a = sprite->color.a;
 			//batchVertices[index].angle = angle;
 			//batchVertices[index].px = sprite->position.x;
 			//batchVertices[index].py = sprite->position.y;
@@ -253,7 +261,10 @@ namespace NotEngine {
 			batchVertices[index].y = sprite->position.y + hght * sprite->scale.h;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].color = sprite->color;
+			batchVertices[index].r = sprite->color.r;
+			batchVertices[index].g = sprite->color.g;
+			batchVertices[index].b = sprite->color.b;
+			batchVertices[index].a = sprite->color.a;
 			//batchVertices[index].angle = angle;
 			//batchVertices[index].px = sprite->position.x;
 			//batchVertices[index].py = sprite->position.y;
@@ -267,8 +278,8 @@ namespace NotEngine {
 			batchOffset += batchCount;
 		}
 
-		void Graphics2D::clear(unsigned int color) {
-			clearSprite.color = color;
+		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+			clearSprite.color = (Sprite::SpriteColor) {r,g,b,a};
 			setTexture(0, clearTexture);
 			startBatch();
 			addToBatch(&clearSprite);
