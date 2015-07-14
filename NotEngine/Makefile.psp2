@@ -112,7 +112,7 @@ install: $(TARGET).a
 	@mkdir -p $(PSP2SDK)/include/notengine/deps
 	@mkdir -p $(PSP2SDK)/include/notengine/deps/playptmod
 	@mkdir -p $(PSP2SDK)/include/notengine/deps/StSoundLibrary
-	@cp source/notengine.hpp $(PSP2SDK)/include/notengine.hpp
+	@cp source/notengine.hpp $(PSP2SDK)/include/notengine/notengine.hpp
 	@cp source/graphics/*.hpp $(PSP2SDK)/include/notengine/graphics
 	@cp source/system/*.hpp $(PSP2SDK)/include/notengine/system
 	@cp source/deps/playptmod/*.h $(PSP2SDK)/include/notengine/deps/playptmod
