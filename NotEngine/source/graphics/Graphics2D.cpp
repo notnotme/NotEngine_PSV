@@ -229,11 +229,11 @@ namespace NotEngine {
 
 			// todo scale & rotation
 			unsigned int index = (batchOffset+batchCount)*4;
-			float wdth = sprite->size.w/2;
-			float hght = sprite->size.h/2;
+			float wdth = (sprite->size.w/2) * sprite->scale.w;
+			float hght = (sprite->size.h/2) * sprite->scale.h;
 
-			batchVertices[index].x = -wdth * sprite->scale.w;
-			batchVertices[index].y = -hght * sprite->scale.h;
+			batchVertices[index].x = -wdth;
+			batchVertices[index].y = -hght;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.t;
 			batchVertices[index].r = sprite->color.r;
@@ -245,8 +245,8 @@ namespace NotEngine {
 			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = wdth * sprite->scale.w;
-			batchVertices[index].y = -hght * sprite->scale.h;
+			batchVertices[index].x = wdth;
+			batchVertices[index].y = -hght;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.t;
 			batchVertices[index].r = sprite->color.r;
@@ -258,8 +258,8 @@ namespace NotEngine {
 			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = wdth * sprite->scale.w;
-			batchVertices[index].y = hght * sprite->scale.h;
+			batchVertices[index].x = wdth;
+			batchVertices[index].y = hght;
 			batchVertices[index].s = sprite->frame.u;
 			batchVertices[index].t = sprite->frame.v;
 			batchVertices[index].r = sprite->color.r;
@@ -271,8 +271,8 @@ namespace NotEngine {
 			batchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = -wdth * sprite->scale.w;
-			batchVertices[index].y = hght * sprite->scale.h;
+			batchVertices[index].x = -wdth;
+			batchVertices[index].y = hght;
 			batchVertices[index].s = sprite->frame.s;
 			batchVertices[index].t = sprite->frame.v;
 			batchVertices[index].r = sprite->color.r;

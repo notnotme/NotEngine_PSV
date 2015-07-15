@@ -22,7 +22,7 @@ void main(
 
 	float3 xformed = mul(rotate_mat, float3(aPosition, 0.f));
 
-	vPosition = mul(mul(translate_mat, pm), float4(xformed, 1.0f));
+	vPosition = mul(float4(xformed, 1.0f), mul(translate_mat, pm));
 	vTexcoord = aTexcoord;
 	vColor = aColor;
 }
