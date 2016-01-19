@@ -84,6 +84,8 @@ namespace NotEngine {
 				/* INIT *****************************************************/
 				/// Initialize the video subsystem
 				bool initialize(bool waitForRetrace);
+				/// Terminate the rendering
+				void waitTerminate();
 				/// free the video subsystem
 				void finalize();
 

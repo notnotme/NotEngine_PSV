@@ -324,11 +324,13 @@ namespace NotEngine {
 			return true;
 		}
 
-		void GraphicsBase::finalize() {
+		void GraphicsBase::waitTerminate() {
 			// wait until rendering is done
 			sceGxmFinish(context);
 			sceGxmDisplayQueueFinish();
+		}
 
+		void GraphicsBase::finalize() {
 			// clean up display queue
 			gpuFree(depthBufferUid);
 			for (unsigned int i=0; i<DISPLAY_BUFFER_COUNT; i++) {
@@ -337,6 +339,7 @@ namespace NotEngine {
 				gpuFree(displayBufferUid[i]);
 				sceGxmSyncObjectDestroy(displayBufferSync[i]);
 			}
+
 			sceGxmDestroyRenderTarget(renderTarget);
 
 			sceGxmShaderPatcherDestroy(shaderPatcher);
@@ -345,7 +348,6 @@ namespace NotEngine {
 			gpuFree(patcherBufferUid);
 
 			sceGxmDestroyContext(context);
-
 			fragmentUsseFree(fragmentUsseRingBufferUid);
 			gpuFree(fragmentRingBufferUid);
 			gpuFree(vertexRingBufferUid);
