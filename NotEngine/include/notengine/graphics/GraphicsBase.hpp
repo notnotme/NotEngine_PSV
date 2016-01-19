@@ -6,6 +6,7 @@
 #include <psp2/display.h>
 #include <psp2/gxm.h>
 #include <psp2/kernel/sysmem.h>
+
 #include "../system/Singleton.hpp"
 
 using namespace NotEngine;
@@ -26,7 +27,7 @@ namespace NotEngine {
 				static const unsigned int DISPLAY_BUFFER_COUNT = 3;
 				static const unsigned int DISPLAY_MAX_PENDING_SWAPS = 2;
 				static const int DISPLAY_COLOR_FORMAT = SCE_GXM_COLOR_FORMAT_A8B8G8R8;
-				static const int DISPLAY_PIXEL_FORMAT = PSP2_DISPLAY_PIXELFORMAT_A8B8G8R8;
+				static const int DISPLAY_PIXEL_FORMAT = SCE_DISPLAY_PIXELFORMAT_A8B8G8R8;
 				static const int MSAA_MODE = SCE_GXM_MULTISAMPLE_NONE;
 
 			private:

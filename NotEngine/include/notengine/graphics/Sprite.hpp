@@ -27,6 +27,14 @@ namespace NotEngine {
 					unsigned char r,g,b,a;
 				};
 
+				/*
+					todo: use it for color ?
+					union {
+						unsigned char r,g,b,a;
+						unsigned int c;
+					} color;
+				*/
+
 				SpritePosition position;
 				SpriteSize size;
 				SpriteFrame frame;

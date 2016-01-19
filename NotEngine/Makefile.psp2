@@ -1,164 +1,40 @@
-#---------------------------------------------------------------------------------
-# Clear the implicit built in rules
-#---------------------------------------------------------------------------------
-.SUFFIXES:
-#---------------------------------------------------------------------------------
-ifeq ($(strip $(DEVKITARM)),)
-$(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC)
-endif
-ifeq ($(strip $(PSP2SDK)),)
-$(error "Please set PSP2SDK in your environment. export PSP2SDK=<path to>PSP2SDK)
-endif
+#
+# Copyright (c) 2015 Sergi Granell (xerpi)
+# based on Cirne's vita-toolchain test Makefile
+#
+# edited for notengine
+#
 
-include $(DEVKITARM)/base_rules
+TARGET_LIB = libnotengine.a
 
-#---------------------------------------------------------------------------------
-# TARGET is the name of the output
-# BUILD is the directory where object files & intermediate files will be placed
-# SOURCES is a list of directories containing source code
-# INCLUDES is a list of directories containing extra header files
-# DATA is the extra data directory. Files inside will be transformed to .o and .h
-#---------------------------------------------------------------------------------
-TARGET		:= lib$(notdir $(CURDIR))
-BUILD		:= build
-DATA		:=
-SOURCES		:= source/deps/playptmod source/deps/StSoundLibrary/LZH source/deps/StSoundLibrary \
-				source/system source/graphics source/notengine source
-SHADERS		:= source/graphics/shaders/compiled/graphics2d_vert_gxp.o source/graphics/shaders/compiled/graphics2d_frag_gxp.o
-INCLUDES	:=
+OBJS       = source/graphics/Texture2D.o \
+			 source/graphics/GraphicsBase.o \
+			 source/graphics/Graphics2D.o
 
-#---------------------------------------------------------------------------------
-# options for code generation
-#---------------------------------------------------------------------------------
-CFLAGS  	+= -Wall -specs=psp2.specs -O2 $(INCLUDE)
-CXXFLAGS	+= $(CFLAGS) -fno-rtti -fno-exceptions
-LDFLAGS		+= $(CFLAGS)
+INCLUDES   = include
 
-#---------------------------------------------------------------------------------
-# any extra libraries we wish to link with the project
-#---------------------------------------------------------------------------------
-LIBS	:= -lstdc++_stub -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub
+SHADERS    = shader/compiled/graphics2d_frag.o \
+			 shader/compiled/graphics2d_vert.o
 
-#---------------------------------------------------------------------------------
-# no real need to edit anything past this point unless you need to add additional
-# rules for different file extensions
-#---------------------------------------------------------------------------------
-ifneq ($(BUILD),$(notdir $(CURDIR)))
-#---------------------------------------------------------------------------------
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+CXX 	= $(PREFIX)-g++
+AR      = $(PREFIX)-ar
+STRIP   = $(PREFIX)-strip
 
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
+CFLAGS   = -Wl,-q -Wall -O3 -I$(INCLUDES)
+CXXFLAGS += $(CFLAGS) -fno-exceptions
+ASFLAGS = $(CXXFLAGS)
 
-export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
-					$(foreach dir,$(DATA),$(CURDIR)/$(dir))
+all: $(TARGET_LIB)
 
-export DEPSDIR	:=	$(CURDIR)/$(BUILD)
+$(TARGET_LIB): $(SHADERS) $(OBJS)
+	$(AR) -rc $@ $^
 
-#---------------------------------------------------------------------------------
-# automatically build a list of object files for our project
-#---------------------------------------------------------------------------------
-CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-sFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.S)))
-BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
-
-#---------------------------------------------------------------------------------
-# use CXX for linking C++ projects, CC for standard C
-#---------------------------------------------------------------------------------
-ifeq ($(strip $(CPPFILES)),)
-	export LD	:=	$(CC)
-else
-	export LD	:=	$(CXX)
-endif
-
-export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
-			$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) \
-			$(sFILES:.s=.o) $(SFILES:.S=.o)
-
-#---------------------------------------------------------------------------------
-# build a list of include paths
-#---------------------------------------------------------------------------------
-export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
-			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
-			-I$(CURDIR)/$(BUILD) \
-			-I$(PSP2SDK)/include -I$(PORTLIBS)/include
-
-#---------------------------------------------------------------------------------
-# build a list of library paths
-#---------------------------------------------------------------------------------
-export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib) \
-					-L$(PSP2SDK)/lib
-
-export OUTPUT	:=	$(CURDIR)/$(TARGET)
-.PHONY: $(BUILD) clean
-
-#---------------------------------------------------------------------------------
-$(BUILD):
-	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.psp2
-
-#---------------------------------------------------------------------------------
 clean:
-	@echo clean ...
-	@rm -fr $(BUILD) $(TARGET).a
+	@rm -rf $(TARGET_LIB) $(OBJS)
 
-#---------------------------------------------------------------------------------
-install: $(TARGET).a
-	@echo install ...
-	@cp $(TARGET).a $(PSP2SDK)/lib
-	@mkdir -p $(PSP2SDK)/include/notengine
-	@mkdir -p $(PSP2SDK)/include/notengine/graphics
-	@mkdir -p $(PSP2SDK)/include/notengine/system
-	@mkdir -p $(PSP2SDK)/include/notengine/deps
-	@mkdir -p $(PSP2SDK)/include/notengine/deps/playptmod
-	@mkdir -p $(PSP2SDK)/include/notengine/deps/StSoundLibrary
-	@cp source/notengine.hpp $(PSP2SDK)/include/notengine/notengine.hpp
-	@cp source/graphics/*.hpp $(PSP2SDK)/include/notengine/graphics
-	@cp source/system/*.hpp $(PSP2SDK)/include/notengine/system
-	@cp source/deps/playptmod/*.h $(PSP2SDK)/include/notengine/deps/playptmod
-	@cp source/deps/StSoundLibrary/*.h $(PSP2SDK)/include/notengine/deps/StSoundLibrary
-	@echo Installed!
-
-#---------------------------------------------------------------------------------
-uninstall: $(TARGET).a
-	@echo uninstall ...
-	@rm $(PSP2SDK)/lib/$(TARGET).a
-	@rm -r $(PSP2SDK)/include/notengine
-	@echo Uninstalled!
-
-#---------------------------------------------------------------------------------
-else
-
-DEPENDS	:=	$(OFILES:.o=.d)
-
-#---------------------------------------------------------------------------------
-# main targets
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-$(OUTPUT).a: $(OFILES) $(addprefix ../,$(SHADERS))
-	$(AR) -rc $@  $^
-
-#---------------------------------------------------------------------------------
-# This rule links in binary data with the various extension
-#---------------------------------------------------------------------------------
-#%_frag.o: %_frag.cg
-#	cgc -profile ps_3_0 $^ -o $@
-#	$(bin2o2)
-
-#%_vert.o: %_vert.cg
-#	cgc -profile vs_3_0 $^ -o $@
-#	$(bin2o2)
-
-
--include $(DEPENDS)
-
-#---------------------------------------------------------------------------------
-endif
-#---------------------------------------------------------------------------------
-
-define bin2o2
-	bin2s $< | $(AS) -o $(@)
-	echo "extern const unsigned char" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"_end[];" > `(echo $(<F) | tr . _)`.h
-	echo "extern const unsigned char" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`"[];" >> `(echo $(<F) | tr . _)`.h
-	echo "extern const unsigned int" `(echo $(<F) | sed -e 's/^\([0-9]\)/_\1/' | tr . _)`_size";" >> `(echo $(<F) | tr . _)`.h
-endef
+install: $(TARGET_LIB)
+	@cp $(TARGET_LIB) $(VITASDK)/arm-vita-eabi/lib
+	@cp -R include/* $(VITASDK)/arm-vita-eabi/include/
+	@echo "Installed!"

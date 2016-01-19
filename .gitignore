@@ -1,2 +1,6 @@
+*.a
+*.o
+*.elf
+*.velf
 vitamine/
 

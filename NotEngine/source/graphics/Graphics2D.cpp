@@ -1,8 +1,8 @@
-#include "Graphics2D.hpp"
+#include "../../include/notengine/graphics/Graphics2D.hpp"
+#include "../../include/notengine/graphics/GraphicsBase.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "GraphicsBase.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 extern const SceGxmProgram graphics2d_vert_gxp;

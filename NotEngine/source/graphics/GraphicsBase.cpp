@@ -1,4 +1,4 @@
-#include "GraphicsBase.hpp"
+#include "../../include/notengine/graphics/GraphicsBase.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -120,7 +120,7 @@ namespace NotEngine {
 			framebuf.pixelformat = DISPLAY_PIXEL_FORMAT;
 			framebuf.width = DISPLAY_WIDTH;
 			framebuf.height = DISPLAY_HEIGHT;
-			sceDisplaySetFrameBuf(&framebuf, PSP2_DISPLAY_SETBUF_NEXTFRAME);
+			sceDisplaySetFrameBuf(&framebuf, SCE_DISPLAY_SETBUF_NEXTFRAME);
 
 			// fixme: Untested
 			if (displayData->waitRetrace) {
@@ -327,6 +327,7 @@ namespace NotEngine {
 		void GraphicsBase::finalize() {
 			// wait until rendering is done
 			sceGxmFinish(context);
+			sceGxmDisplayQueueFinish();
 
 			// clean up display queue
 			gpuFree(depthBufferUid);

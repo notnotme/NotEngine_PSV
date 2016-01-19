@@ -6,9 +6,9 @@
 #include <psp2/gxm.h>
 #include <glm/glm.hpp>
 
+#include "../system/Singleton.hpp"
 #include "Sprite.hpp"
 #include "Texture2D.hpp"
-#include "../system/Singleton.hpp"
 
 using namespace NotEngine;
 
