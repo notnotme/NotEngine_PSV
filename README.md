@@ -1,5 +1,5 @@
 # NotEngine_PSV
-A little framework for the ps vita to render graphics and audio (not yet audio) on PSVITA.
+A little framework to render graphics and audio (not yet audio) on PSVITA.
 
 For now it is still in early stage of developpement, and the changes between each commit can
 change a lot of things.
