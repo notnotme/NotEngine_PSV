@@ -20,6 +20,9 @@ namespace NotEngine {
 		 * You can find more infos on his work at http://github.com/xerpi/
 		 */
 		class GraphicsBase : public System::Singleton<GraphicsBase> {
+			friend class System::Singleton<GraphicsBase>;
+			friend class Graphics2D;
+
 			public:
 				static const unsigned int DISPLAY_WIDTH = 960;
 				static const unsigned int DISPLAY_HEIGHT = 544;
@@ -31,6 +34,11 @@ namespace NotEngine {
 				static const int MSAA_MODE = SCE_GXM_MULTISAMPLE_NONE;
 
 			private:
+				struct DisplayData {
+					void* address;
+					bool waitRetrace;
+				} DisplayDatas;
+
 				/// Disallow copy
 				GraphicsBase(const GraphicsBase& copy);
 				void operator=(GraphicsBase const&);
@@ -62,21 +70,11 @@ namespace NotEngine {
 				static void* patcherAlloc(void *userData, unsigned int size);
 				static void patcherFree(void *userData, void *mem);
 
-				struct DisplayData {
-					void* address;
-					bool waitRetrace;
-				} DisplayDatas;
-
-			protected:
-				/// Friend class itself
-				friend class System::Singleton<GraphicsBase>;
-				friend class Graphics2D;
+				SceGxmContext* context;
+				SceGxmShaderPatcher* shaderPatcher;
 
 				/// Disallow public instanciating
 				GraphicsBase ();
-
-				SceGxmContext* context;
-				SceGxmShaderPatcher* shaderPatcher;
 
 			public:
 				virtual ~GraphicsBase ();
@@ -112,7 +110,7 @@ namespace NotEngine {
 				static void* fragmentUsseAlloc(unsigned int size, SceUID *uid, unsigned int *usse_offset);
 				/// Gpu fragment free
 				static void fragmentUsseFree(SceUID uid);
-
+				/// align some memory to the desired alignement
 				static unsigned int align(unsigned int number, unsigned int alignement);
 		};
 

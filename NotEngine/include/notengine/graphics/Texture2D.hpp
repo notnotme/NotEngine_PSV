@@ -13,6 +13,8 @@ namespace NotEngine {
 		 * Base class that handle 2d graphics stuff.
 		 */
 		class Texture2D {
+			friend class Graphics2D;
+
 			private:
 				/// Disallow copy
 				Texture2D(const Texture2D& copy);
@@ -24,10 +26,6 @@ namespace NotEngine {
 				unsigned int width;
 				unsigned int height;
 				SceGxmTextureFormat format;
-
-			protected:
-				/// Friends class Graphics2D
-				friend class Graphics2D;
 
 			public:
 				Texture2D ();

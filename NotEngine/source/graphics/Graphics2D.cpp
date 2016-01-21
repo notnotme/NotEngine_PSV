@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 extern const SceGxmProgram graphics2d_vert_gxp;
 extern const SceGxmProgram graphics2d_frag_gxp;
@@ -22,10 +24,8 @@ namespace NotEngine {
 			printf("~Graphics2D()\n");
 		}
 
-		bool Graphics2D::initialize(unsigned int batchSize) {
+		bool Graphics2D::initialize() {
 			GraphicsBase* base = GraphicsBase::instance();
-			batchCapacity = batchSize;
-			batchCount = 0;
 
 			// Check if the 2d shaders are valids
 			int err = sceGxmProgramCheck(g2dVertexProgramGxp);
@@ -94,7 +94,7 @@ namespace NotEngine {
 			g2dVertexAttributes[4].regIndex = sceGxmProgramParameterGetResourceIndex(shaderTranslationAttr);
 			// Indices fmt
 			SceGxmVertexStream g2dVertexStreams[1];
-			g2dVertexStreams[0].stride = sizeof(SpriteVertice);
+			g2dVertexStreams[0].stride = sizeof(SpriteBuffer::SpriteVertice);
 			g2dVertexStreams[0].indexSource = SCE_GXM_INDEX_SOURCE_INDEX_16BIT;
 
 			// create the vertex shaders
@@ -134,21 +134,19 @@ namespace NotEngine {
 				return false;
 			}
 
-			// Allocate buffers
-			batchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-				batchCapacity*(sizeof(SpriteVertice)*4),
-				SCE_GXM_MEMORY_ATTRIB_READ,
-				&batchVerticesUID);
-
 			batchIndices = (unsigned short*) GraphicsBase::gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-				batchCapacity*(sizeof(unsigned short)*6),
+				MAX_SPRITES_PER_BATCH*(sizeof(unsigned short)*6),
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&batchIndicesUID);
 
+			if (batchIndices == 0) {
+				printf("batchIndices not allocated\n");
+				return false;
+			}
+
 			// Fill the indices buffer as it will never change
-			unsigned int size = batchCapacity*6;
+			unsigned int size = MAX_SPRITES_PER_BATCH*6;
 			unsigned short j = 0;
 			for (unsigned int i=0; i<size; i+=6, j+=4) {
 				batchIndices[i] = j + 3;
@@ -164,11 +162,21 @@ namespace NotEngine {
 			clearSprite.size.h = GraphicsBase::DISPLAY_HEIGHT;
 			clearSprite.position.x = GraphicsBase::DISPLAY_WIDTH/2;
 			clearSprite.position.y = GraphicsBase::DISPLAY_HEIGHT/2;
+
 			clearTexture = new Texture2D();
 			if (! clearTexture->initialize(1,1, SCE_GXM_TEXTURE_FORMAT_L8)) {
 				printf("clearTexture->initialize failed\n");
 				return false;
 			}
+
+			// Allocate clear buffer
+			clearBuffer = new Graphics::SpriteBuffer();
+			if (! clearBuffer->initialize(1)) {
+				printf("clearBuffer not allocated\n");
+				return false;
+			}
+			clearBuffer->start();
+			clearBuffer->put(&clearSprite);
 
 			return true;
 		}
@@ -182,10 +190,12 @@ namespace NotEngine {
 			sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dVertexProgramId);
 
 			GraphicsBase::gpuFree(batchIndicesUID);
-			GraphicsBase::gpuFree(batchVerticesUID);
 
 			clearTexture->finalize();
 			delete clearTexture;
+
+			clearBuffer->finalize();
+			delete clearBuffer;
 		}
 
 		void Graphics2D::setTexture(unsigned int unit, const Graphics::Texture2D* texture) {
@@ -193,16 +203,10 @@ namespace NotEngine {
 			sceGxmSetFragmentTexture(base->context, unit, &texture->texture);
 		}
 
-		void Graphics2D::use(const glm::mat4* projection) {
+		void Graphics2D::use() {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->context, g2dVertexProgram);
 			sceGxmSetFragmentProgram(base->context, g2dFragmentProgram);
-			sceGxmSetVertexStream(base->context, 0, batchVertices);
-
-			void *vertexDefaultBuffer;
-			sceGxmReserveVertexDefaultUniformBuffer(base->context, &vertexDefaultBuffer);
-			sceGxmSetUniformDataF(vertexDefaultBuffer, shaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
-
 			sceGxmSetBackDepthWriteEnable(base->context, SCE_GXM_DEPTH_WRITE_DISABLED);
 			sceGxmSetFrontDepthWriteEnable(base->context, SCE_GXM_DEPTH_WRITE_DISABLED);
 		}
@@ -213,92 +217,30 @@ namespace NotEngine {
 			sceGxmSetFrontDepthWriteEnable(base->context, SCE_GXM_DEPTH_WRITE_ENABLED);
 		}
 
-		void Graphics2D::resetBatch() {
-			batchOffset = 0;
-			batchCount = 0;
-		}
-
-		void Graphics2D::startBatch() {
-			batchCount = 0;
-		}
-
-		void Graphics2D::addToBatch(const Graphics::Sprite* sprite) {
-			if (batchOffset + batchCount >= batchCapacity) {
-				printf("addToBatch discard. Capacity overflow\n");
-				return;
-			}
-
-			// todo scale & rotation
-			unsigned int index = (batchOffset+batchCount)*4;
-			float wdth = (sprite->size.w/2) * sprite->scale.w;
-			float hght = (sprite->size.h/2) * sprite->scale.h;
-
-			batchVertices[index].x = -wdth;
-			batchVertices[index].y = -hght;
-			batchVertices[index].s = sprite->frame.s;
-			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
-			index++;
-
-			batchVertices[index].x = wdth;
-			batchVertices[index].y = -hght;
-			batchVertices[index].s = sprite->frame.u;
-			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
-			index++;
-
-			batchVertices[index].x = wdth;
-			batchVertices[index].y = hght;
-			batchVertices[index].s = sprite->frame.u;
-			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
-			index++;
-
-			batchVertices[index].x = -wdth;
-			batchVertices[index].y = hght;
-			batchVertices[index].s = sprite->frame.s;
-			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
-
-			batchCount++;
-		}
-
-		void Graphics2D::renderBatch() {
+		void Graphics2D::render(const glm::mat4* projection, const Graphics::SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmDraw(base->context, SCE_GXM_PRIMITIVE_TRIANGLES, SCE_GXM_INDEX_FORMAT_U16, &batchIndices[batchOffset*6], batchCount*6);
-			batchOffset += batchCount;
+			sceGxmSetVertexStream(base->context, 0, spriteBuffer->batchVertices);
+
+			void *vertexDefaultBuffer;
+			sceGxmReserveVertexDefaultUniformBuffer(base->context, &vertexDefaultBuffer);
+			sceGxmSetUniformDataF(vertexDefaultBuffer, shaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
+
+			sceGxmDraw(base->context, SCE_GXM_PRIMITIVE_TRIANGLES, SCE_GXM_INDEX_FORMAT_U16, &batchIndices[0], spriteBuffer->batchCount*6);
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-			clearSprite.color = (Sprite::SpriteColor) {r,g,b,a};
 			setTexture(0, clearTexture);
-			startBatch();
-			addToBatch(&clearSprite);
-			renderBatch();
+
+			clearSprite.color = (Sprite::SpriteColor) {r,g,b,a};
+
+			glm::mat4 ortho = glm::ortho(
+				0.0f, (float) Graphics::GraphicsBase::DISPLAY_WIDTH,
+				(float) Graphics::GraphicsBase::DISPLAY_HEIGHT, 0.0f,
+				-1.0f, 1.0f);
+
+			clearBuffer->start();
+			clearBuffer->put(&clearSprite);
+			render(&ortho, clearBuffer);
 		}
 
 	} // namespace Graphics

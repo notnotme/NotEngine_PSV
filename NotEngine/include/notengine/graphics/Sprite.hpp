@@ -9,7 +9,6 @@ namespace NotEngine {
 
 		/** Base class for sprites */
 		class Sprite {
-
 			public:
 				struct SpritePosition {
 					float x,y;

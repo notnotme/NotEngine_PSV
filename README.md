@@ -12,10 +12,9 @@ Install:
 TODO:
  - Make SpriteSheet & json loading (see here: http://www.leshylabs.com/apps/sstool/)
  - Add animation to sprite
- - Make SpriteBuffers ?
  - Emulate basic immediate rendering (like opengl 1.2 days)
 
 Greetings:
  - PSP2SDK & VITASDK team
-
+ - #vitadev - #demofr - #openpandora
 
