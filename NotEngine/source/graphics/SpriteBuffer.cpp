@@ -50,7 +50,6 @@ namespace NotEngine {
 				return;
 			}
 
-			// todo scale & rotation
 			unsigned int index = (batchCount)*4;
 			float wdth = (sprite->size.w/2) * sprite->scale.w;
 			float hght = (sprite->size.h/2) * sprite->scale.h;
