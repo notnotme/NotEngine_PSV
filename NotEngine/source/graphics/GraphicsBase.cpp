@@ -9,9 +9,11 @@ namespace NotEngine {
 	namespace Graphics {
 
 		GraphicsBase::GraphicsBase() : System::Singleton<GraphicsBase>() {
+			printf("GraphicsBase()\n");
 		}
 
 		GraphicsBase::~GraphicsBase() {
+			printf("~GraphicsBase()\n");
 		}
 
 		void* GraphicsBase::patcherAlloc(void *userData, unsigned int size) {
@@ -113,7 +115,7 @@ namespace NotEngine {
 			const DisplayData* displayData = (const DisplayData*) userData;
 
 			SceDisplayFrameBuf framebuf;
-			memset(&framebuf, 0x00, sizeof(SceDisplayFrameBuf));
+			memset(&framebuf, 0, sizeof(SceDisplayFrameBuf));
 			framebuf.size = sizeof(SceDisplayFrameBuf);
 			framebuf.base = displayData->address;
 			framebuf.pitch = DISPLAY_STRIDE_IN_PIXELS;
@@ -140,7 +142,7 @@ namespace NotEngine {
 			initializeParams.parameterBufferSize = SCE_GXM_DEFAULT_PARAMETER_BUFFER_SIZE;
 			int err = sceGxmInitialize(&initializeParams);
 			if (err != 0) {
-				printf("sceGxmInitialize(): 0x%08X", err);
+				printf("sceGxmInitialize(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -183,7 +185,7 @@ namespace NotEngine {
 			contextParams.fragmentUsseRingBufferOffset = fragmentUsseRingBufferOffset;
 			err = sceGxmCreateContext(&contextParams, &context);
 			if(err != 0) {
-				printf("sceGxmCreateContext(): 0x%08X", err);
+				printf("sceGxmCreateContext(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -199,7 +201,7 @@ namespace NotEngine {
 			renderTargetParams.driverMemBlock = -1; // Invalid UID
 			err = sceGxmCreateRenderTarget(&renderTargetParams, &renderTarget);
 			if (err != 0) {
-	 			printf("sceGxmCreateRenderTarget(): 0x%08X", err);
+	 			printf("sceGxmCreateRenderTarget(): 0x%08X\n", err);
 	 			return false;
 			}
 
@@ -223,14 +225,14 @@ namespace NotEngine {
 					DISPLAY_STRIDE_IN_PIXELS,
 					displayBufferData[i]);
 				if (err != 0) {
-		 			printf("sceGxmColorSurfaceInit(): 0x%08X", err);
+		 			printf("sceGxmColorSurfaceInit(): 0x%08X\n", err);
 		 			return false;
 		 		}
 
 				// create a sync object that we will associate with this buffer
 				err = sceGxmSyncObjectCreate(&displayBufferSync[i]);
 				if (err != 0) {
-		 			printf("sceGxmSyncObjectCreate(): 0x%08X", err);
+		 			printf("sceGxmSyncObjectCreate(): 0x%08X\n", err);
 		 			return false;
 				}
 			}
@@ -263,7 +265,7 @@ namespace NotEngine {
 				depthBufferData,
 				0);
 			if (err != 0) {
-	 			printf("sceGxmDepthStencilSurfaceInit(): 0x%08X", err);
+	 			printf("sceGxmDepthStencilSurfaceInit(): 0x%08X\n", err);
 	 			return false;
 			}
 
@@ -312,7 +314,7 @@ namespace NotEngine {
 			patcherParams.fragmentUsseOffset = patcherFragmentUsseOffset;
 			err = sceGxmShaderPatcherCreate(&patcherParams, &shaderPatcher);
 			if (err != 0) {
-				printf("sceGxmShaderPatcherCreate(): 0x%08X", err);
+				printf("sceGxmShaderPatcherCreate(): 0x%08X\n", err);
 				return false;
 			}
 

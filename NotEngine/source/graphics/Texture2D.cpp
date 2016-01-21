@@ -10,9 +10,11 @@ namespace NotEngine {
 	namespace Graphics {
 
 		Texture2D::Texture2D() {
+			printf("Texture2D()\n");
 		}
 
 		Texture2D::~Texture2D() {
+			printf("~Texture2D()\n");
 		}
 
 		bool Texture2D::initialize(unsigned int w, unsigned int h, SceGxmTextureFormat fmt) {
@@ -27,7 +29,7 @@ namespace NotEngine {
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&textureMemoryUID);
 			if (textureData == 0) {
-				printf("%s", "Texture2D::initialize fail at gpuAlloc");
+				printf("Texture2D::initialize fail at gpuAlloc\n");
 				return false;
 			}
 

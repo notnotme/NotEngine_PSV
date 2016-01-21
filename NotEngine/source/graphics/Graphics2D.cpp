@@ -15,9 +15,11 @@ namespace NotEngine {
 	namespace Graphics {
 
 		Graphics2D::Graphics2D() : System::Singleton<Graphics2D>() {
+			printf("Graphics2D()\n");
 		}
 
 		Graphics2D::~Graphics2D() {
+			printf("~Graphics2D()\n");
 		}
 
 		bool Graphics2D::initialize(unsigned int batchSize) {
@@ -28,24 +30,24 @@ namespace NotEngine {
 			// Check if the 2d shaders are valids
 			int err = sceGxmProgramCheck(g2dVertexProgramGxp);
 			if (err != 0) {
-				printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X", err);
+				printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 			err = sceGxmProgramCheck(g2dFragmentProgramGxp);
 			if (err != 0) {
-				printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X", err);
+				printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 
 			// register programs with the patcher
 			err = sceGxmShaderPatcherRegisterProgram(base->shaderPatcher, g2dVertexProgramGxp, &g2dVertexProgramId);
 			if (err != 0) {
-				printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X", err);
+				printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 			err = sceGxmShaderPatcherRegisterProgram(base->shaderPatcher, g2dFragmentProgramGxp, &g2dFragmentProgramId);
 			if (err != 0) {
-				printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X", err);
+				printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -105,7 +107,7 @@ namespace NotEngine {
 				1,
 				&g2dVertexProgram);
 			if (err != 0) {
-				printf("g2dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X", err);
+				printf("g2dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -128,7 +130,7 @@ namespace NotEngine {
 				g2dVertexProgramGxp,
 				&g2dFragmentProgram);
 			if (err != 0) {
-				printf("g2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X", err);
+				printf("g2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -164,7 +166,7 @@ namespace NotEngine {
 			clearSprite.position.y = GraphicsBase::DISPLAY_HEIGHT/2;
 			clearTexture = new Texture2D();
 			if (! clearTexture->initialize(1,1, SCE_GXM_TEXTURE_FORMAT_L8)) {
-				printf("%s", "clearTexture->initialize failed");
+				printf("clearTexture->initialize failed\n");
 				return false;
 			}
 
@@ -201,7 +203,6 @@ namespace NotEngine {
 			sceGxmReserveVertexDefaultUniformBuffer(base->context, &vertexDefaultBuffer);
 			sceGxmSetUniformDataF(vertexDefaultBuffer, shaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
 
-			// This may disable Z write ? How we cull the face ?
 			sceGxmSetBackDepthWriteEnable(base->context, SCE_GXM_DEPTH_WRITE_DISABLED);
 			sceGxmSetFrontDepthWriteEnable(base->context, SCE_GXM_DEPTH_WRITE_DISABLED);
 		}
@@ -223,7 +224,7 @@ namespace NotEngine {
 
 		void Graphics2D::addToBatch(const Graphics::Sprite* sprite) {
 			if (batchOffset + batchCount >= batchCapacity) {
-				printf("%s", "addToBatch discard. Capacity overflow");
+				printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 
