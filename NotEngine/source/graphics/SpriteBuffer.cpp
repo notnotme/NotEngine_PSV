@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "../include/notengine/graphics/Graphics2D.hpp"
+
 namespace NotEngine {
 
 	namespace Graphics {
@@ -17,6 +19,10 @@ namespace NotEngine {
 		}
 
 		bool SpriteBuffer::initialize(unsigned int capacity) {
+			if (capacity >= Graphics2D::MAX_SPRITES_PER_BATCH) {
+				printf("SpriteBuffer size can't be > than %i", Graphics2D::MAX_SPRITES_PER_BATCH);
+				return false;
+			}
 			batchCount = 0;
 			batchCapacity = capacity;
 

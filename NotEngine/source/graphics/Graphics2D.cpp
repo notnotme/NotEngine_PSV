@@ -218,6 +218,11 @@ namespace NotEngine {
 		}
 
 		void Graphics2D::render(const glm::mat4* projection, const Graphics::SpriteBuffer* spriteBuffer) {
+			if (spriteBuffer->batchCount >= MAX_SPRITES_PER_BATCH) {
+				printf("Graphics2D Can't render SpriteBuffer because it is too big\n");
+				return;
+			}
+
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexStream(base->context, 0, spriteBuffer->batchVertices);
 
