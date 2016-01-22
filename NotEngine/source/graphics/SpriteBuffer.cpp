@@ -1,10 +1,9 @@
 #include "../../include/notengine/graphics/SpriteBuffer.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
+#include "../include/notengine/graphics/Graphics2D.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "../include/notengine/graphics/Graphics2D.hpp"
 
 namespace NotEngine {
 

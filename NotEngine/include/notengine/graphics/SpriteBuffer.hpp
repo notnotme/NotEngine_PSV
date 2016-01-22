@@ -26,7 +26,6 @@ namespace NotEngine {
 				unsigned int batchCapacity;
 				unsigned int batchCount;
 
-			public:
 				/// Internal sprite vertice layout
 				struct SpriteVertice {
 					float x; // vertices coords
@@ -40,8 +39,9 @@ namespace NotEngine {
 					float angle; // angle
 					float tx; // translation
 					float ty;
-				} __attribute__((packed));
+				} __attribute__ ((packed));
 
+			public:
 				/// Pointer to use for sprite batching
 				SpriteVertice* batchVertices;
 				SceUID batchVerticesUID;
