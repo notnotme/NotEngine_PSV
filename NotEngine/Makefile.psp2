@@ -10,7 +10,9 @@ TARGET_LIB = libnotengine.a
 OBJS       = source/graphics/Texture2D.o \
 			 source/graphics/SpriteBuffer.o \
 			 source/graphics/GraphicsBase.o \
-			 source/graphics/Graphics2D.o
+			 source/graphics/Graphics2D.o \
+			 source/graphics/FrameCatalog.o \
+			 source/system/Utils.o
 
 INCLUDES   = include
 

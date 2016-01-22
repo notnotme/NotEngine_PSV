@@ -40,11 +40,14 @@ namespace NotEngine {
 			}
 
 			// register programs with the patcher
+			g2dVertexProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->shaderPatcher, g2dVertexProgramGxp, &g2dVertexProgramId);
 			if (err != 0) {
 				printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
+
+			g2dFragmentProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->shaderPatcher, g2dFragmentProgramGxp, &g2dFragmentProgramId);
 			if (err != 0) {
 				printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
@@ -134,6 +137,7 @@ namespace NotEngine {
 				return false;
 			}
 
+			batchIndicesUID = 0;
 			batchIndices = (unsigned short*) GraphicsBase::gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				MAX_SPRITES_PER_BATCH*(sizeof(unsigned short)*6),
@@ -184,18 +188,28 @@ namespace NotEngine {
 		void Graphics2D::finalize() {
 			GraphicsBase* base = GraphicsBase::instance();
 
-			sceGxmShaderPatcherReleaseFragmentProgram(base->shaderPatcher, g2dFragmentProgram);
-			sceGxmShaderPatcherReleaseVertexProgram(base->shaderPatcher, g2dVertexProgram);
-			sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dFragmentProgramId);
-			sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dVertexProgramId);
+			if (g2dFragmentProgramId != 0) {
+				sceGxmShaderPatcherReleaseFragmentProgram(base->shaderPatcher, g2dFragmentProgram);
+				sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dFragmentProgramId);
+			}
 
-			GraphicsBase::gpuFree(batchIndicesUID);
+			if (g2dVertexProgramId != 0) {
+				sceGxmShaderPatcherReleaseVertexProgram(base->shaderPatcher, g2dVertexProgram);
+				sceGxmShaderPatcherUnregisterProgram(base->shaderPatcher, g2dVertexProgramId);
+			}
 
-			clearTexture->finalize();
-			delete clearTexture;
+			if (batchIndicesUID != 0)
+				GraphicsBase::gpuFree(batchIndicesUID);
 
-			clearBuffer->finalize();
-			delete clearBuffer;
+			if (clearTexture != 0) {
+				clearTexture->finalize();
+				delete clearTexture;
+			}
+
+			if (clearBuffer != 0) {
+				clearBuffer->finalize();
+				delete clearBuffer;
+			}
 		}
 
 		void Graphics2D::setTexture(unsigned int unit, const Graphics::Texture2D* texture) {

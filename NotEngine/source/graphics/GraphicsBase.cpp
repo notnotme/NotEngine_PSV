@@ -147,26 +147,30 @@ namespace NotEngine {
 			}
 
 			// allocate ring buffer memory using default sizes
-			void* vdmRingBuffer = gpuAlloc(
+			void* vdmRingBuffer = 0;
+			vdmRingBuffer = gpuAlloc(
 				(SceKernelMemBlockType) SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				(unsigned int) SCE_GXM_DEFAULT_VDM_RING_BUFFER_SIZE,
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&vdmRingBufferUid);
 
-			void *vertexRingBuffer = gpuAlloc(
+			void* vertexRingBuffer = 0;
+			vertexRingBuffer = gpuAlloc(
 				(SceKernelMemBlockType) SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				(unsigned int) SCE_GXM_DEFAULT_VERTEX_RING_BUFFER_SIZE,
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&vertexRingBufferUid);
 
-			void *fragmentRingBuffer = gpuAlloc(
+			void* fragmentRingBuffer = 0;
+			fragmentRingBuffer = gpuAlloc(
 				(SceKernelMemBlockType) SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				(unsigned int) SCE_GXM_DEFAULT_FRAGMENT_RING_BUFFER_SIZE,
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&fragmentRingBufferUid);
 
 			unsigned int fragmentUsseRingBufferOffset;
-			void *fragmentUsseRingBuffer = fragmentUsseAlloc(
+			void* fragmentUsseRingBuffer = 0;
+			fragmentUsseRingBuffer = fragmentUsseAlloc(
 				(unsigned int)  SCE_GXM_DEFAULT_FRAGMENT_USSE_RING_BUFFER_SIZE,
 				&fragmentUsseRingBufferUid,
 				&fragmentUsseRingBufferOffset);
@@ -183,6 +187,8 @@ namespace NotEngine {
 			contextParams.fragmentUsseRingBufferMem = fragmentUsseRingBuffer;
 			contextParams.fragmentUsseRingBufferMemSize = SCE_GXM_DEFAULT_FRAGMENT_USSE_RING_BUFFER_SIZE;
 			contextParams.fragmentUsseRingBufferOffset = fragmentUsseRingBufferOffset;
+			context = 0;
+
 			err = sceGxmCreateContext(&contextParams, &context);
 			if(err != 0) {
 				printf("sceGxmCreateContext(): 0x%08X\n", err);
@@ -208,11 +214,13 @@ namespace NotEngine {
 			// allocate memory and sync objects for display buffers
 			for (unsigned int i=0; i<DISPLAY_BUFFER_COUNT; i++) {
 				// initialize a color surface for this display buffer
+				displayBufferData[i] = 0;
 				displayBufferData[i] = gpuAlloc(
 					SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW,
 					4*DISPLAY_STRIDE_IN_PIXELS*DISPLAY_HEIGHT,
 					SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
 					&displayBufferUid[i]);
+
 				memset(displayBufferData[i], 0xff000000, 4*DISPLAY_STRIDE_IN_PIXELS*DISPLAY_HEIGHT);
 				err = sceGxmColorSurfaceInit(
 					&displaySurface[i],
@@ -252,11 +260,13 @@ namespace NotEngine {
 			}
 
 			// create the SceGxmDepthStencilSurface structure
-			void *depthBufferData = gpuAlloc(
+			void* depthBufferData = 0;
+			depthBufferData = gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				4*sampleCount,
 				SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
 				&depthBufferUid);
+
 			err = sceGxmDepthStencilSurfaceInit(
 				&depthSurface,
 				SCE_GXM_DEPTH_STENCIL_FORMAT_S8D24,
@@ -274,20 +284,23 @@ namespace NotEngine {
 			const unsigned int patcherVertexUsseSize	= 64*1024;
 			const unsigned int patcherFragmentUsseSize	= 64*1024;
 
-			void *patcherBuffer = gpuAlloc(
+			void* patcherBuffer = 0;
+			patcherBuffer = gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				patcherBufferSize,
 				SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
 				&patcherBufferUid);
 
 			unsigned int patcherVertexUsseOffset;
-			void *patcherVertexUsse = vertexUsseAlloc(
+			void* patcherVertexUsse = 0;
+			patcherVertexUsse = vertexUsseAlloc(
 				patcherVertexUsseSize,
 				&patcherVertexUsseUid,
 				&patcherVertexUsseOffset);
 
 			unsigned int patcherFragmentUsseOffset;
-			void *patcherFragmentUsse = fragmentUsseAlloc(
+			void* patcherFragmentUsse = 0;
+			patcherFragmentUsse = fragmentUsseAlloc(
 				patcherFragmentUsseSize,
 				&patcherFragmentUsseUid,
 				&patcherFragmentUsseOffset);
@@ -312,6 +325,7 @@ namespace NotEngine {
 			patcherParams.fragmentUsseMem = patcherFragmentUsse;
 			patcherParams.fragmentUsseMemSize = patcherFragmentUsseSize;
 			patcherParams.fragmentUsseOffset = patcherFragmentUsseOffset;
+
 			err = sceGxmShaderPatcherCreate(&patcherParams, &shaderPatcher);
 			if (err != 0) {
 				printf("sceGxmShaderPatcherCreate(): 0x%08X\n", err);
@@ -328,33 +342,58 @@ namespace NotEngine {
 
 		void GraphicsBase::waitTerminate() {
 			// wait until rendering is done
-			sceGxmFinish(context);
-			sceGxmDisplayQueueFinish();
+			if (context != 0) {
+				sceGxmFinish(context);
+				sceGxmDisplayQueueFinish();
+			}
 		}
 
 		void GraphicsBase::finalize() {
 			// clean up display queue
-			gpuFree(depthBufferUid);
+			if (depthBufferUid != 0)
+				gpuFree(depthBufferUid);
+
 			for (unsigned int i=0; i<DISPLAY_BUFFER_COUNT; i++) {
 				// clear the buffer then deallocate
-				memset(displayBufferData[i], 0, DISPLAY_HEIGHT*DISPLAY_STRIDE_IN_PIXELS*4);
-				gpuFree(displayBufferUid[i]);
-				sceGxmSyncObjectDestroy(displayBufferSync[i]);
+				if (displayBufferUid[i] != 0) {
+					memset(displayBufferData[i], 0, DISPLAY_HEIGHT*DISPLAY_STRIDE_IN_PIXELS*4);
+					gpuFree(displayBufferUid[i]);
+					sceGxmSyncObjectDestroy(displayBufferSync[i]);
+				}
 			}
 
-			sceGxmDestroyRenderTarget(renderTarget);
+			if (renderTarget != 0)
+				sceGxmDestroyRenderTarget(renderTarget);
 
-			sceGxmShaderPatcherDestroy(shaderPatcher);
-			fragmentUsseFree(patcherFragmentUsseUid);
-			vertexUsseFree(patcherVertexUsseUid);
-			gpuFree(patcherBufferUid);
+			if (shaderPatcher != 0)
+				sceGxmShaderPatcherDestroy(shaderPatcher);
 
-			sceGxmDestroyContext(context);
-			fragmentUsseFree(fragmentUsseRingBufferUid);
-			gpuFree(fragmentRingBufferUid);
-			gpuFree(vertexRingBufferUid);
-			gpuFree(vdmRingBufferUid);
-			free(contextParams.hostMem);
+			if (patcherFragmentUsseUid != 0)
+				fragmentUsseFree(patcherFragmentUsseUid);
+
+			if (patcherVertexUsseUid != 0)
+				vertexUsseFree(patcherVertexUsseUid);
+
+			if (patcherBufferUid != 0)
+				gpuFree(patcherBufferUid);
+
+			if (context != 0)
+				sceGxmDestroyContext(context);
+
+			if (fragmentUsseRingBufferUid != 0)
+				fragmentUsseFree(fragmentUsseRingBufferUid);
+
+			if (fragmentRingBufferUid != 0)
+				gpuFree(fragmentRingBufferUid);
+
+			if (vertexRingBufferUid != 0)
+				gpuFree(vertexRingBufferUid);
+
+			if (vdmRingBufferUid != 0)
+				gpuFree(vdmRingBufferUid);
+
+			if (contextParams.hostMem != 0)
+				free(contextParams.hostMem);
 
 			// terminate libgxm
 			sceGxmTerminate();
