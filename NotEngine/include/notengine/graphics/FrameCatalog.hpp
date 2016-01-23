@@ -27,6 +27,7 @@ namespace NotEngine {
 			private:
 				unsigned int w;
 				unsigned int h;
+				std::string textureName;
 				std::map<std::string, Frame> catalog;
 
 			public:
@@ -39,6 +40,8 @@ namespace NotEngine {
 
 				int getWidth();
 				int getHeight();
+
+				std::string getTextureName();
 		};
 
 	} // namespace Graphics

@@ -34,14 +34,15 @@ namespace NotEngine {
 
 			if (!json.has<jsonxx::Object>("frames") || !json.has<jsonxx::Object>("meta")
 			|| !json.get<jsonxx::Object>("meta").has<jsonxx::Object>("size")
+			|| !json.get<jsonxx::Object>("meta").has<jsonxx::String>("image")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("w")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("h")) {
-				printf("bad json, no meta or frames: %s\n", jsonString.c_str());
+				printf("bad json, no meta or frames or image: %s\n", jsonString.c_str());
 				return false;
 			}
 			w = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("w");
 			h = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("h");
-
+			textureName = json.get<jsonxx::Object>("meta").get<jsonxx::String>("image");
 
 			std::map<std::string, jsonxx::Value*> framesMap = json.get<jsonxx::Object>("frames").kv_map();
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
@@ -96,6 +97,10 @@ namespace NotEngine {
 
 		int FrameCatalog::getHeight() {
 			return h;
+		}
+
+		std::string FrameCatalog::getTextureName() {
+			return textureName;
 		}
 
 	} // namespace Graphics
