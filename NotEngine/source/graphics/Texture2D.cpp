@@ -22,6 +22,7 @@ namespace NotEngine {
 			height = h;
 			format = fmt;
 
+			textureMemoryUID = 0;
 			unsigned int storageSize =  w * h * getStorageSize(fmt);
 			unsigned int* textureData = (unsigned int*) GraphicsBase::gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW,
@@ -43,11 +44,15 @@ namespace NotEngine {
 		}
 
 		void Texture2D::finalize() {
-			GraphicsBase::gpuFree(textureMemoryUID);
+			if (textureMemoryUID != 0)
+				GraphicsBase::gpuFree(textureMemoryUID);
 		}
 
 		void* Texture2D::getDataPtr() {
-			return sceGxmTextureGetData(&texture);
+				if (textureMemoryUID != 0)
+					return sceGxmTextureGetData(&texture);
+
+				return 0;
 		}
 
 		unsigned int Texture2D::getStorageSize(SceGxmTextureFormat format) {

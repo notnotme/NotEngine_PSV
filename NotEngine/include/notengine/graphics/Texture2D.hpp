@@ -38,7 +38,7 @@ namespace NotEngine {
 				void finalize();
 				/// Return a pointer to the datas
 				void* getDataPtr();
-
+				/// return the size of one pixel of the current format
 				static unsigned int getStorageSize(SceGxmTextureFormat format);
 		};
 
