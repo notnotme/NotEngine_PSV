@@ -9,8 +9,6 @@
 
 #include "../system/Singleton.hpp"
 
-using namespace NotEngine;
-
 namespace NotEngine {
 
 	namespace Graphics {

@@ -6,8 +6,6 @@
 
 #include "Sprite.hpp"
 
-using namespace NotEngine;
-
 namespace NotEngine {
 
 	namespace Graphics {
