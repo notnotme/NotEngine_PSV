@@ -66,39 +66,52 @@ namespace NotEngine {
 			// create the 2d vertex format
 			SceGxmVertexAttribute g2dVertexAttributes[5];
 			// Position fmt
-			g2dVertexAttributes[0].streamIndex = 0;
-			g2dVertexAttributes[0].offset = 0;
-			g2dVertexAttributes[0].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-			g2dVertexAttributes[0].componentCount = 2;
-			g2dVertexAttributes[0].regIndex = sceGxmProgramParameterGetResourceIndex(mShaderPositionAttr);
+			g2dVertexAttributes[0] = (SceGxmVertexAttribute) {
+				.streamIndex = 0,
+				.offset = 0,
+				.format = SCE_GXM_ATTRIBUTE_FORMAT_F32,
+				.componentCount = 2,
+				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderPositionAttr)
+			};
 			// Texture fmt
-			g2dVertexAttributes[1].streamIndex = 0;
-			g2dVertexAttributes[1].offset = sizeof(float)*2;
-			g2dVertexAttributes[1].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-			g2dVertexAttributes[1].componentCount = 2;
-			g2dVertexAttributes[1].regIndex = sceGxmProgramParameterGetResourceIndex(mShaderTextureAttr);
+			g2dVertexAttributes[1] = (SceGxmVertexAttribute) {
+				.streamIndex = 0,
+				.offset = sizeof(float)*2,
+				.format = SCE_GXM_ATTRIBUTE_FORMAT_F32,
+				.componentCount = 2,
+				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderTextureAttr)
+			};
 			// Color fmt
-			g2dVertexAttributes[2].streamIndex = 0;
-			g2dVertexAttributes[2].offset = g2dVertexAttributes[1].offset + sizeof(float)*2;
-			g2dVertexAttributes[2].format = SCE_GXM_ATTRIBUTE_FORMAT_U8N;
-			g2dVertexAttributes[2].componentCount = 4;
-			g2dVertexAttributes[2].regIndex = sceGxmProgramParameterGetResourceIndex(mShaderColorAttr);
+			g2dVertexAttributes[2] = (SceGxmVertexAttribute) {
+				.streamIndex = 0,
+				.offset = (unsigned short)  (g2dVertexAttributes[1].offset + sizeof(float)*2),
+				.format = SCE_GXM_ATTRIBUTE_FORMAT_U8N,
+				.componentCount = 4,
+				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderColorAttr)
+			};
 			// Angle fmt
-			g2dVertexAttributes[3].streamIndex = 0;
-			g2dVertexAttributes[3].offset = g2dVertexAttributes[2].offset + sizeof(unsigned char)*4;
-			g2dVertexAttributes[3].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-			g2dVertexAttributes[3].componentCount = 1;
-			g2dVertexAttributes[3].regIndex = sceGxmProgramParameterGetResourceIndex(mShaderAngleAttr);
+			g2dVertexAttributes[3] = (SceGxmVertexAttribute) {
+				.streamIndex = 0,
+				.offset = (unsigned short) (g2dVertexAttributes[2].offset + sizeof(unsigned char)*4),
+				.format = SCE_GXM_ATTRIBUTE_FORMAT_F32,
+				.componentCount = 1,
+				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderAngleAttr)
+			};
 			// Translation fmt
-			g2dVertexAttributes[4].streamIndex = 0;
-			g2dVertexAttributes[4].offset = g2dVertexAttributes[3].offset + sizeof(float);
-			g2dVertexAttributes[4].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-			g2dVertexAttributes[4].componentCount = 2;
-			g2dVertexAttributes[4].regIndex = sceGxmProgramParameterGetResourceIndex(mShaderTranslationAttr);
+			g2dVertexAttributes[4] = (SceGxmVertexAttribute) {
+				.streamIndex = 0,
+				.offset = (unsigned short) (g2dVertexAttributes[3].offset + sizeof(float)),
+				.format = SCE_GXM_ATTRIBUTE_FORMAT_F32,
+				.componentCount = 2,
+				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderTranslationAttr)
+			};
 			// Indices fmt
-			SceGxmVertexStream g2dVertexStreams[1];
-			g2dVertexStreams[0].stride = sizeof(SpriteBuffer::SpriteVertice);
-			g2dVertexStreams[0].indexSource = SCE_GXM_INDEX_SOURCE_INDEX_16BIT;
+			SceGxmVertexStream g2dVertexStreams[1] = {
+				(SceGxmVertexStream) {
+					.stride = sizeof(SpriteBuffer::SpriteVertice),
+					.indexSource = SCE_GXM_INDEX_SOURCE_INDEX_16BIT
+				}
+			};
 
 			// create the vertex shaders
 			err = sceGxmShaderPatcherCreateVertexProgram(

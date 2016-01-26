@@ -11,8 +11,6 @@
 #include "Sprite.hpp"
 #include "SpriteBuffer.hpp"
 
-using namespace NotEngine;
-
 namespace NotEngine {
 
 	namespace Graphics {

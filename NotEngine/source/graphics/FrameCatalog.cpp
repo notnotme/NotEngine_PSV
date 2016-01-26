@@ -47,8 +47,6 @@ namespace NotEngine {
 
 			std::map<std::string, jsonxx::Value*> framesMap = json.get<jsonxx::Object>("frames").kv_map();
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
-				Frame frame;
-
 				if (!it->second->get<jsonxx::Object>().has<jsonxx::Object>("frame") ||
 					!it->second->get<jsonxx::Object>().has<jsonxx::Object>("sourceSize")) {
 					printf("bad json, no frame or sourceSize: %s\n", filename.c_str());
@@ -62,12 +60,18 @@ namespace NotEngine {
 					return false;
 				}
 
-				frame.s = frameObject.get<jsonxx::Number>("x") / mWidth;
-				frame.t = frameObject.get<jsonxx::Number>("y") / mHeight;
-				frame.u = (frameObject.get<jsonxx::Number>("x") + frameObject.get<jsonxx::Number>("w")) / mWidth;
-				frame.v = (frameObject.get<jsonxx::Number>("y") + frameObject.get<jsonxx::Number>("h")) / mHeight;
-				frame.w = frameObject.get<jsonxx::Number>("w");
-				frame.h = frameObject.get<jsonxx::Number>("h");
+				Sprite::SpriteFrame spriteFrame = (Sprite::SpriteFrame) {
+					.s = (float) frameObject.get<jsonxx::Number>("x") / mWidth,
+					.t = (float) frameObject.get<jsonxx::Number>("y") / mHeight,
+					.u = (float) (frameObject.get<jsonxx::Number>("x") + frameObject.get<jsonxx::Number>("w")) / mWidth,
+					.v = (float) (frameObject.get<jsonxx::Number>("y") + frameObject.get<jsonxx::Number>("h")) / mHeight
+				};
+
+				Frame frame = (Frame) {
+					.spriteFrame = spriteFrame,
+					.w = (unsigned short) frameObject.get<jsonxx::Number>("w"),
+					.h = (unsigned short) frameObject.get<jsonxx::Number>("h")
+				};
 
 				mCatalog.insert(
 					std::pair<std::string, Frame>(it->first, frame)

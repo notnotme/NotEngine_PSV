@@ -114,14 +114,14 @@ namespace NotEngine {
 		void GraphicsBase::videoCallback(const void* userData) {
 			const DisplayData* displayData = (const DisplayData*) userData;
 
-			SceDisplayFrameBuf framebuf;
-			memset(&framebuf, 0, sizeof(SceDisplayFrameBuf));
-			framebuf.size = sizeof(SceDisplayFrameBuf);
-			framebuf.base = displayData->address;
-			framebuf.pitch = DISPLAY_STRIDE_IN_PIXELS;
-			framebuf.pixelformat = DISPLAY_PIXEL_FORMAT;
-			framebuf.width = DISPLAY_WIDTH;
-			framebuf.height = DISPLAY_HEIGHT;
+			SceDisplayFrameBuf framebuf = (SceDisplayFrameBuf) {
+				.size = sizeof(SceDisplayFrameBuf),
+				.base = displayData->address,
+				.pitch = DISPLAY_STRIDE_IN_PIXELS,
+				.pixelformat = DISPLAY_PIXEL_FORMAT,
+				.width = DISPLAY_WIDTH,
+				.height = DISPLAY_HEIGHT
+			};
 			sceDisplaySetFrameBuf(&framebuf, SCE_DISPLAY_SETBUF_NEXTFRAME);
 
 			// fixme: Untested
@@ -132,14 +132,13 @@ namespace NotEngine {
 
 		bool GraphicsBase::initialize(bool waitForRetrace) {
 			mWaitRetrace = waitForRetrace;
-
-			SceGxmInitializeParams initializeParams;
-			memset(&initializeParams, 0, sizeof(SceGxmInitializeParams));
-			initializeParams.flags = 0;
-			initializeParams.displayQueueMaxPendingCount = DISPLAY_MAX_PENDING_SWAPS;
-			initializeParams.displayQueueCallback = videoCallback;
-			initializeParams.displayQueueCallbackDataSize = sizeof(DisplayData);
-			initializeParams.parameterBufferSize = SCE_GXM_DEFAULT_PARAMETER_BUFFER_SIZE;
+			SceGxmInitializeParams initializeParams = (SceGxmInitializeParams) {
+				.flags = 0,
+				.displayQueueMaxPendingCount = DISPLAY_MAX_PENDING_SWAPS,
+				.displayQueueCallback = videoCallback,
+				.displayQueueCallbackDataSize = sizeof(DisplayData),
+				.parameterBufferSize = SCE_GXM_DEFAULT_PARAMETER_BUFFER_SIZE
+			};
 			int err = sceGxmInitialize(&initializeParams);
 			if (err != 0) {
 				printf("sceGxmInitialize(): 0x%08X\n", err);
@@ -175,20 +174,20 @@ namespace NotEngine {
 				&mFragmentUsseRingBufferUid,
 				&fragmentUsseRingBufferOffset);
 
-			memset(&mContextParams, 0, sizeof(SceGxmContextParams));
-			mContextParams.hostMem = malloc(SCE_GXM_MINIMUM_CONTEXT_HOST_MEM_SIZE);
-			mContextParams.hostMemSize = SCE_GXM_MINIMUM_CONTEXT_HOST_MEM_SIZE;
-			mContextParams.vdmRingBufferMem = vdmRingBuffer;
-			mContextParams.vdmRingBufferMemSize = SCE_GXM_DEFAULT_VDM_RING_BUFFER_SIZE;
-			mContextParams.vertexRingBufferMem = vertexRingBuffer;
-			mContextParams.vertexRingBufferMemSize = SCE_GXM_DEFAULT_VERTEX_RING_BUFFER_SIZE;
-			mContextParams.fragmentRingBufferMem = fragmentRingBuffer;
-			mContextParams.fragmentRingBufferMemSize = SCE_GXM_DEFAULT_FRAGMENT_RING_BUFFER_SIZE;
-			mContextParams.fragmentUsseRingBufferMem = fragmentUsseRingBuffer;
-			mContextParams.fragmentUsseRingBufferMemSize = SCE_GXM_DEFAULT_FRAGMENT_USSE_RING_BUFFER_SIZE;
-			mContextParams.fragmentUsseRingBufferOffset = fragmentUsseRingBufferOffset;
 			mContext = 0;
-
+			mContextParams = (SceGxmContextParams) {
+				.hostMem = malloc(SCE_GXM_MINIMUM_CONTEXT_HOST_MEM_SIZE),
+				.hostMemSize = SCE_GXM_MINIMUM_CONTEXT_HOST_MEM_SIZE,
+				.vdmRingBufferMem = vdmRingBuffer,
+				.vdmRingBufferMemSize = SCE_GXM_DEFAULT_VDM_RING_BUFFER_SIZE,
+				.vertexRingBufferMem = vertexRingBuffer,
+				.vertexRingBufferMemSize = SCE_GXM_DEFAULT_VERTEX_RING_BUFFER_SIZE,
+				.fragmentRingBufferMem = fragmentRingBuffer,
+				.fragmentRingBufferMemSize = SCE_GXM_DEFAULT_FRAGMENT_RING_BUFFER_SIZE,
+				.fragmentUsseRingBufferMem = fragmentUsseRingBuffer,
+				.fragmentUsseRingBufferMemSize = SCE_GXM_DEFAULT_FRAGMENT_USSE_RING_BUFFER_SIZE,
+				.fragmentUsseRingBufferOffset = fragmentUsseRingBufferOffset
+			};
 			err = sceGxmCreateContext(&mContextParams, &mContext);
 			if(err != 0) {
 				printf("sceGxmCreateContext(): 0x%08X\n", err);
@@ -196,15 +195,15 @@ namespace NotEngine {
 			}
 
 			// create the render target
-			SceGxmRenderTargetParams renderTargetParams;
-			memset(&renderTargetParams, 0, sizeof(SceGxmRenderTargetParams));
-			renderTargetParams.flags = 0;
-			renderTargetParams.width = DISPLAY_WIDTH;
-			renderTargetParams.height = DISPLAY_HEIGHT;
-			renderTargetParams.scenesPerFrame = 1;
-			renderTargetParams.multisampleMode = MSAA_MODE;
-			renderTargetParams.multisampleLocations = 0;
-			renderTargetParams.driverMemBlock = -1; // Invalid UID
+			SceGxmRenderTargetParams renderTargetParams = (SceGxmRenderTargetParams) {
+				.flags = 0,
+				.width = DISPLAY_WIDTH,
+				.height = DISPLAY_HEIGHT,
+				.scenesPerFrame = 1,
+				.multisampleMode = MSAA_MODE,
+				.multisampleLocations = 0,
+				.driverMemBlock = -1 // Invalid UID
+			};
 			err = sceGxmCreateRenderTarget(&renderTargetParams, &mRenderTarget);
 			if (err != 0) {
 	 			printf("sceGxmCreateRenderTarget(): 0x%08X\n", err);
@@ -306,26 +305,25 @@ namespace NotEngine {
 				&patcherFragmentUsseOffset);
 
 			// create a shader patcher
-			SceGxmShaderPatcherParams patcherParams;
-			memset(&patcherParams, 0, sizeof(SceGxmShaderPatcherParams));
-			patcherParams.userData = 0;
-			patcherParams.hostAllocCallback = &patcherAlloc;
-			patcherParams.hostFreeCallback = &patcherFree;
-			patcherParams.bufferAllocCallback = 0;
-			patcherParams.bufferFreeCallback = 0;
-			patcherParams.bufferMem = patcherBuffer;
-			patcherParams.bufferMemSize = patcherBufferSize;
-			patcherParams.vertexUsseAllocCallback = 0;
-			patcherParams.vertexUsseFreeCallback = 0;
-			patcherParams.vertexUsseMem	 = patcherVertexUsse;
-			patcherParams.vertexUsseMemSize = patcherVertexUsseSize;
-			patcherParams.vertexUsseOffset = patcherVertexUsseOffset;
-			patcherParams.fragmentUsseAllocCallback = 0;
-			patcherParams.fragmentUsseFreeCallback = 0;
-			patcherParams.fragmentUsseMem = patcherFragmentUsse;
-			patcherParams.fragmentUsseMemSize = patcherFragmentUsseSize;
-			patcherParams.fragmentUsseOffset = patcherFragmentUsseOffset;
-
+			SceGxmShaderPatcherParams patcherParams = (SceGxmShaderPatcherParams) {
+				.userData = 0,
+				.hostAllocCallback = &patcherAlloc,
+				.hostFreeCallback = &patcherFree,
+				.bufferAllocCallback = 0,
+				.bufferFreeCallback = 0,
+				.bufferMem = patcherBuffer,
+				.bufferMemSize = patcherBufferSize,
+				.vertexUsseAllocCallback = 0,
+				.vertexUsseFreeCallback = 0,
+				.vertexUsseMem	 = patcherVertexUsse,
+				.vertexUsseMemSize = patcherVertexUsseSize,
+				.vertexUsseOffset = patcherVertexUsseOffset,
+				.fragmentUsseAllocCallback = 0,
+				.fragmentUsseFreeCallback = 0,
+				.fragmentUsseMem = patcherFragmentUsse,
+				.fragmentUsseMemSize = patcherFragmentUsseSize,
+				.fragmentUsseOffset = patcherFragmentUsseOffset
+			};
 			err = sceGxmShaderPatcherCreate(&patcherParams, &mShaderPatcher);
 			if (err != 0) {
 				printf("sceGxmShaderPatcherCreate(): 0x%08X\n", err);
@@ -333,7 +331,6 @@ namespace NotEngine {
 			}
 
 			sceGxmSetCullMode(mContext, SCE_GXM_CULL_CW);
-
 			mBackBufferIndex = 0;
 			mFrontBufferIndex = 0;
 
@@ -403,10 +400,10 @@ namespace NotEngine {
 			sceGxmPadHeartbeat(&mDisplaySurface[mBackBufferIndex], mDisplayBufferSync[mBackBufferIndex]);
 
 			// queue the display swap for this frame
-			DisplayData displayData;
-			displayData.address = mDisplayBufferData[mBackBufferIndex];
-			displayData.waitRetrace = mWaitRetrace;
-
+			DisplayData displayData = (DisplayData) {
+				.address = mDisplayBufferData[mBackBufferIndex],
+				.waitRetrace = mWaitRetrace
+			};
 			sceGxmDisplayQueueAddEntry(
 				mDisplayBufferSync[mFrontBufferIndex], // OLD fb
 				mDisplayBufferSync[mBackBufferIndex],  // NEW fb
