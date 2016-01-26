@@ -25,10 +25,10 @@ namespace NotEngine {
 				};
 
 			private:
-				unsigned int w;
-				unsigned int h;
-				std::string textureName;
-				std::map<std::string, Frame> catalog;
+				unsigned int mWidth;
+				unsigned int mHeight;
+				std::string mTextureName;
+				std::map<std::string, Frame> mCatalog;
 
 			public:
 				FrameCatalog();

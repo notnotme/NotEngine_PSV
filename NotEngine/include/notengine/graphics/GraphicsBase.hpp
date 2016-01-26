@@ -43,35 +43,35 @@ namespace NotEngine {
 				GraphicsBase(const GraphicsBase& copy);
 				void operator=(GraphicsBase const&);
 
-				SceUID vdmRingBufferUid;
-				SceUID vertexRingBufferUid;
-				SceUID fragmentRingBufferUid;
-				SceUID fragmentUsseRingBufferUid;
+				SceUID mVdmRingBufferUid;
+				SceUID mVertexRingBufferUid;
+				SceUID mFragmentRingBufferUid;
+				SceUID mFragmentUsseRingBufferUid;
 
-				SceGxmContextParams contextParams;
-				SceGxmRenderTarget* renderTarget;
-				SceGxmDepthStencilSurface depthSurface;
-				SceUID depthBufferUid;
+				SceGxmContextParams mContextParams;
+				SceGxmRenderTarget* mRenderTarget;
+				SceGxmDepthStencilSurface mDepthSurface;
+				SceUID mDepthBufferUid;
 
-				void* displayBufferData[DISPLAY_BUFFER_COUNT];
-				SceUID displayBufferUid[DISPLAY_BUFFER_COUNT];
-				SceGxmColorSurface displaySurface[DISPLAY_BUFFER_COUNT];
-				SceGxmSyncObject* displayBufferSync[DISPLAY_BUFFER_COUNT];
+				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];
+				SceUID mDisplayBufferUid[DISPLAY_BUFFER_COUNT];
+				SceGxmColorSurface mDisplaySurface[DISPLAY_BUFFER_COUNT];
+				SceGxmSyncObject* mDisplayBufferSync[DISPLAY_BUFFER_COUNT];
 
-				SceUID patcherBufferUid;
-				SceUID patcherVertexUsseUid;
-				SceUID patcherFragmentUsseUid;
+				SceUID mPatcherBufferUid;
+				SceUID mPatcherVertexUsseUid;
+				SceUID mPatcherFragmentUsseUid;
 
-				unsigned int backBufferIndex;
-				unsigned int frontBufferIndex;
-				bool waitRetrace;
+				unsigned int mBackBufferIndex;
+				unsigned int mFrontBufferIndex;
+				bool mWaitRetrace;
 
 				static void videoCallback(const void* userData);
 				static void* patcherAlloc(void *userData, unsigned int size);
 				static void patcherFree(void *userData, void *mem);
 
-				SceGxmContext* context;
-				SceGxmShaderPatcher* shaderPatcher;
+				SceGxmContext* mContext;
+				SceGxmShaderPatcher* mShaderPatcher;
 
 				/// Disallow public instanciating
 				GraphicsBase ();

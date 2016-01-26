@@ -10,7 +10,7 @@ namespace NotEngine {
 
 	namespace Graphics {
 
-		FrameCatalog::FrameCatalog() : w(0), h(0) {
+		FrameCatalog::FrameCatalog() : mWidth(0), mHeight(0) {
 			printf("FrameCatalog()\n");
 		}
 
@@ -40,9 +40,10 @@ namespace NotEngine {
 				printf("bad json, no meta or frames or image: %s\n", jsonString.c_str());
 				return false;
 			}
-			w = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("w");
-			h = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("h");
-			textureName = json.get<jsonxx::Object>("meta").get<jsonxx::String>("image");
+
+			mWidth = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("w");
+			mHeight = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("h");
+			mTextureName = json.get<jsonxx::Object>("meta").get<jsonxx::String>("image");
 
 			std::map<std::string, jsonxx::Value*> framesMap = json.get<jsonxx::Object>("frames").kv_map();
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
@@ -61,14 +62,14 @@ namespace NotEngine {
 					return false;
 				}
 
-				frame.s = frameObject.get<jsonxx::Number>("x") / w;
-				frame.t = frameObject.get<jsonxx::Number>("y") / h;
-				frame.u = (frameObject.get<jsonxx::Number>("x") + frameObject.get<jsonxx::Number>("w")) / w;
-				frame.v = (frameObject.get<jsonxx::Number>("y") + frameObject.get<jsonxx::Number>("h")) / h;
+				frame.s = frameObject.get<jsonxx::Number>("x") / mWidth;
+				frame.t = frameObject.get<jsonxx::Number>("y") / mHeight;
+				frame.u = (frameObject.get<jsonxx::Number>("x") + frameObject.get<jsonxx::Number>("w")) / mWidth;
+				frame.v = (frameObject.get<jsonxx::Number>("y") + frameObject.get<jsonxx::Number>("h")) / mHeight;
 				frame.w = frameObject.get<jsonxx::Number>("w");
 				frame.h = frameObject.get<jsonxx::Number>("h");
 
-				catalog.insert(
+				mCatalog.insert(
 					std::pair<std::string, Frame>(it->first, frame)
 				);
 			}
@@ -77,30 +78,30 @@ namespace NotEngine {
 		}
 
 		FrameCatalog::Frame FrameCatalog::getFrame(const std::string name) {
-			if (catalog.find(name) == catalog.end()) {
+			if (mCatalog.find(name) == mCatalog.end()) {
 				printf("Frame not found %s, throwing default frame.", name.c_str());
 				return Frame();
 			}
 
-			return catalog[name];
+			return mCatalog[name];
 		}
 
 		void FrameCatalog::finalize() {
-			catalog.clear();
-			w = 0;
-			h = 0;
+			mCatalog.clear();
+			mWidth = 0;
+			mHeight = 0;
 		}
 
 		int FrameCatalog::getWidth() {
-			return w;
+			return mWidth;
 		}
 
 		int FrameCatalog::getHeight() {
-			return h;
+			return mHeight;
 		}
 
 		std::string FrameCatalog::getTextureName() {
-			return textureName;
+			return mTextureName;
 		}
 
 	} // namespace Graphics

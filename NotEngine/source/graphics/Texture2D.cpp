@@ -18,17 +18,17 @@ namespace NotEngine {
 		}
 
 		bool Texture2D::initialize(unsigned int w, unsigned int h, SceGxmTextureFormat fmt) {
-			width = w;
-			height = h;
-			format = fmt;
+			mWidth = w;
+			mHeight = h;
+			mFormat = fmt;
 
-			textureMemoryUID = 0;
+			mTextureMemoryUID = 0;
 			unsigned int storageSize =  w * h * getStorageSize(fmt);
 			unsigned int* textureData = (unsigned int*) GraphicsBase::gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_CDRAM_RW,
 				storageSize,
 				SCE_GXM_MEMORY_ATTRIB_READ,
-				&textureMemoryUID);
+				&mTextureMemoryUID);
 			if (textureData == 0) {
 				printf("Texture2D::initialize fail at gpuAlloc\n");
 				return false;
@@ -36,7 +36,7 @@ namespace NotEngine {
 
 			memset(textureData, 0xff, storageSize);
 			sceGxmTextureInitLinear(
-				&texture,
+				&mTexture,
 				textureData, fmt,
 				w, h, 0);
 
@@ -44,13 +44,13 @@ namespace NotEngine {
 		}
 
 		void Texture2D::finalize() {
-			if (textureMemoryUID != 0)
-				GraphicsBase::gpuFree(textureMemoryUID);
+			if (mTextureMemoryUID != 0)
+				GraphicsBase::gpuFree(mTextureMemoryUID);
 		}
 
 		void* Texture2D::getDataPtr() {
-				if (textureMemoryUID != 0)
-					return sceGxmTextureGetData(&texture);
+				if (mTextureMemoryUID != 0)
+					return sceGxmTextureGetData(&mTexture);
 
 				return 0;
 		}

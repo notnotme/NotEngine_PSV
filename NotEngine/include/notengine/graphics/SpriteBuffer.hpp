@@ -19,13 +19,6 @@ namespace NotEngine {
 			friend class Graphics2D;
 
 			private:
-				/// Disallow copy
-				SpriteBuffer(const SpriteBuffer& copy);
-				void operator=(SpriteBuffer const&);
-
-				unsigned int batchCapacity;
-				unsigned int batchCount;
-
 				/// Internal sprite vertice layout
 				struct SpriteVertice {
 					float x; // vertices coords
@@ -41,11 +34,18 @@ namespace NotEngine {
 					float ty;
 				} __attribute__ ((packed));
 
-			public:
-				/// Pointer to use for sprite batching
-				SpriteVertice* batchVertices;
-				SceUID batchVerticesUID;
+				/// Disallow copy
+				SpriteBuffer(const SpriteBuffer& copy);
+				void operator=(SpriteBuffer const&);
 
+				unsigned int mBatchCapacity;
+				unsigned int mBatchCount;
+
+				/// Pointer to use for sprite batching
+				SpriteVertice* mBatchVertices;
+				SceUID mBatchVerticesUID;
+
+			public:
 				SpriteBuffer();
 				virtual ~SpriteBuffer();
 

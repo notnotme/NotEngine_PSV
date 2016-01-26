@@ -22,89 +22,89 @@ namespace NotEngine {
 				printf("SpriteBuffer size can't be > than %i", Graphics2D::MAX_SPRITES_PER_BATCH);
 				return false;
 			}
-			batchCount = 0;
-			batchCapacity = capacity;
+			mBatchCount = 0;
+			mBatchCapacity = capacity;
 
 			// Allocate buffers
-			batchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
+			mBatchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
 				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
 				capacity*(sizeof(SpriteVertice)*4),
 				SCE_GXM_MEMORY_ATTRIB_READ,
-				&batchVerticesUID);
+				&mBatchVerticesUID);
 
-			return batchVertices != 0;
+			return mBatchVertices != 0;
 		}
 
 		void SpriteBuffer::finalize() {
-			GraphicsBase::gpuFree(batchVerticesUID);
+			GraphicsBase::gpuFree(mBatchVerticesUID);
 		}
 
 		void SpriteBuffer::start() {
-			batchCount = 0;
+			mBatchCount = 0;
 		}
 
 		void SpriteBuffer::put(const Graphics::Sprite* sprite) {
-			if (batchCount >= batchCapacity) {
+			if (mBatchCount >= mBatchCapacity) {
 				printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 
-			unsigned int index = (batchCount)*4;
+			unsigned int index = (mBatchCount)*4;
 			float wdth = (sprite->size.w/2) * sprite->scale.w;
 			float hght = (sprite->size.h/2) * sprite->scale.h;
 
-			batchVertices[index].x = -wdth;
-			batchVertices[index].y = -hght;
-			batchVertices[index].s = sprite->frame.s;
-			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].x = -wdth;
+			mBatchVertices[index].y = -hght;
+			mBatchVertices[index].s = sprite->frame.s;
+			mBatchVertices[index].t = sprite->frame.t;
+			mBatchVertices[index].r = sprite->color.r;
+			mBatchVertices[index].g = sprite->color.g;
+			mBatchVertices[index].b = sprite->color.b;
+			mBatchVertices[index].a = sprite->color.a;
+			mBatchVertices[index].angle = sprite->rotation;
+			mBatchVertices[index].tx = sprite->position.x;
+			mBatchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = wdth;
-			batchVertices[index].y = -hght;
-			batchVertices[index].s = sprite->frame.u;
-			batchVertices[index].t = sprite->frame.t;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].x = wdth;
+			mBatchVertices[index].y = -hght;
+			mBatchVertices[index].s = sprite->frame.u;
+			mBatchVertices[index].t = sprite->frame.t;
+			mBatchVertices[index].r = sprite->color.r;
+			mBatchVertices[index].g = sprite->color.g;
+			mBatchVertices[index].b = sprite->color.b;
+			mBatchVertices[index].a = sprite->color.a;
+			mBatchVertices[index].angle = sprite->rotation;
+			mBatchVertices[index].tx = sprite->position.x;
+			mBatchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = wdth;
-			batchVertices[index].y = hght;
-			batchVertices[index].s = sprite->frame.u;
-			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].x = wdth;
+			mBatchVertices[index].y = hght;
+			mBatchVertices[index].s = sprite->frame.u;
+			mBatchVertices[index].t = sprite->frame.v;
+			mBatchVertices[index].r = sprite->color.r;
+			mBatchVertices[index].g = sprite->color.g;
+			mBatchVertices[index].b = sprite->color.b;
+			mBatchVertices[index].a = sprite->color.a;
+			mBatchVertices[index].angle = sprite->rotation;
+			mBatchVertices[index].tx = sprite->position.x;
+			mBatchVertices[index].ty = sprite->position.y;
 			index++;
 
-			batchVertices[index].x = -wdth;
-			batchVertices[index].y = hght;
-			batchVertices[index].s = sprite->frame.s;
-			batchVertices[index].t = sprite->frame.v;
-			batchVertices[index].r = sprite->color.r;
-			batchVertices[index].g = sprite->color.g;
-			batchVertices[index].b = sprite->color.b;
-			batchVertices[index].a = sprite->color.a;
-			batchVertices[index].angle = sprite->rotation;
-			batchVertices[index].tx = sprite->position.x;
-			batchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].x = -wdth;
+			mBatchVertices[index].y = hght;
+			mBatchVertices[index].s = sprite->frame.s;
+			mBatchVertices[index].t = sprite->frame.v;
+			mBatchVertices[index].r = sprite->color.r;
+			mBatchVertices[index].g = sprite->color.g;
+			mBatchVertices[index].b = sprite->color.b;
+			mBatchVertices[index].a = sprite->color.a;
+			mBatchVertices[index].angle = sprite->rotation;
+			mBatchVertices[index].tx = sprite->position.x;
+			mBatchVertices[index].ty = sprite->position.y;
 
-			batchCount++;
+			mBatchCount++;
 		}
 
 	} // namespace Graphics

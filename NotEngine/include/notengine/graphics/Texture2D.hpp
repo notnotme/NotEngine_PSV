@@ -20,12 +20,12 @@ namespace NotEngine {
 				Texture2D(const Texture2D& copy);
 				void operator=(Texture2D const&);
 
-				SceGxmTexture texture;
-				SceUID textureMemoryUID;
+				SceGxmTexture mTexture;
+				SceUID mTextureMemoryUID;
 
-				unsigned int width;
-				unsigned int height;
-				SceGxmTextureFormat format;
+				unsigned int mWidth;
+				unsigned int mHeight;
+				SceGxmTextureFormat mFormat;
 
 			public:
 				Texture2D ();

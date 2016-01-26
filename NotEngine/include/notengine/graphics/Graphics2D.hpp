@@ -28,26 +28,26 @@ namespace NotEngine {
 				Graphics2D(const Graphics2D& copy);
 				void operator=(Graphics2D const&);
 
-				SceGxmShaderPatcherId g2dVertexProgramId;
-				SceGxmShaderPatcherId g2dFragmentProgramId;
+				SceGxmShaderPatcherId m2dVertexProgramId;
+				SceGxmShaderPatcherId m2dFragmentProgramId;
 
-				const SceGxmProgramParameter* shaderPositionAttr;
-				const SceGxmProgramParameter* shaderTextureAttr;
-				const SceGxmProgramParameter* shaderColorAttr;
-				const SceGxmProgramParameter* shaderAngleAttr;
-				const SceGxmProgramParameter* shaderTranslationAttr;
-				const SceGxmProgramParameter* shaderMatrixProjUnif;
+				const SceGxmProgramParameter* mShaderPositionAttr;
+				const SceGxmProgramParameter* mShaderTextureAttr;
+				const SceGxmProgramParameter* mShaderColorAttr;
+				const SceGxmProgramParameter* mShaderAngleAttr;
+				const SceGxmProgramParameter* mShaderTranslationAttr;
+				const SceGxmProgramParameter* mShaderMatrixProjUnif;
 
-				SceGxmVertexProgram* g2dVertexProgram;
-				SceGxmFragmentProgram* g2dFragmentProgram;
+				SceGxmVertexProgram* m2dVertexProgram;
+				SceGxmFragmentProgram* m2dFragmentProgram;
 
-				unsigned short* batchIndices;
-				SceUID batchIndicesUID;
+				unsigned short* mBatchIndices;
+				SceUID mBatchIndicesUID;
 
 				/// Objects to use for clear operation
-				SpriteBuffer* clearBuffer;
-				Sprite clearSprite;
-				Texture2D* clearTexture;
+				SpriteBuffer* mClearBuffer;
+				Sprite mClearSprite;
+				Texture2D* mClearTexture;
 
 				/// Disallow public instanciating
 				Graphics2D ();
