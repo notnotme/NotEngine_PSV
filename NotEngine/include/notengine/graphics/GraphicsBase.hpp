@@ -78,7 +78,6 @@ namespace NotEngine {
 				static void* patcherAlloc(void *userData, unsigned int size);
 				static void patcherFree(void *userData, void *mem);
 
-				// todo: move to Graphics2D ?
 				static FrameCatalog::Frame* sFontFrames;
 				static Graphics::Texture2D* sDebugFontTexture;
 
@@ -122,8 +121,9 @@ namespace NotEngine {
 				static void fragmentUsseFree(SceUID uid);
 				/// align some memory to the desired alignement
 				static unsigned int align(unsigned int number, unsigned int alignement);
-
+				/// Return the frames to handle text drawing
 				static FrameCatalog::Frame* getFontFrames();
+				/// Return the texture 2d representating the debug font
 				static Texture2D* getDebugFontTexture();
 
 		};

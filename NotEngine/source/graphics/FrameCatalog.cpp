@@ -98,11 +98,11 @@ namespace NotEngine {
 			mHeight = 0;
 		}
 
-		int FrameCatalog::getWidth() {
+		unsigned int FrameCatalog::getWidth() {
 			return mWidth;
 		}
 
-		int FrameCatalog::getHeight() {
+		unsigned int FrameCatalog::getHeight() {
 			return mHeight;
 		}
 

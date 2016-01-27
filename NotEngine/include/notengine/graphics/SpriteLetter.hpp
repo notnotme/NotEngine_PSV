@@ -19,7 +19,7 @@ namespace NotEngine {
 			public:
 				SpriteLetter();
 				virtual ~SpriteLetter();
-
+				/// Set the frame of the sprite to be the representation of [letter]
 				void setFrame(const char letter);
 		};
 

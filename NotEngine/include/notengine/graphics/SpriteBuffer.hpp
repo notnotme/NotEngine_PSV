@@ -11,9 +11,7 @@ namespace NotEngine {
 
 	namespace Graphics {
 
-		/**
-		 * Base class that handle 2d sprites list.
-		 */
+		/* Base class that handle 2d sprites list */
 		class SpriteBuffer {
 			friend class Graphics2D;
 
@@ -37,7 +35,11 @@ namespace NotEngine {
 				SpriteBuffer(const SpriteBuffer& copy);
 				void operator=(SpriteBuffer const&);
 
+				/// Total capacity of the batch per frame
 				unsigned int mBatchCapacity;
+				/// Current offset where to write sprite added in the buffer
+				unsigned int mBatchOffset;
+				/// Current sprite count in the buffer
 				unsigned int mBatchCount;
 
 				/// Pointer to use for sprite batching
@@ -48,11 +50,11 @@ namespace NotEngine {
 				SpriteBuffer();
 				virtual ~SpriteBuffer();
 
-				/// initialize the buffer
+				/// initialize the buffer with a capacity of [capacity] per frame
 				bool initialize(unsigned int capacity);
 				/// clean up the buffer
 				void finalize();
-				/// Begin a new batch of sprites
+				/// Begin a new batch of sprites, should be called once per frame to reset the buffer offset
 				void start();
 				/// Add a sprite in the batch
 				void put(const Graphics::Sprite* sprite);

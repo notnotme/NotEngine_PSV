@@ -41,10 +41,11 @@ namespace NotEngine {
 
 		void SpriteBuffer::start() {
 			mBatchCount = 0;
+			mBatchOffset = 0;
 		}
 
 		void SpriteBuffer::put(const Graphics::Sprite* sprite) {
-			if (mBatchCount >= mBatchCapacity) {
+			if (mBatchOffset+mBatchCount >= mBatchCapacity) {
 				printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}

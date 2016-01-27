@@ -21,10 +21,15 @@ namespace NotEngine {
 					unsigned char r,g,b,a;
 				};
 
+				/// Store the information for one sprite frame
 				FrameCatalog::Frame frame;
+				/// Position of the sprite on screen
 				SpritePosition position;
+				/// scaling value
 				SpriteScale scale;
+				/// Color (not per vertex)
 				SpriteColor color;
+				/// angle of rotation
 				float rotation;
 
 				Sprite();

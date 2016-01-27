@@ -66,12 +66,12 @@ namespace NotEngine {
 				void unuse();
 
 				/* RENDER ************************************************/
-				/// Clear the screen. be warned: this function actually unbind the current texture! Should be avoided if possible!!!
+				/// Clear the screen. be warned: this function actually unbind the current texture and buffer! Should be avoided if possible or use your own "clear sprite" !!!
 				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
 				void setTexture(unsigned int unit, const Graphics::Texture2D* texture);
-				/// Render all sprite added since startBatch sprite sprites
-				void render(const glm::mat4* projection, const Graphics::SpriteBuffer* spriteBuffer);
+				/// Render all sprite added in the buffer since the last call to draw the batch
+				void render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer);
 		};
 
 	} // namespace Graphics

@@ -19,6 +19,7 @@ namespace NotEngine {
 			public:
 				virtual ~Utils();
 
+				/// Return the string content of a file
 				static std::string stringFromFile(const std::string filename);
 		};
 

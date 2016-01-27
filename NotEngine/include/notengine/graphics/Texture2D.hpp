@@ -20,11 +20,15 @@ namespace NotEngine {
 				Texture2D(const Texture2D& copy);
 				void operator=(Texture2D const&);
 
+				/// The GXM Texture object
 				SceGxmTexture mTexture;
 				SceUID mTextureMemoryUID;
 
+				/// Width of the texture
 				unsigned int mWidth;
+				/// Height of the texture
 				unsigned int mHeight;
+				/// Format of the texture
 				SceGxmTextureFormat mFormat;
 
 			public:
@@ -36,7 +40,7 @@ namespace NotEngine {
 				bool initialize(unsigned int w, unsigned int h, SceGxmTextureFormat format);
 				/// finalize a texture
 				void finalize();
-				/// Return a pointer to the datas
+				/// Return a pointer to the datas (RW)
 				void* getDataPtr();
 				/// return the size of one pixel of the current format
 				static unsigned int getStorageSize(SceGxmTextureFormat format);

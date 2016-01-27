@@ -242,12 +242,7 @@ namespace NotEngine {
 			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_ENABLED);
 		}
 
-		void Graphics2D::render(const glm::mat4* projection, const Graphics::SpriteBuffer* spriteBuffer) {
-			if (spriteBuffer->mBatchCount >= MAX_SPRITES_PER_BATCH) {
-				printf("Graphics2D Can't render SpriteBuffer because it is too big\n");
-				return;
-			}
-
+		void Graphics2D::render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
 
@@ -255,7 +250,15 @@ namespace NotEngine {
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexDefaultBuffer);
 			sceGxmSetUniformDataF(vertexDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
 
-			sceGxmDraw(base->mContext, SCE_GXM_PRIMITIVE_TRIANGLES, SCE_GXM_INDEX_FORMAT_U16, &mBatchIndices[0], spriteBuffer->mBatchCount*6);
+
+			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
+			sceGxmDraw(base->mContext,
+			           SCE_GXM_PRIMITIVE_TRIANGLES,
+			           SCE_GXM_INDEX_FORMAT_U16,
+			           &mBatchIndices[spriteBuffer->mBatchOffset*6],
+			           batchCount*6);
+
+			spriteBuffer->mBatchOffset += batchCount;
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
