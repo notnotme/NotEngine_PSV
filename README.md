@@ -10,10 +10,13 @@ Install:
  - Enter into the NotEngine project directory type "make -f Makefile.psp2 && make -f Makefile.psp2 install"
  - You're up to go
 
-TODO:
- - Load textures from files using FrameCatalog infos (texture name, width and height, maybe more) see here: http://www.leshylabs.com/apps/sstool/
- - Add animation to sprite using FrameCatalog
+Todo:
  - Emulate basic immediate rendering (like opengl 1.2 days) with another Graphics class
+
+Note:
+ - It's your task to load images and update texture datas into the created Textures
+ - Spritesheets can be loaded using FrameCatalog, see http://www.leshylabs.com/apps/sstool/ and export as TP-JSON-Hash
+ - You can animate sprite by swapping it's FrameCatalog::Frame
 
 Greetings:
  - PSP2SDK & VITASDK team
