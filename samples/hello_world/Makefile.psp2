@@ -1,0 +1,33 @@
+#
+# Copyright (c) 2015 Sergi Granell (xerpi)
+# based on Cirne's vita-toolchain test Makefile
+#
+# edited for vitamine
+#
+TARGET	= hello_world
+OBJS	= main.o
+LIBS 	= -lnotengine -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
+			-ljsonxx
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+CXX 	= $(PREFIX)-g++
+AR      = $(PREFIX)-ar
+STRIP   = $(PREFIX)-strip
+
+CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-constant
+CXXFLAGS	+= $(CFLAGS) -fno-exceptions
+ASFLAGS		= $(CFLAGS)
+
+all: $(TARGET).velf
+
+%.velf: %.elf
+	$(PREFIX)-strip -g $<
+	vita-elf-create $< $@ $(VITASDK)/share/db.json $(VITASDK)/share/extra.json
+
+$(TARGET).elf: $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+
+clean:
+	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS)
