@@ -5,6 +5,7 @@
 #include <psp2/types.h>
 
 #include "Sprite.hpp"
+#include "SpriteLetter.hpp"
 
 namespace NotEngine {
 
@@ -55,6 +56,7 @@ namespace NotEngine {
 				void start();
 				/// Add a sprite in the batch
 				void put(const Graphics::Sprite* sprite);
+				void put(float x, float y, int offset, Graphics::SpriteLetter* sprite, const std::string text);
 			};
 
 	} // namespace Graphics

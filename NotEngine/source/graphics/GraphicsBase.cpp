@@ -1,4 +1,5 @@
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
+#include "../../datas/debug_font.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,6 +8,9 @@
 namespace NotEngine {
 
 	namespace Graphics {
+
+		FrameCatalog::Frame* GraphicsBase::sFontFrames = 0;
+		Graphics::Texture2D* GraphicsBase::sDebugFontTexture = 0;
 
 		GraphicsBase::GraphicsBase() : System::Singleton<GraphicsBase>() {
 			printf("GraphicsBase()\n");
@@ -111,6 +115,14 @@ namespace NotEngine {
 			return (((number) + ((alignement) - 1)) & ~((alignement) - 1));
 		}
 
+		FrameCatalog::Frame* GraphicsBase::getFontFrames() {
+			return sFontFrames;
+		}
+
+		Texture2D* GraphicsBase::getDebugFontTexture() {
+			return sDebugFontTexture;
+		}
+
 		void GraphicsBase::videoCallback(const void* userData) {
 			const DisplayData* displayData = (const DisplayData*) userData;
 
@@ -139,6 +151,7 @@ namespace NotEngine {
 				.displayQueueCallbackDataSize = sizeof(DisplayData),
 				.parameterBufferSize = SCE_GXM_DEFAULT_PARAMETER_BUFFER_SIZE
 			};
+
 			int err = sceGxmInitialize(&initializeParams);
 			if (err != 0) {
 				printf("sceGxmInitialize(): 0x%08X\n", err);
@@ -330,6 +343,38 @@ namespace NotEngine {
 				return false;
 			}
 
+			// Allocate frames for fonts
+			sFontFrames = 0;
+			sFontFrames = new FrameCatalog::Frame[256];
+			if (sFontFrames == 0) {
+				printf("GraphicsBase can't allocate frames for font\n");
+				return false;
+			}
+
+			unsigned int offset = 0;
+			for (float y=0.0f; y<256.0f; y+=16.0f) {
+				for (float x=0.0f; x<256.0f; x+=16.0f) {
+					FrameCatalog::Frame* frame = &sFontFrames[offset];
+					frame->coords.s = (x / (float) GraphicsBase::DEBUG_FONT_TEXTURE_WIDTH);
+					frame->coords.t = (y / (float) GraphicsBase::DEBUG_FONT_TEXTURE_HEIGHT);
+					frame->coords.u = ((x + (float)GraphicsBase::DEBUG_FONT_CHAR_SIZE) / (float) GraphicsBase::DEBUG_FONT_TEXTURE_WIDTH);
+					frame->coords.v = ((y + (float) GraphicsBase::DEBUG_FONT_CHAR_SIZE) / (float) GraphicsBase::DEBUG_FONT_TEXTURE_HEIGHT);
+					frame->size.w = GraphicsBase::DEBUG_FONT_CHAR_SIZE;
+					frame->size.h = GraphicsBase::DEBUG_FONT_CHAR_SIZE;
+					offset++;
+				}
+			}
+
+			// Create debug font texture
+			sDebugFontTexture = 0;
+			sDebugFontTexture = new Texture2D();
+			if (!sDebugFontTexture->initialize(GraphicsBase::DEBUG_FONT_TEXTURE_WIDTH, GraphicsBase::DEBUG_FONT_TEXTURE_HEIGHT, GraphicsBase::DEBUG_FONT_TEXTURE_FORMAT)) {
+				printf("GraphicsBase failed to create debug font texture\n");
+				return false;
+			}
+			char* buffer = (char*)  sDebugFontTexture->getDataPtr();
+			memcpy(buffer, &debug_font, debug_font_size);
+
 			sceGxmSetCullMode(mContext, SCE_GXM_CULL_CW);
 			mBackBufferIndex = 0;
 			mFrontBufferIndex = 0;
@@ -346,7 +391,14 @@ namespace NotEngine {
 		}
 
 		void GraphicsBase::finalize() {
-			// clean up display queue
+			if (sDebugFontTexture != 0) {
+				sDebugFontTexture->finalize();
+				delete sDebugFontTexture;
+			}
+
+			if (sFontFrames != 0)
+				delete [] sFontFrames;
+
 			if (mDepthBufferUid != 0)
 				GraphicsBase::gpuFree(mDepthBufferUid);
 

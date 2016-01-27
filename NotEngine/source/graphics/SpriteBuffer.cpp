@@ -50,13 +50,13 @@ namespace NotEngine {
 			}
 
 			unsigned int index = (mBatchCount)*4;
-			float wdth = (sprite->size.w/2) * sprite->scale.w;
-			float hght = (sprite->size.h/2) * sprite->scale.h;
+			float wdth = (sprite->frame.size.w/2) * sprite->scale.w;
+			float hght = (sprite->frame.size.h/2) * sprite->scale.h;
 
 			mBatchVertices[index].x = -wdth;
 			mBatchVertices[index].y = -hght;
-			mBatchVertices[index].s = sprite->frame.s;
-			mBatchVertices[index].t = sprite->frame.t;
+			mBatchVertices[index].s = sprite->frame.coords.s;
+			mBatchVertices[index].t = sprite->frame.coords.t;
 			mBatchVertices[index].r = sprite->color.r;
 			mBatchVertices[index].g = sprite->color.g;
 			mBatchVertices[index].b = sprite->color.b;
@@ -68,8 +68,8 @@ namespace NotEngine {
 
 			mBatchVertices[index].x = wdth;
 			mBatchVertices[index].y = -hght;
-			mBatchVertices[index].s = sprite->frame.u;
-			mBatchVertices[index].t = sprite->frame.t;
+			mBatchVertices[index].s = sprite->frame.coords.u;
+			mBatchVertices[index].t = sprite->frame.coords.t;
 			mBatchVertices[index].r = sprite->color.r;
 			mBatchVertices[index].g = sprite->color.g;
 			mBatchVertices[index].b = sprite->color.b;
@@ -81,8 +81,8 @@ namespace NotEngine {
 
 			mBatchVertices[index].x = wdth;
 			mBatchVertices[index].y = hght;
-			mBatchVertices[index].s = sprite->frame.u;
-			mBatchVertices[index].t = sprite->frame.v;
+			mBatchVertices[index].s = sprite->frame.coords.u;
+			mBatchVertices[index].t = sprite->frame.coords.v;
 			mBatchVertices[index].r = sprite->color.r;
 			mBatchVertices[index].g = sprite->color.g;
 			mBatchVertices[index].b = sprite->color.b;
@@ -94,8 +94,8 @@ namespace NotEngine {
 
 			mBatchVertices[index].x = -wdth;
 			mBatchVertices[index].y = hght;
-			mBatchVertices[index].s = sprite->frame.s;
-			mBatchVertices[index].t = sprite->frame.v;
+			mBatchVertices[index].s = sprite->frame.coords.s;
+			mBatchVertices[index].t = sprite->frame.coords.v;
 			mBatchVertices[index].r = sprite->color.r;
 			mBatchVertices[index].g = sprite->color.g;
 			mBatchVertices[index].b = sprite->color.b;
@@ -105,6 +105,18 @@ namespace NotEngine {
 			mBatchVertices[index].ty = sprite->position.y;
 
 			mBatchCount++;
+		}
+
+		void SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter* sprite, const std::string text) {
+			unsigned int offset = 0;
+			sprite->position.y = y;
+			sprite->position.x = x;
+			for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
+				sprite->setFrame(*it);
+				put(sprite);
+				sprite->position.x += sprite->frame.size.w + charOffset;
+				offset++;
+			}
 		}
 
 	} // namespace Graphics

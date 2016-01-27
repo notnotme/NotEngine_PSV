@@ -1,7 +1,6 @@
 #include "../../include/notengine/graphics/Texture2D.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 

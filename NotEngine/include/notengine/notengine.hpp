@@ -2,6 +2,7 @@
 #include "system/Utils.hpp"
 
 #include "graphics/Sprite.hpp"
+#include "graphics/SpriteLetter.hpp"
 #include "graphics/SpriteBuffer.hpp"
 #include "graphics/FrameCatalog.hpp"
 #include "graphics/GraphicsBase.hpp"

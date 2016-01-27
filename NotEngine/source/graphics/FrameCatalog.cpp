@@ -60,17 +60,19 @@ namespace NotEngine {
 					return false;
 				}
 
-				Sprite::SpriteFrame spriteFrame = (Sprite::SpriteFrame) {
+				FrameCoords spriteCoords = (FrameCoords) {
 					.s = (float) frameObject.get<jsonxx::Number>("x") / mWidth,
 					.t = (float) frameObject.get<jsonxx::Number>("y") / mHeight,
 					.u = (float) (frameObject.get<jsonxx::Number>("x") + frameObject.get<jsonxx::Number>("w")) / mWidth,
 					.v = (float) (frameObject.get<jsonxx::Number>("y") + frameObject.get<jsonxx::Number>("h")) / mHeight
 				};
-
+				FrameSize spriteSize = (FrameSize) {
+					.w = (unsigned int) frameObject.get<jsonxx::Number>("w"),
+					.h = (unsigned int) frameObject.get<jsonxx::Number>("h")
+				};
 				Frame frame = (Frame) {
-					.spriteFrame = spriteFrame,
-					.w = (unsigned short) frameObject.get<jsonxx::Number>("w"),
-					.h = (unsigned short) frameObject.get<jsonxx::Number>("h")
+					.size = spriteSize,
+					.coords =  spriteCoords
 				};
 
 				mCatalog.insert(

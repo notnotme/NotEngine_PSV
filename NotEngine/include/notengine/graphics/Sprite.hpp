@@ -2,6 +2,7 @@
 #define	SPRITE_HPP
 
 #pragma once
+#include "FrameCatalog.hpp"
 
 namespace NotEngine {
 
@@ -13,12 +14,6 @@ namespace NotEngine {
 				struct SpritePosition {
 					float x,y;
 				};
-				struct SpriteSize {
-					unsigned int w,h;
-				};
-				struct SpriteFrame {
-					float s,t,u,v;
-				};
 				struct SpriteScale {
 					float w,h;
 				};
@@ -26,32 +21,14 @@ namespace NotEngine {
 					unsigned char r,g,b,a;
 				};
 
-				/*
-					todo: use it for color ?
-					union {
-						unsigned char r,g,b,a;
-						unsigned int c;
-					} color;
-				*/
-
+				FrameCatalog::Frame frame;
 				SpritePosition position;
-				SpriteSize size;
-				SpriteFrame frame;
 				SpriteScale scale;
 				SpriteColor color;
 				float rotation;
 
-				Sprite() :
-					position((SpritePosition) {0,0}),
-					size((SpriteSize){64,64}),
-					frame((SpriteFrame){0,0,1,1}),
-					scale((SpriteScale){1,1}),
-					color((SpriteColor) {0xff, 0xff, 0xff, 0xff}),
-					rotation(0) {
-				};
-
-				virtual ~Sprite(){
-				};
+				Sprite();
+				virtual ~Sprite();
 
 		};
 

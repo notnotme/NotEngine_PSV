@@ -8,6 +8,8 @@
 #include <psp2/kernel/sysmem.h>
 
 #include "../system/Singleton.hpp"
+#include "Texture2D.hpp"
+#include "FrameCatalog.hpp"
 
 namespace NotEngine {
 
@@ -31,6 +33,11 @@ namespace NotEngine {
 				static const int DISPLAY_PIXEL_FORMAT = SCE_DISPLAY_PIXELFORMAT_A8B8G8R8;
 				static const int MSAA_MODE = SCE_GXM_MULTISAMPLE_NONE;
 
+				static const unsigned int DEBUG_FONT_CHAR_SIZE = 16;
+				static const unsigned int DEBUG_FONT_TEXTURE_WIDTH = 256;
+				static const unsigned int DEBUG_FONT_TEXTURE_HEIGHT = 256;
+				static const SceGxmTextureFormat DEBUG_FONT_TEXTURE_FORMAT = SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR;
+
 			private:
 				struct DisplayData {
 					void* address;
@@ -46,15 +53,18 @@ namespace NotEngine {
 				SceUID mFragmentRingBufferUid;
 				SceUID mFragmentUsseRingBufferUid;
 
+				SceGxmContext* mContext;
 				SceGxmContextParams mContextParams;
+				SceGxmShaderPatcher* mShaderPatcher;
 				SceGxmRenderTarget* mRenderTarget;
-				SceGxmDepthStencilSurface mDepthSurface;
-				SceUID mDepthBufferUid;
 
 				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];
 				SceUID mDisplayBufferUid[DISPLAY_BUFFER_COUNT];
-				SceGxmColorSurface mDisplaySurface[DISPLAY_BUFFER_COUNT];
 				SceGxmSyncObject* mDisplayBufferSync[DISPLAY_BUFFER_COUNT];
+
+				SceGxmColorSurface mDisplaySurface[DISPLAY_BUFFER_COUNT];
+				SceGxmDepthStencilSurface mDepthSurface;
+				SceUID mDepthBufferUid;
 
 				SceUID mPatcherBufferUid;
 				SceUID mPatcherVertexUsseUid;
@@ -68,8 +78,10 @@ namespace NotEngine {
 				static void* patcherAlloc(void *userData, unsigned int size);
 				static void patcherFree(void *userData, void *mem);
 
-				SceGxmContext* mContext;
-				SceGxmShaderPatcher* mShaderPatcher;
+				// todo: move to Graphics2D ?
+				static FrameCatalog::Frame* sFontFrames;
+				static Graphics::Texture2D* sDebugFontTexture;
+
 
 				/// Disallow public instanciating
 				GraphicsBase ();
@@ -110,6 +122,10 @@ namespace NotEngine {
 				static void fragmentUsseFree(SceUID uid);
 				/// align some memory to the desired alignement
 				static unsigned int align(unsigned int number, unsigned int alignement);
+
+				static FrameCatalog::Frame* getFontFrames();
+				static Texture2D* getDebugFontTexture();
+
 		};
 
 	} // namespace Graphics

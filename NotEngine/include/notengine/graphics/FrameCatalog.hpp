@@ -5,8 +5,6 @@
 #include <string>
 #include <map>
 
-#include "Sprite.hpp"
-
 namespace NotEngine {
 
 	namespace Graphics {
@@ -14,13 +12,17 @@ namespace NotEngine {
 		// Base class to manage Frames
 		class FrameCatalog {
 			public:
-				struct Frame {
-					Sprite::SpriteFrame spriteFrame;
-					unsigned short w;
-					unsigned short h;
+				struct FrameSize {
+					unsigned int w,h;
+				};
 
-					Frame() : spriteFrame((Sprite::SpriteFrame) {0, 0, 0, 0}), w(32), h(32) {}
-					Frame(Sprite::SpriteFrame frame, unsigned short w, unsigned short h) : spriteFrame(frame), w(w), h(h) {}
+				struct FrameCoords {
+					float s,t,u,v;
+				};
+
+				struct Frame {
+					FrameSize size;
+					FrameCoords coords;
 				};
 
 			private:

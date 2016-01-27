@@ -175,8 +175,8 @@ namespace NotEngine {
 			}
 
 			// Initialize the clear sprite and clear texture
-			mClearSprite.size.w = GraphicsBase::DISPLAY_WIDTH;
-			mClearSprite.size.h = GraphicsBase::DISPLAY_HEIGHT;
+			mClearSprite.frame.size.w = GraphicsBase::DISPLAY_WIDTH;
+			mClearSprite.frame.size.h = GraphicsBase::DISPLAY_HEIGHT;
 			mClearSprite.position.x = GraphicsBase::DISPLAY_WIDTH/2;
 			mClearSprite.position.y = GraphicsBase::DISPLAY_HEIGHT/2;
 
@@ -260,10 +260,12 @@ namespace NotEngine {
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
 			setTexture(0, mClearTexture);
+			mClearSprite.color.r = r;
+			mClearSprite.color.g = g;
+			mClearSprite.color.b = b;
+			mClearSprite.color.a = a;
 
-			mClearSprite.color = (Sprite::SpriteColor) {r,g,b,a};
-
-			glm::mat4 ortho = glm::ortho(
+			static const glm::mat4 ortho = glm::ortho(
 				0.0f, (float) Graphics::GraphicsBase::DISPLAY_WIDTH,
 				(float) Graphics::GraphicsBase::DISPLAY_HEIGHT, 0.0f,
 				-1.0f, 1.0f);

@@ -4,20 +4,23 @@
 #
 # edited for notengine
 #
-
 TARGET_LIB = libnotengine.a
 
+INCLUDES   = include
+
 OBJS       = source/graphics/Texture2D.o \
+			 source/graphics/Sprite.o \
+			 source/graphics/SpriteLetter.o \
 			 source/graphics/SpriteBuffer.o \
 			 source/graphics/GraphicsBase.o \
 			 source/graphics/Graphics2D.o \
 			 source/graphics/FrameCatalog.o \
-			 source/system/Utils.o
-
-INCLUDES   = include
+			 source/system/Utils.o \
 
 SHADERS    = shader/compiled/graphics2d_frag.o \
 			 shader/compiled/graphics2d_vert.o
+
+DATAS	   = datas/debug_font.o
 
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
@@ -31,7 +34,7 @@ ASFLAGS = $(CXXFLAGS)
 
 all: $(TARGET_LIB)
 
-$(TARGET_LIB): $(SHADERS) $(OBJS)
+$(TARGET_LIB): $(DATAS) $(SHADERS) $(OBJS)
 	$(AR) -rc $@ $^
 
 clean:
