@@ -9,8 +9,8 @@
 
 extern const SceGxmProgram graphics2d_vert_gxp;
 extern const SceGxmProgram graphics2d_frag_gxp;
-static const SceGxmProgram* const m2dVertexProgramGxp     = &graphics2d_vert_gxp;
-static const SceGxmProgram* const m2dFragmentProgramGxp   = &graphics2d_frag_gxp;
+static const SceGxmProgram* const s2dVertexProgramGxp     = &graphics2d_vert_gxp;
+static const SceGxmProgram* const s2dFragmentProgramGxp   = &graphics2d_frag_gxp;
 
 namespace NotEngine {
 
@@ -28,12 +28,12 @@ namespace NotEngine {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			// Check if the 2d shaders are valids
-			int err = sceGxmProgramCheck(m2dVertexProgramGxp);
+			int err = sceGxmProgramCheck(s2dVertexProgramGxp);
 			if (err != 0) {
 				printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
-			err = sceGxmProgramCheck(m2dFragmentProgramGxp);
+			err = sceGxmProgramCheck(s2dFragmentProgramGxp);
 			if (err != 0) {
 				printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
@@ -41,27 +41,27 @@ namespace NotEngine {
 
 			// register programs with the patcher
 			m2dVertexProgramId = 0;
-			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, m2dVertexProgramGxp, &m2dVertexProgramId);
+			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dVertexProgramGxp, &m2dVertexProgramId);
 			if (err != 0) {
 				printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
 			m2dFragmentProgramId = 0;
-			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, m2dFragmentProgramGxp, &m2dFragmentProgramId);
+			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dFragmentProgramGxp, &m2dFragmentProgramId);
 			if (err != 0) {
 				printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
 			// get attributes by name to create vertex format bindings
-			mShaderPositionAttr = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "aPosition");
-			mShaderTextureAttr = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "aTexcoord");
-			mShaderColorAttr = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "aColor");
-			mShaderAngleAttr = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "aAngle");
-			mShaderTranslationAttr = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "aTranslation");
+			mShaderPositionAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aPosition");
+			mShaderTextureAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aTexcoord");
+			mShaderColorAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aColor");
+			mShaderAngleAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aAngle");
+			mShaderTranslationAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aTranslation");
 			// gte uniforms
-			mShaderMatrixProjUnif = sceGxmProgramFindParameterByName(m2dVertexProgramGxp, "pm");
+			mShaderMatrixProjUnif = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "pm");
 
 			// create the 2d vertex format
 			SceGxmVertexAttribute g2dVertexAttributes[5];
@@ -143,7 +143,7 @@ namespace NotEngine {
 				SCE_GXM_OUTPUT_REGISTER_FORMAT_UCHAR4,
 				(SceGxmMultisampleMode) GraphicsBase::MSAA_MODE,
 				&blendInfo,
-				m2dVertexProgramGxp,
+				s2dVertexProgramGxp,
 				&m2dFragmentProgram);
 			if (err != 0) {
 				printf("m2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
@@ -253,7 +253,6 @@ namespace NotEngine {
 			void *vertexDefaultBuffer;
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexDefaultBuffer);
 			sceGxmSetUniformDataF(vertexDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
-
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
