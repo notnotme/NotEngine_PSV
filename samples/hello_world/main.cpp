@@ -8,7 +8,7 @@
 
 #include <notengine/notengine.hpp>
 
-PSP2_MODULE_INFO(0, 0, "vitamine")
+PSP2_MODULE_INFO(0, 0, "hello_world")
 
 using namespace NotEngine::Graphics;
 
