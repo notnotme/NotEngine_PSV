@@ -41,6 +41,7 @@ namespace NotEngine {
 
 				unsigned short* mBatchIndices;
 				SceUID mBatchIndicesUID;
+				SceUID mLastBatchVerticesUID;
 
 				/// Objects to use for clear operation
 				SpriteBuffer* mClearBuffer;

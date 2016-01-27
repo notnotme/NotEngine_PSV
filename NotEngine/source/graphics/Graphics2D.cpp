@@ -244,7 +244,11 @@ namespace NotEngine {
 
 		void Graphics2D::render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
+
+			if (mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
+				mLastBatchVerticesUID = spriteBuffer->mBatchVerticesUID;
+				sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
+			}
 
 			void *vertexDefaultBuffer;
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexDefaultBuffer);
