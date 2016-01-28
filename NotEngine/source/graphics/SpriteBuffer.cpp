@@ -19,7 +19,7 @@ namespace NotEngine {
 
 		bool SpriteBuffer::initialize(unsigned int capacity) {
 			if (capacity >= Graphics2D::MAX_SPRITES_PER_BATCH) {
-				printf("SpriteBuffer size can't be > than %i", Graphics2D::MAX_SPRITES_PER_BATCH);
+				printf("SpriteBuffer size can't be > than %i\n", Graphics2D::MAX_SPRITES_PER_BATCH);
 				return false;
 			}
 			mBatchCount = 0;
