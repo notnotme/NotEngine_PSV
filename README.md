@@ -17,6 +17,7 @@ Note:
  - It's your task to load images and update texture datas into the created Textures
  - Spritesheets can be loaded using FrameCatalog, see http://www.leshylabs.com/apps/sstool/ and export as TP-JSON-Hash
  - You can animate sprite by swapping it's FrameCatalog::Frame
+ - To generate font textures, you can use LMNOPC Font Builder (http://www.lmnopc.com/bitmapfontbuilder/) and choose to export the full ascii set.
 
 Greetings:
  - PSP2SDK & VITASDK team
