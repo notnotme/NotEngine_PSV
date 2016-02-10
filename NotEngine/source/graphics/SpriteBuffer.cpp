@@ -17,13 +17,14 @@ namespace NotEngine {
 			printf("~SpriteBuffer()\n");
 		}
 
-		bool SpriteBuffer::initialize(unsigned int capacity) {
-			if (capacity >= Graphics2D::MAX_SPRITES_PER_BATCH) {
+		bool SpriteBuffer::initialize(unsigned int capacity, bool dynamic) {
+			if (capacity > Graphics2D::MAX_SPRITES_PER_BATCH) {
 				printf("SpriteBuffer size can't be > than %i\n", Graphics2D::MAX_SPRITES_PER_BATCH);
 				return false;
 			}
 			mBatchCount = 0;
 			mBatchCapacity = capacity;
+			mDynamic = dynamic;
 
 			// Allocate buffers
 			mBatchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
@@ -45,7 +46,7 @@ namespace NotEngine {
 		}
 
 		void SpriteBuffer::put(const Graphics::Sprite* sprite) {
-			if (mBatchOffset+mBatchCount >= mBatchCapacity) {
+			if (mBatchOffset+mBatchCount > mBatchCapacity) {
 				printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}

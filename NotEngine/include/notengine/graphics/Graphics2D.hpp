@@ -41,7 +41,6 @@ namespace NotEngine {
 
 				unsigned short* mBatchIndices;
 				SceUID mBatchIndicesUID;
-				SceUID mLastBatchVerticesUID;
 
 				/// Objects to use for clear operation
 				SpriteBuffer* mClearBuffer;
@@ -52,7 +51,8 @@ namespace NotEngine {
 				Graphics2D ();
 
 			public:
-				static const unsigned int MAX_SPRITES_PER_BATCH = 8192;
+				// (screen is 960x544px, for 16x16px tiles, it is 540 tiles per layer). Should be okay
+				static const unsigned int MAX_SPRITES_PER_BATCH = 2048;
 
 				virtual ~Graphics2D ();
 
@@ -63,8 +63,6 @@ namespace NotEngine {
 				void finalize();
 				/// Call it before start drawing with g2d
 				void use();
-				/// Call it after drawing
-				void unuse();
 
 				/* RENDER ************************************************/
 				/// Clear the screen. be warned: this function actually unbind the current texture and buffer! Should be avoided if possible or use your own "clear sprite" !!!

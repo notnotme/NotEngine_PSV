@@ -22,9 +22,9 @@ namespace NotEngine {
 					float y;
 					float s; // tex coords
 					float t;
-					unsigned char r; // color
+					unsigned char b; // color
 					unsigned char g;
-					unsigned char b;
+					unsigned char r;
 					unsigned char a;
 					float angle; // angle
 					float tx; // translation
@@ -41,6 +41,8 @@ namespace NotEngine {
 				unsigned int mBatchOffset;
 				/// Current sprite count in the buffer
 				unsigned int mBatchCount;
+				/// flag to set the buffer static or not (data change or never change)
+				bool mDynamic;
 
 				/// Pointer to use for sprite batching
 				SpriteVertice* mBatchVertices;
@@ -51,7 +53,7 @@ namespace NotEngine {
 				virtual ~SpriteBuffer();
 
 				/// initialize the buffer with a capacity of [capacity] per frame
-				bool initialize(unsigned int capacity);
+				bool initialize(unsigned int capacity, bool dynamic);
 				/// clean up the buffer
 				void finalize();
 				/// Begin a new batch of sprites, should be called once per frame to reset the buffer offset

@@ -76,7 +76,7 @@ namespace NotEngine {
 			// Texture fmt
 			g2dVertexAttributes[1] = (SceGxmVertexAttribute) {
 				.streamIndex = 0,
-				.offset = sizeof(float)*2,
+				.offset = (unsigned short) sizeof(float)*2,
 				.format = SCE_GXM_ATTRIBUTE_FORMAT_F32,
 				.componentCount = 2,
 				.regIndex = (unsigned short) sceGxmProgramParameterGetResourceIndex(mShaderTextureAttr)
@@ -188,7 +188,7 @@ namespace NotEngine {
 
 			// Allocate clear buffer
 			mClearBuffer = new Graphics::SpriteBuffer();
-			if (! mClearBuffer->initialize(1)) {
+			if (! mClearBuffer->initialize(32, true)) {
 				printf("clearBuffer not allocated\n");
 				return false;
 			}
@@ -232,27 +232,21 @@ namespace NotEngine {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m2dVertexProgram);
 			sceGxmSetFragmentProgram(base->mContext, m2dFragmentProgram);
-			sceGxmSetBackDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_DISABLED);
-			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_DISABLED);
-		}
 
-		void Graphics2D::unuse() {
-			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetBackDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_ENABLED);
-			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_ENABLED);
+			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_DISABLED);
+			sceGxmSetFrontDepthFunc(base->mContext, SCE_GXM_DEPTH_FUNC_ALWAYS);
+
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
 		void Graphics2D::render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
 
-			if (mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
-				mLastBatchVerticesUID = spriteBuffer->mBatchVerticesUID;
+			if (base->mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
+				base->mLastBatchVerticesUID = spriteBuffer->mBatchVerticesUID;
 				sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
 			}
-
-			void *vertexDefaultBuffer;
-			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexDefaultBuffer);
-			sceGxmSetUniformDataF(vertexDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
@@ -261,7 +255,8 @@ namespace NotEngine {
 			           &mBatchIndices[spriteBuffer->mBatchOffset*6],
 			           batchCount*6);
 
-			spriteBuffer->mBatchOffset += batchCount;
+			if (spriteBuffer->mDynamic)
+				spriteBuffer->mBatchOffset += batchCount;
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
