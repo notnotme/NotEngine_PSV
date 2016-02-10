@@ -11,7 +11,7 @@ Install:
  - You're up to go
 
 Todo:
- - Emulate basic immediate rendering (like opengl 1.2 days) with another Graphics class
+ - Add more options in the 3d shader (an option to disable texture, add light if I can)
 
 Note:
  - It's your task to load images and update texture datas into the created Textures
