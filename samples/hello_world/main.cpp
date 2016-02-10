@@ -32,7 +32,7 @@ int main() {
 
 	// Create a buffer to prepare our sprite to render (64 sprite slot)
 	SpriteBuffer* spriteBuffer = new SpriteBuffer();
-	if (!spriteBuffer->initialize(64)) {
+	if (!spriteBuffer->initialize(64, true)) {
 		printf("spriteBuffer failed to allocate\n");
 		ready = false;
 	}
