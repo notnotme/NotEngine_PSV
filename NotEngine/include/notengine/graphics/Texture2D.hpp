@@ -14,6 +14,7 @@ namespace NotEngine {
 		 */
 		class Texture2D {
 			friend class Graphics2D;
+			friend class Graphics3D;
 
 			private:
 				/// Disallow copy

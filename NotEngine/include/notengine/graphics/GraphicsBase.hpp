@@ -22,6 +22,7 @@ namespace NotEngine {
 		class GraphicsBase : public System::Singleton<GraphicsBase> {
 			friend class System::Singleton<GraphicsBase>;
 			friend class Graphics2D;
+			friend class Graphics3D;
 
 			public:
 				static const unsigned int DISPLAY_WIDTH = 960;
@@ -57,6 +58,8 @@ namespace NotEngine {
 				SceGxmContextParams mContextParams;
 				SceGxmShaderPatcher* mShaderPatcher;
 				SceGxmRenderTarget* mRenderTarget;
+				void *mVertexUniformDefaultBuffer;
+				SceUID mLastBatchVerticesUID;
 
 				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];
 				SceUID mDisplayBufferUid[DISPLAY_BUFFER_COUNT];

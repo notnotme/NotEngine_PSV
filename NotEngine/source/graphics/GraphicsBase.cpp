@@ -129,10 +129,10 @@ namespace NotEngine {
 			SceDisplayFrameBuf framebuf = (SceDisplayFrameBuf) {
 				.size = sizeof(SceDisplayFrameBuf),
 				.base = displayData->address,
-				.pitch = DISPLAY_STRIDE_IN_PIXELS,
-				.pixelformat = DISPLAY_PIXEL_FORMAT,
-				.width = DISPLAY_WIDTH,
-				.height = DISPLAY_HEIGHT
+				.pitch = GraphicsBase::DISPLAY_STRIDE_IN_PIXELS,
+				.pixelformat = GraphicsBase::DISPLAY_PIXEL_FORMAT,
+				.width = GraphicsBase::DISPLAY_WIDTH,
+				.height = GraphicsBase::DISPLAY_HEIGHT
 			};
 			sceDisplaySetFrameBuf(&framebuf, SCE_DISPLAY_SETBUF_NEXTFRAME);
 
@@ -146,7 +146,7 @@ namespace NotEngine {
 			mWaitRetrace = waitForRetrace;
 			SceGxmInitializeParams initializeParams = (SceGxmInitializeParams) {
 				.flags = 0,
-				.displayQueueMaxPendingCount = DISPLAY_MAX_PENDING_SWAPS,
+				.displayQueueMaxPendingCount = GraphicsBase::DISPLAY_MAX_PENDING_SWAPS,
 				.displayQueueCallback = videoCallback,
 				.displayQueueCallbackDataSize = sizeof(DisplayData),
 				.parameterBufferSize = SCE_GXM_DEFAULT_PARAMETER_BUFFER_SIZE
@@ -224,7 +224,7 @@ namespace NotEngine {
 			}
 
 			// allocate memory and sync objects for display buffers
-			for (unsigned int i=0; i<DISPLAY_BUFFER_COUNT; i++) {
+			for (unsigned int i=0; i<GraphicsBase::DISPLAY_BUFFER_COUNT; i++) {
 				// initialize a color surface for this display buffer
 				mDisplayBufferData[i] = 0;
 				mDisplayBufferData[i] = GraphicsBase::gpuAlloc(
@@ -233,7 +233,7 @@ namespace NotEngine {
 					SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
 					&mDisplayBufferUid[i]);
 
-				memset(mDisplayBufferData[i], 0xff000000, 4*DISPLAY_STRIDE_IN_PIXELS*DISPLAY_HEIGHT);
+				memset(mDisplayBufferData[i], 0xff000000, 4*GraphicsBase::DISPLAY_STRIDE_IN_PIXELS*GraphicsBase::DISPLAY_HEIGHT);
 				err = sceGxmColorSurfaceInit(
 					&mDisplaySurface[i],
 					(SceGxmColorFormat) DISPLAY_COLOR_FORMAT,
@@ -258,8 +258,8 @@ namespace NotEngine {
 			}
 
 			// compute the memory footprint of the depth buffer
-			const unsigned int alignedWidth = GraphicsBase::align(DISPLAY_WIDTH, SCE_GXM_TILE_SIZEX);
-			const unsigned int alignedHeight = GraphicsBase::align(DISPLAY_HEIGHT, SCE_GXM_TILE_SIZEY);
+			const unsigned int alignedWidth = GraphicsBase::align(GraphicsBase::DISPLAY_WIDTH, SCE_GXM_TILE_SIZEX);
+			const unsigned int alignedHeight = GraphicsBase::align(GraphicsBase::DISPLAY_HEIGHT, SCE_GXM_TILE_SIZEY);
 			unsigned int sampleCount = alignedWidth*alignedHeight;
 			unsigned int depthStrideInSamples = alignedWidth;
 			if (MSAA_MODE == SCE_GXM_MULTISAMPLE_4X) {
@@ -376,6 +376,11 @@ namespace NotEngine {
 			memcpy(buffer, &debug_font, debug_font_size);
 
 			sceGxmSetCullMode(mContext, SCE_GXM_CULL_CW);
+			sceGxmSetTwoSidedEnable(mContext, SCE_GXM_TWO_SIDED_DISABLED);
+			sceGxmSetFrontDepthFunc(mContext, SCE_GXM_DEPTH_FUNC_LESS);
+			//sceGxmSetFrontFragmentProgramEnable(mContext, SCE_GXM_FRAGMENT_PROGRAM_ENABLED);
+			//sceGxmSetFrontPolygonMode(mContext, SCE_GXM_POLYGON_MODE_TRIANGLE_FILL);
+
 			mBackBufferIndex = 0;
 			mFrontBufferIndex = 0;
 
@@ -402,10 +407,10 @@ namespace NotEngine {
 			if (mDepthBufferUid != 0)
 				GraphicsBase::gpuFree(mDepthBufferUid);
 
-			for (unsigned int i=0; i<DISPLAY_BUFFER_COUNT; i++) {
+			for (unsigned int i=0; i<GraphicsBase::DISPLAY_BUFFER_COUNT; i++) {
 				// clear the buffer then deallocate
 				if (mDisplayBufferUid[i] != 0) {
-					memset(mDisplayBufferData[i], 0, DISPLAY_HEIGHT*DISPLAY_STRIDE_IN_PIXELS*4);
+					memset(mDisplayBufferData[i], 0, GraphicsBase::DISPLAY_HEIGHT*GraphicsBase::DISPLAY_STRIDE_IN_PIXELS*4);
 					GraphicsBase::gpuFree(mDisplayBufferUid[i]);
 					sceGxmSyncObjectDestroy(mDisplayBufferSync[i]);
 				}
@@ -463,7 +468,7 @@ namespace NotEngine {
 
 			// update buffer indices
 			mFrontBufferIndex = mBackBufferIndex;
-			mBackBufferIndex = (mBackBufferIndex + 1) % DISPLAY_BUFFER_COUNT;
+			mBackBufferIndex = (mBackBufferIndex + 1) % GraphicsBase::DISPLAY_BUFFER_COUNT;
 		}
 
 		void GraphicsBase::startDrawing() {
