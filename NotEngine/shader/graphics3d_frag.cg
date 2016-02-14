@@ -1,7 +1,15 @@
 float4 main(
 	float4 vColor : COLOR,
 	float2 vTexcoord : TEXCOORD0,
+	uniform float textureEnable,
 	uniform sampler2D tex)
 {
-	return vColor * tex2D(tex, vTexcoord.xy);
+	float4 outColor;
+	if (textureEnable > 0.5f) {
+		outColor = vColor * tex2D(tex, vTexcoord);
+	} else {
+		outColor = vColor;
+	}
+
+	return outColor;
 }

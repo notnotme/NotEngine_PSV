@@ -60,6 +60,7 @@ namespace NotEngine {
 			mShaderColorAttr = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "aColor");
 			// gte uniforms
 			mShaderMatrixProjUnif = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "pm");
+			mShaderTextureEnableUnif = sceGxmProgramFindParameterByName(s3dFragmentProgramGxp, "textureEnable");
 
 			// create the 2d vertex format
 			SceGxmVertexAttribute g3dVertexAttributes[3];
@@ -188,9 +189,10 @@ namespace NotEngine {
 			sceGxmSetFrontDepthFunc(base->mContext, SCE_GXM_DEPTH_FUNC_LESS);
 
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
+			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
 		}
 
-		void Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices) {
+		void Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) {
 			unsigned int countInBuffer = vertices->mVerticesCount;
 			switch(type) {
 				// chek for errors
@@ -220,6 +222,12 @@ namespace NotEngine {
 				base->mLastBatchVerticesUID = vertices->mBatchVerticesUID;
 				sceGxmSetVertexStream(base->mContext, 0, vertices->mBatchVertices);
 			}
+
+			float textureEnable = 0.0f;
+			if (texture) {
+				textureEnable = 1.0f;
+			}
+			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
 
 			unsigned int vertCount = countInBuffer - vertices->mVerticesOffset;
 			sceGxmDraw(base->mContext,

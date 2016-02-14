@@ -32,6 +32,7 @@ namespace NotEngine {
 				const SceGxmProgramParameter* mShaderTextureAttr;
 				const SceGxmProgramParameter* mShaderColorAttr;
 				const SceGxmProgramParameter* mShaderMatrixProjUnif;
+				const SceGxmProgramParameter* mShaderTextureEnableUnif;
 
 				SceGxmVertexProgram* m3dVertexProgram;
 				SceGxmFragmentProgram* m3dFragmentProgram;
@@ -61,7 +62,7 @@ namespace NotEngine {
 
 				void setProjectionMatrix(const glm::mat4* projection);
 
-				void render(SceGxmPrimitiveType type, D3Buffer* vertices);
+				void render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture);
 		};
 
 	} // namespace Graphics

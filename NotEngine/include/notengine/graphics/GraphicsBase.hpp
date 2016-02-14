@@ -59,6 +59,7 @@ namespace NotEngine {
 				SceGxmShaderPatcher* mShaderPatcher;
 				SceGxmRenderTarget* mRenderTarget;
 				void *mVertexUniformDefaultBuffer;
+				void *mFragmentUniformDefaultBuffer;
 				SceUID mLastBatchVerticesUID;
 
 				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];
