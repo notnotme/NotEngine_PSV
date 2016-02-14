@@ -11,7 +11,8 @@ Install:
  - You're up to go
 
 Todo:
- - Add more options in the 3d shader (an option to disable texture, add light if I can)
+ - Add some methods to render simple 2d shape (circle, grid, rectangle..) in Graphics2D with/without texture
+ - Add more options in the 3d shader (add light if I can)
 
 Note:
  - It's your task to load images and update texture datas into the created Textures
