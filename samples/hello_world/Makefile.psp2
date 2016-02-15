@@ -2,8 +2,6 @@
 # Copyright (c) 2015 Sergi Granell (xerpi)
 # based on Cirne's vita-toolchain test Makefile
 #
-# edited for vitamine
-#
 TARGET	= hello_world
 OBJS	= main.o
 LIBS 	= -lnotengine -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
