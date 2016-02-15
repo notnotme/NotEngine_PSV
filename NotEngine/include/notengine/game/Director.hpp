@@ -26,8 +26,10 @@ namespace NotEngine {
 				GameState* mCurrentState;
 				SceCtrlData mPadData;
 
+				uint64_t mCurrentTicks;
 				uint64_t mLastFpsTicks;
 				uint64_t mLastTicks;
+				float mElapsed;
 				unsigned int mFps;
 				unsigned int mFrames;
 				bool mQuit;

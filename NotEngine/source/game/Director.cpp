@@ -36,20 +36,21 @@ namespace NotEngine {
 		}
 
 		void Director::update() {
-			uint64_t currentTicks;
-			sceRtcGetCurrentTick(&currentTicks);
-		    long elapsed = currentTicks-mLastTicks;
-		    mLastTicks = currentTicks;
+			const float tickRate = 1.0f / sceRtcGetTickResolution();
 
-		    if(currentTicks - mLastFpsTicks >= 1000) {
-		        mLastFpsTicks = currentTicks;
+			sceRtcGetCurrentTick(&mCurrentTicks);
+		    mElapsed = (mCurrentTicks - mLastTicks) * tickRate;
+		    mLastTicks = mCurrentTicks;
+
+		    if((mCurrentTicks - mLastFpsTicks)*tickRate >= 1) {
+		        mLastFpsTicks = mCurrentTicks;
 		        mFps = mFrames;
 		        mFrames = 0;
 		    }
 		    mFrames++;
 
 			sceCtrlPeekBufferPositive(0, &mPadData, 1);
-			mCurrentState->update(&mPadData, elapsed/1000.0f);
+			mCurrentState->update(&mPadData, mElapsed);
 		}
 
 		bool Director::isRunning() {
