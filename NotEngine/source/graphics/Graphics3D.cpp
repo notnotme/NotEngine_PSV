@@ -9,8 +9,8 @@
 
 extern const SceGxmProgram graphics3d_vert_gxp;
 extern const SceGxmProgram graphics3d_frag_gxp;
-static const SceGxmProgram* const s3dVertexProgramGxp     = &graphics3d_vert_gxp;
-static const SceGxmProgram* const s3dFragmentProgramGxp   = &graphics3d_frag_gxp;
+static const SceGxmProgram* const s3dVertexProgramGxp	= &graphics3d_vert_gxp;
+static const SceGxmProgram* const s3dFragmentProgramGxp	= &graphics3d_frag_gxp;
 
 namespace NotEngine {
 
@@ -197,24 +197,24 @@ namespace NotEngine {
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
-				    if(countInBuffer % 3 != 0 || countInBuffer < 3)
-				        printf("Wrong vertices count for TRIANGLES\n");
-				    break;
+					if(countInBuffer % 3 != 0 || countInBuffer < 3)
+						printf("Wrong vertices count for TRIANGLES\n");
+					break;
 				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
 				case SCE_GXM_PRIMITIVE_TRIANGLE_FAN:
 				case SCE_GXM_PRIMITIVE_TRIANGLE_STRIP:
-				    if(countInBuffer < 3)
-				        printf("Wrong vertices count for TRIANGLE_FAN/STRIP/EDGES\n");
-				    break;
+					if(countInBuffer < 3)
+						printf("Wrong vertices count for TRIANGLE_FAN/STRIP/EDGES\n");
+					break;
 				case SCE_GXM_PRIMITIVE_LINES:
-				    if(countInBuffer % 2 != 0 || countInBuffer < 2)
-				        printf("Wrong vertices count for LINES\n");
-				    break;
+					if(countInBuffer % 2 != 0 || countInBuffer < 2)
+						printf("Wrong vertices count for LINES\n");
+					break;
 				case SCE_GXM_PRIMITIVE_POINTS:
-				    if(countInBuffer < 1)
-				        printf("Wrong primitive count (0)\n");
-				    break;
-            }
+					if(countInBuffer < 1)
+						printf("Wrong primitive count (0)\n");
+					break;
+			}
 
 			GraphicsBase* base = GraphicsBase::instance();
 
@@ -231,10 +231,10 @@ namespace NotEngine {
 
 			unsigned int vertCount = countInBuffer - vertices->mVerticesOffset;
 			sceGxmDraw(base->mContext,
-			           type,
-			           SCE_GXM_INDEX_FORMAT_U16,
-			           &mBatchIndices[vertices->mVerticesOffset],
-			           vertCount);
+						type,
+						SCE_GXM_INDEX_FORMAT_U16,
+						&mBatchIndices[vertices->mVerticesOffset],
+						vertCount);
 
 			if (vertices->mDynamic)
 				vertices->mVerticesOffset += vertCount;

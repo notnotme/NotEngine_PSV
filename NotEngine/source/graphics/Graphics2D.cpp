@@ -9,8 +9,8 @@
 
 extern const SceGxmProgram graphics2d_vert_gxp;
 extern const SceGxmProgram graphics2d_frag_gxp;
-static const SceGxmProgram* const s2dVertexProgramGxp     = &graphics2d_vert_gxp;
-static const SceGxmProgram* const s2dFragmentProgramGxp   = &graphics2d_frag_gxp;
+static const SceGxmProgram* const s2dVertexProgramGxp	= &graphics2d_vert_gxp;
+static const SceGxmProgram* const s2dFragmentProgramGxp	= &graphics2d_frag_gxp;
 
 namespace NotEngine {
 
@@ -250,10 +250,10 @@ namespace NotEngine {
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
-			           SCE_GXM_PRIMITIVE_TRIANGLES,
-			           SCE_GXM_INDEX_FORMAT_U16,
-			           &mBatchIndices[spriteBuffer->mBatchOffset*6],
-			           batchCount*6);
+						SCE_GXM_PRIMITIVE_TRIANGLES,
+						SCE_GXM_INDEX_FORMAT_U16,
+						&mBatchIndices[spriteBuffer->mBatchOffset*6],
+						batchCount*6);
 
 			if (spriteBuffer->mDynamic)
 				spriteBuffer->mBatchOffset += batchCount;

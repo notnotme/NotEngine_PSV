@@ -39,15 +39,15 @@ namespace NotEngine {
 			const float tickRate = 1.0f / sceRtcGetTickResolution();
 
 			sceRtcGetCurrentTick(&mCurrentTicks);
-		    mElapsed = (mCurrentTicks - mLastTicks) * tickRate;
-		    mLastTicks = mCurrentTicks;
+			mElapsed = (mCurrentTicks - mLastTicks) * tickRate;
+			mLastTicks = mCurrentTicks;
 
-		    if((mCurrentTicks - mLastFpsTicks)*tickRate >= 1) {
-		        mLastFpsTicks = mCurrentTicks;
-		        mFps = mFrames;
-		        mFrames = 0;
-		    }
-		    mFrames++;
+			if((mCurrentTicks - mLastFpsTicks) * tickRate >= 1) {
+				mLastFpsTicks = mCurrentTicks;
+				mFps = mFrames;
+				mFrames = 0;
+			}
+			mFrames++;
 
 			sceCtrlPeekBufferPositive(0, &mPadData, 1);
 			mCurrentState->update(&mPadData, mElapsed);
@@ -72,9 +72,9 @@ namespace NotEngine {
 				}
 
 				return true;
-    		} else {
-    			return false;
-    		}
+			} else {
+				return false;
+			}
 		}
 
 		unsigned int Director::getFPS() {
