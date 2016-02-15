@@ -17,6 +17,8 @@ OBJS       = source/graphics/Texture2D.o \
 			 source/graphics/Graphics2D.o \
 			 source/graphics/Graphics3D.o \
 			 source/graphics/FrameCatalog.o \
+			 source/game/GameState.o \
+			 source/game/Director.o \
 			 source/system/Utils.o
 
 SHADERS    = shader/compiled/graphics2d_frag.o \

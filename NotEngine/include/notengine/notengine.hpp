@@ -11,3 +11,6 @@
 #include "graphics/SpriteLetter.hpp"
 #include "graphics/SpriteBuffer.hpp"
 #include "graphics/D3Buffer.hpp"
+
+#include "game/GameState.hpp"
+#include "game/Director.hpp"
