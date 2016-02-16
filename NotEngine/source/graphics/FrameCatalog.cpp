@@ -83,7 +83,7 @@ namespace NotEngine {
 
 		FrameCatalog::Frame FrameCatalog::getFrame(const std::string name) {
 			if (mCatalog.find(name) == mCatalog.end()) {
-				printf("Frame not found %s, throwing default frame.", name.c_str());
+				printf("Frame not found %s, throwing default frame.\n", name.c_str());
 				return Frame();
 			}
 
