@@ -1,6 +1,6 @@
 #include "../../include/notengine/system/Utils.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 #include <fstream>
 
 namespace NotEngine {

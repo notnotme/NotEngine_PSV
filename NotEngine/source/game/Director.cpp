@@ -1,6 +1,6 @@
 #include "../../include/notengine/game/Director.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 #include <psp2/rtc.h>
 
 namespace NotEngine {
@@ -29,6 +29,11 @@ namespace NotEngine {
 				return false;
 			}
 
+			sceRtcGetCurrentTick(&mCurrentTicks);
+			mElapsed = 0;
+			mFrames = 0;
+			mLastTicks = mCurrentTicks;
+			mLastFpsTicks = mCurrentTicks;
 			return true;
 		}
 
@@ -39,7 +44,7 @@ namespace NotEngine {
 			const float tickRate = 1.0f / sceRtcGetTickResolution();
 
 			sceRtcGetCurrentTick(&mCurrentTicks);
-			mElapsed = (mCurrentTicks - mLastTicks) * tickRate;
+			mElapsed = (float) (mCurrentTicks - mLastTicks) * tickRate;
 			mLastTicks = mCurrentTicks;
 
 			if((mCurrentTicks - mLastFpsTicks) * tickRate >= 1) {

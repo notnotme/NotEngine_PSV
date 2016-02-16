@@ -2,8 +2,8 @@
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 #include "../include/notengine/graphics/Graphics3D.hpp"
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 namespace NotEngine {
 

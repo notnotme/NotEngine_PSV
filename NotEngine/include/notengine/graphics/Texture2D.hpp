@@ -43,6 +43,12 @@ namespace NotEngine {
 				void finalize();
 				/// Return a pointer to the datas (RW)
 				void* getDataPtr();
+				/// Set the texture filter
+				void setFilter(SceGxmTextureFilter min, SceGxmTextureFilter mag);
+				/// Set the texture repeat mode
+				void setWrap(SceGxmTextureAddrMode u, SceGxmTextureAddrMode v);
+				/// Enable mipmap filtering
+				void setMipFilter(SceGxmTextureMipFilter filter);
 				/// return the size of one pixel of the current format
 				static unsigned int getStorageSize(SceGxmTextureFormat format);
 		};

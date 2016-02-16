@@ -1,8 +1,8 @@
 #include "../../include/notengine/graphics/Texture2D.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 namespace NotEngine {
 
@@ -52,6 +52,20 @@ namespace NotEngine {
 					return sceGxmTextureGetData(&mTexture);
 
 				return 0;
+		}
+
+		void Texture2D::setFilter(SceGxmTextureFilter min, SceGxmTextureFilter mag) {
+			sceGxmTextureSetMinFilter(&mTexture, min);
+			sceGxmTextureSetMagFilter(&mTexture, mag);
+		}
+
+		void Texture2D::setWrap(SceGxmTextureAddrMode u, SceGxmTextureAddrMode v) {
+			sceGxmTextureSetUAddrMode(&mTexture, u);
+			sceGxmTextureSetVAddrMode(&mTexture, v);
+		}
+
+		void Texture2D::setMipFilter(SceGxmTextureMipFilter filter) {
+			sceGxmTextureSetMipFilter(&mTexture, filter);
 		}
 
 		unsigned int Texture2D::getStorageSize(SceGxmTextureFormat format) {

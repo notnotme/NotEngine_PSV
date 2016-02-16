@@ -1,7 +1,7 @@
 #include "../../include/notengine/graphics/FrameCatalog.hpp"
 #include "../../include/notengine/system/Utils.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 #include <jsonxx.h>
 
 using namespace NotEngine::System;
@@ -18,9 +18,7 @@ namespace NotEngine {
 			printf("~FrameCatalog()\n");
 		}
 
-		bool FrameCatalog::initialize(const std::string filename) {
-			std::string jsonString = Utils::stringFromFile(filename);
-
+		bool FrameCatalog::initialize(const std::string jsonString) {
 			if (jsonString.length() == 0) {
 				printf("FrameCatalog received empty string\n");
 				return false;
@@ -28,7 +26,7 @@ namespace NotEngine {
 
 			jsonxx::Object json;
 			if (!json.parse(jsonString + "\n")) {
-				printf("jsonxx failed to parse: %s\n", filename.c_str());
+				printf("jsonxx failed to parse \n");
 				return false;
 			}
 
@@ -49,14 +47,14 @@ namespace NotEngine {
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
 				if (!it->second->get<jsonxx::Object>().has<jsonxx::Object>("frame") ||
 					!it->second->get<jsonxx::Object>().has<jsonxx::Object>("sourceSize")) {
-					printf("bad json, no frame or sourceSize: %s\n", filename.c_str());
+					printf("bad json, no frame or sourceSize\n");
 					return false;
 				}
 
 				jsonxx::Object frameObject = it->second->get<jsonxx::Object>().get<jsonxx::Object>("frame");
 				if (!frameObject.has<jsonxx::Number>("x") || !frameObject.has<jsonxx::Number>("y")
 					|| !frameObject.has<jsonxx::Number>("w") || !frameObject.has<jsonxx::Number>("h")) {
-					printf("bad json, bad frame: %s\n", filename.c_str());
+					printf("bad json, bad frame found\n");
 					return false;
 				}
 

@@ -42,7 +42,7 @@ namespace NotEngine {
 				virtual ~FrameCatalog();
 
 				/// Load a catalog from a file
-				bool initialize(const std::string filename);
+				bool initialize(const std::string jsonString);
 				/// cleanup a catalog and free datas
 				void finalize();
 				/// Return a spriteframe of the name name
