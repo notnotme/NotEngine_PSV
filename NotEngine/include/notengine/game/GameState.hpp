@@ -4,6 +4,7 @@
 #pragma once
 #include <string>
 #include <psp2/ctrl.h>
+#include <psp2/touch.h>
 
 namespace NotEngine {
 
@@ -23,7 +24,7 @@ namespace NotEngine {
 				virtual bool enter () = 0;
 				virtual void exit () = 0;
 
-				virtual void update (const SceCtrlData* inputs, float elapsed) = 0;
+				virtual void update (const SceCtrlData* inputs, const SceTouchData* touchFront, const SceTouchData* touchBack, float elapsed) = 0;
 				virtual const std::string getName() = 0;
 		};
 

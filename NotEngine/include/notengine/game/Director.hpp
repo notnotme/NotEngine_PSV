@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <psp2/ctrl.h>
+#include <psp2/touch.h>
 
 #include "../system/Singleton.hpp"
 #include "GameState.hpp"
@@ -25,6 +26,8 @@ namespace NotEngine {
 				std::map<std::string, GameState*> mGameStates;
 				GameState* mCurrentState;
 				SceCtrlData mPadData;
+				SceTouchData mTouchFrontData;
+				SceTouchData mTouchBackData;
 
 				uint64_t mCurrentTicks;
 				uint64_t mLastFpsTicks;

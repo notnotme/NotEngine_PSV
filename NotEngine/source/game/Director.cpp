@@ -54,8 +54,10 @@ namespace NotEngine {
 			}
 			mFrames++;
 
+			sceTouchPeek(SCE_TOUCH_PORT_FRONT, &mTouchFrontData, 1);
+			sceTouchPeek(SCE_TOUCH_PORT_BACK, &mTouchBackData, 1);
 			sceCtrlPeekBufferPositive(0, &mPadData, 1);
-			mCurrentState->update(&mPadData, mElapsed);
+			mCurrentState->update(&mPadData, &mTouchFrontData, &mTouchBackData, mElapsed);
 		}
 
 		bool Director::isRunning() {
