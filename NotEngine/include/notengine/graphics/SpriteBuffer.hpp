@@ -22,9 +22,9 @@ namespace NotEngine {
 					float y;
 					float s; // tex coords
 					float t;
-					unsigned char b; // color
+					unsigned char r; // color
 					unsigned char g;
-					unsigned char r;
+					unsigned char b;
 					unsigned char a;
 					float angle; // angle
 					float tx; // translation
