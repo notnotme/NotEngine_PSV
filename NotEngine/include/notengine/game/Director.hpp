@@ -25,6 +25,8 @@ namespace NotEngine {
 
 				std::map<std::string, GameState*> mGameStates;
 				GameState* mCurrentState;
+				GameState* mPendingState;
+
 				SceCtrlData mPadData;
 				SceTouchData mTouchFrontData;
 				SceTouchData mTouchBackData;
@@ -47,7 +49,6 @@ namespace NotEngine {
 				void update ();
 				bool isRunning();
 				void stop();
-				bool changeState(unsigned int index);
 				bool changeState(const std::string name);
 				unsigned int getFPS();
 		};

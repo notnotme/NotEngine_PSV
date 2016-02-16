@@ -23,6 +23,7 @@ namespace NotEngine {
 				return false;
 			}
 
+			mPendingState = 0;
 			mCurrentState = states[start];
 			if(! mCurrentState->enter()) {
 				printf("Director GameState failed to initialize\n");
@@ -57,6 +58,16 @@ namespace NotEngine {
 			sceTouchPeek(SCE_TOUCH_PORT_FRONT, &mTouchFrontData, 1);
 			sceTouchPeek(SCE_TOUCH_PORT_BACK, &mTouchBackData, 1);
 			sceCtrlPeekBufferPositive(0, &mPadData, 1);
+
+			if (mPendingState != 0) {
+				mCurrentState->exit();
+				mCurrentState = mPendingState;
+				mPendingState = 0;
+
+				if (! mCurrentState->enter()) {
+					printf("Director: GameState failed to initialize\n");
+				}
+			}
 			mCurrentState->update(&mPadData, &mTouchFrontData, &mTouchBackData, mElapsed);
 		}
 
@@ -71,13 +82,7 @@ namespace NotEngine {
 
 		bool Director::changeState(const std::string name) {
 			if (mGameStates.find(name) != mGameStates.end()) {
-				mCurrentState->exit();
-				mCurrentState = mGameStates[name];
-				if (! mCurrentState->enter()) {
-					printf("Director: GameState failed to initialize");
-					return false;
-				}
-
+				mPendingState = mGameStates[name];
 				return true;
 			} else {
 				return false;
