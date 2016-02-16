@@ -51,6 +51,8 @@ namespace NotEngine {
 				void setMipFilter(SceGxmTextureMipFilter filter);
 				/// return the size of one pixel of the current format
 				static unsigned int getStorageSize(SceGxmTextureFormat format);
+				/// Return the rounded size of a line of pixel for a texture
+				static unsigned int getStride(unsigned int width, SceGxmTextureFormat fmt);
 		};
 
 	} // namespace Graphics

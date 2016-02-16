@@ -94,6 +94,10 @@ namespace NotEngine {
 			}
 		}
 
+		unsigned int Texture2D::getStride(unsigned int width, SceGxmTextureFormat fmt) {
+			return ((width + 7) & ~7) * Texture2D::getStorageSize(fmt);
+		}
+
 	} // namespace Graphics
 
 } // namespace NotEngine
