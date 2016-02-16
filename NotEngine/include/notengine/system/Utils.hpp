@@ -3,6 +3,11 @@
 
 #pragma once
 #include <string>
+#include <psp2/touch.h>
+
+#include "../graphics/Sprite.hpp"
+
+using namespace NotEngine::Graphics;
 
 namespace NotEngine {
 
@@ -21,6 +26,7 @@ namespace NotEngine {
 
 				/// Return the string content of a file
 				static std::string stringFromFile(const std::string filename);
+				static bool isTouched(int touchX, int touchY, const Sprite* sprite);
 		};
 
 	} // Namespace System

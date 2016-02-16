@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <cmath>
 
 namespace NotEngine {
 
@@ -28,6 +29,11 @@ namespace NotEngine {
 			myfile.close();
 
 			return text;
+		}
+
+		bool Utils::isTouched(int touchX, int touchY, const Sprite* sprite) {
+			return (std::abs(touchX - sprite->position.x) < (sprite->frame.size.w*0.5f)
+				&& std::abs(touchY - sprite->position.y) < (sprite->frame.size.h*0.5f));
 		}
 
 	} // namespace System
