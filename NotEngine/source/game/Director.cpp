@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <psp2/rtc.h>
+#include <psp2/display.h>
 
 namespace NotEngine {
 
@@ -60,6 +61,7 @@ namespace NotEngine {
 			sceCtrlPeekBufferPositive(0, &mPadData, 1);
 
 			if (mPendingState != 0) {
+				sceDisplayWaitSetFrameBuf();
 				mCurrentState->exit();
 				mCurrentState = mPendingState;
 				mPendingState = 0;

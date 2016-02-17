@@ -136,7 +136,6 @@ namespace NotEngine {
 			};
 			sceDisplaySetFrameBuf(&framebuf, SCE_DISPLAY_SETBUF_NEXTFRAME);
 
-			// fixme: Untested
 			if (displayData->waitRetrace) {
 				sceDisplayWaitVblankStart();
 			}
