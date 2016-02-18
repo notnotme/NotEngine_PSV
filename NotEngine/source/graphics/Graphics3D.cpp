@@ -146,7 +146,7 @@ namespace NotEngine {
 			}
 
 			// Fill the indices buffer as it will never change (used only for immediate rendering)
-			for (unsigned short i=0; i<MAX_VERTICES_PER_BATCH; i++) {
+			for (unsigned short i=0; i<Graphics3D::MAX_VERTICES_PER_BATCH; i++) {
 				mBatchIndices[i] = i;
 			}
 

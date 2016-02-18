@@ -163,7 +163,7 @@ namespace NotEngine {
 			}
 
 			// Fill the indices buffer as it will never change
-			unsigned int size = MAX_SPRITES_PER_BATCH*6;
+			unsigned int size = Graphics2D::MAX_SPRITES_PER_BATCH*6;
 			unsigned short j = 0;
 			for (unsigned int i=0; i<size; i+=6, j+=4) {
 				mBatchIndices[i] = j + 3;

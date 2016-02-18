@@ -239,9 +239,9 @@ namespace NotEngine {
 					SCE_GXM_COLOR_SURFACE_LINEAR,
 					(MSAA_MODE == SCE_GXM_MULTISAMPLE_NONE) ? SCE_GXM_COLOR_SURFACE_SCALE_NONE : SCE_GXM_COLOR_SURFACE_SCALE_MSAA_DOWNSCALE,
 					SCE_GXM_OUTPUT_REGISTER_SIZE_32BIT,
-					DISPLAY_WIDTH,
-					DISPLAY_HEIGHT,
-					DISPLAY_STRIDE_IN_PIXELS,
+					GraphicsBase::DISPLAY_WIDTH,
+					GraphicsBase::DISPLAY_HEIGHT,
+					GraphicsBase::DISPLAY_STRIDE_IN_PIXELS,
 					mDisplayBufferData[i]);
 				if (err != 0) {
 		 			printf("sceGxmColorSurfaceInit(): 0x%08X\n", err);
