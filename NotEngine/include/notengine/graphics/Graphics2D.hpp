@@ -69,8 +69,10 @@ namespace NotEngine {
 				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
 				void setTexture(unsigned int unit, const Graphics::Texture2D* texture);
+				/// Set the projection matrix
+				void setProjectionMatrix(const glm::mat4* projection);
 				/// Render all sprite added in the buffer since the last call to draw the batch
-				void render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer);
+				void render(Graphics::SpriteBuffer* spriteBuffer);
 		};
 
 	} // namespace Graphics

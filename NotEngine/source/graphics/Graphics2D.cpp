@@ -228,6 +228,11 @@ namespace NotEngine {
 			sceGxmSetFragmentTexture(base->mContext, unit, &texture->mTexture);
 		}
 
+		void Graphics2D::setProjectionMatrix(const glm::mat4* projection) {
+			GraphicsBase* base = GraphicsBase::instance();
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
+		}
+
 		void Graphics2D::use() {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m2dVertexProgram);
@@ -239,14 +244,13 @@ namespace NotEngine {
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
-		void Graphics2D::render(const glm::mat4* projection, Graphics::SpriteBuffer* spriteBuffer) {
+		void Graphics2D::render(Graphics::SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			if (base->mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
 				base->mLastBatchVerticesUID = spriteBuffer->mBatchVerticesUID;
 				sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
 			}
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
@@ -271,9 +275,10 @@ namespace NotEngine {
 				(float) Graphics::GraphicsBase::DISPLAY_HEIGHT, 0.0f,
 				-1.0f, 1.0f);
 
+			setProjectionMatrix(&ortho);
 			mClearBuffer->start();
 			mClearBuffer->put(&mClearSprite);
-			render(&ortho, mClearBuffer);
+			render(mClearBuffer);
 		}
 
 	} // namespace Graphics

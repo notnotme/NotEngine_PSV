@@ -68,8 +68,9 @@ int main() {
 			spriteBuffer->put(16,16,0, &spriteLetter, "Hello World!");
 
 			// set default texture then render
+			graphics2D->setProjectionMatrix(&ortho);
 			graphics2D->setTexture(0, GraphicsBase::getDebugFontTexture());
-			graphics2D->render(&ortho, spriteBuffer);
+			graphics2D->render(spriteBuffer);
 
 			/*
 			graphics2D->setTexture(0, myTexture);
