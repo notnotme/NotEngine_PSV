@@ -1,5 +1,5 @@
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
-#include "../../datas/debug_font.h"
+#include "../../datas/debugfont.raw.h"
 
 #include <cstdlib>
 #include <cstdio>
@@ -351,8 +351,8 @@ namespace NotEngine {
 			}
 
 			unsigned int offset = 0;
-			for (float y=0.0f; y<256.0f; y+=16.0f) {
-				for (float x=0.0f; x<256.0f; x+=16.0f) {
+			for (float y=0.0f; y<128.0f; y+=8.0f) {
+				for (float x=0.0f; x<128.0f; x+=8.0f) {
 					FrameCatalog::Frame* frame = &sFontFrames[offset];
 					frame->coords.s = (x / (float) GraphicsBase::DEBUG_FONT_TEXTURE_WIDTH);
 					frame->coords.t = (y / (float) GraphicsBase::DEBUG_FONT_TEXTURE_HEIGHT);
@@ -372,7 +372,7 @@ namespace NotEngine {
 				return false;
 			}
 			char* buffer = (char*)  sDebugFontTexture->getDataPtr();
-			memcpy(buffer, &debug_font, debug_font_size);
+			memcpy(buffer, &DEBUGFONT_RAW[0], DEBUGFONT_RAW_SIZE);
 
 			sceGxmSetCullMode(mContext, SCE_GXM_CULL_CW);
 			sceGxmSetTwoSidedEnable(mContext, SCE_GXM_TWO_SIDED_DISABLED);

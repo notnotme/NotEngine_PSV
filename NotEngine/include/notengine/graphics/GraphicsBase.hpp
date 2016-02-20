@@ -34,9 +34,9 @@ namespace NotEngine {
 				static const int DISPLAY_PIXEL_FORMAT = SCE_DISPLAY_PIXELFORMAT_A8B8G8R8;
 				static const int MSAA_MODE = SCE_GXM_MULTISAMPLE_NONE;
 
-				static const unsigned int DEBUG_FONT_CHAR_SIZE = 16;
-				static const unsigned int DEBUG_FONT_TEXTURE_WIDTH = 256;
-				static const unsigned int DEBUG_FONT_TEXTURE_HEIGHT = 256;
+				static const unsigned int DEBUG_FONT_CHAR_SIZE = 8;
+				static const unsigned int DEBUG_FONT_TEXTURE_WIDTH = 128;
+				static const unsigned int DEBUG_FONT_TEXTURE_HEIGHT = 128;
 				static const SceGxmTextureFormat DEBUG_FONT_TEXTURE_FORMAT = SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR;
 
 			private:

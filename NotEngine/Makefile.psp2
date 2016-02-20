@@ -26,8 +26,6 @@ SHADERS    = shader/compiled/graphics2d_frag.o \
 			 shader/compiled/graphics3d_frag.o \
 			 shader/compiled/graphics3d_vert.o
 
-DATAS	   = datas/debug_font.o
-
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
 CXX 	= $(PREFIX)-g++
@@ -40,7 +38,7 @@ ASFLAGS = $(CXXFLAGS)
 
 all: $(TARGET_LIB)
 
-$(TARGET_LIB): $(DATAS) $(SHADERS) $(OBJS)
+$(TARGET_LIB): $(SHADERS) $(OBJS)
 	$(AR) -rc $@ $^
 
 clean:
