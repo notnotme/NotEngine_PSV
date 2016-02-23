@@ -63,8 +63,8 @@ int main() {
 			graphics2D->clear(0x00, 0x00, 0x00, 0xff);
 
 			graphics3D->use();
-			graphics3D->setTexture(0, GraphicsBase::getDebugFontTexture());
-			graphics3D->setProjectionMatrix(&persp);
+			graphics3D->setTexture(GraphicsBase::getDebugFontTexture());
+			graphics3D->setProjectionMatrix(persp);
 			d3Buffer->start();
 			d3Buffer->put( 1, 1,-10,  0.0f,0.0f,  255,0,255,255);
 			d3Buffer->put(-1,-1,-10,  1.0f,1.0f,  255,255,0,255);

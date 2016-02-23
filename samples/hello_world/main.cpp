@@ -65,11 +65,11 @@ int main() {
 
 			// call start when you will render into the buffer the first time
 			spriteBuffer->start();
-			spriteBuffer->put(16,16,0, &spriteLetter, "Hello World!");
+			spriteBuffer->put(16,16,0, spriteLetter, "Hello World!");
 
 			// set default texture then render
-			graphics2D->setProjectionMatrix(&ortho);
-			graphics2D->setTexture(0, GraphicsBase::getDebugFontTexture());
+			graphics2D->setProjectionMatrix(ortho);
+			graphics2D->setTexture(GraphicsBase::getDebugFontTexture());
 			graphics2D->render(spriteBuffer);
 
 			/*
