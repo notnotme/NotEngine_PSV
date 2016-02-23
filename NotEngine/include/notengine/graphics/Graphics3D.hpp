@@ -55,14 +55,14 @@ namespace NotEngine {
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
-				void use();
+				void use() const;
 				/* RENDER ************************************************/
 				/// Set the current texture to use for render operation
-				void setTexture(unsigned int unit, const Graphics::Texture2D* texture);
+				void setTexture(const Graphics::Texture2D* texture) const;
 
-				void setProjectionMatrix(const glm::mat4* projection);
+				void setProjectionMatrix(const glm::mat4& projection) const;
 
-				void render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture);
+				void render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const;
 		};
 
 	} // namespace Graphics

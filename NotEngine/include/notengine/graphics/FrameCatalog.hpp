@@ -49,9 +49,9 @@ namespace NotEngine {
 				Frame getFrame(const std::string name);
 
 				/// Getters
-				unsigned int getWidth();
-				unsigned int getHeight();
-				std::string getTextureName();
+				unsigned int getWidth() const;
+				unsigned int getHeight() const;
+				std::string getTextureName() const;
 		};
 
 	} // namespace Graphics

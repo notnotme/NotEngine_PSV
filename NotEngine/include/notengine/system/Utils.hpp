@@ -7,8 +7,6 @@
 
 #include "../graphics/Sprite.hpp"
 
-using namespace NotEngine::Graphics;
-
 namespace NotEngine {
 
 	namespace System {
@@ -26,7 +24,7 @@ namespace NotEngine {
 
 				/// Return the string content of a file
 				static std::string stringFromFile(const std::string filename);
-				static bool isTouched(int touchX, int touchY, const Sprite* sprite);
+				static bool isTouched(int touchX, int touchY, const Graphics::Sprite& sprite);
 		};
 
 	} // Namespace System

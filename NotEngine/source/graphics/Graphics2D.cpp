@@ -223,17 +223,17 @@ namespace NotEngine {
 			}
 		}
 
-		void Graphics2D::setTexture(unsigned int unit, const Graphics::Texture2D* texture) {
+		void Graphics2D::setTexture(const Graphics::Texture2D* texture) const {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetFragmentTexture(base->mContext, unit, &texture->mTexture);
+			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
 
-		void Graphics2D::setProjectionMatrix(const glm::mat4* projection) {
+		void Graphics2D::setProjectionMatrix(const glm::mat4& projection) const {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 		}
 
-		void Graphics2D::use() {
+		void Graphics2D::use() const {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m2dVertexProgram);
 			sceGxmSetFragmentProgram(base->mContext, m2dFragmentProgram);
@@ -244,7 +244,7 @@ namespace NotEngine {
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
-		void Graphics2D::render(Graphics::SpriteBuffer* spriteBuffer) {
+		void Graphics2D::render(Graphics::SpriteBuffer* spriteBuffer) const {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			if (base->mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
@@ -264,7 +264,7 @@ namespace NotEngine {
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-			setTexture(0, mClearTexture);
+			setTexture(mClearTexture);
 			mClearSprite.color.r = r;
 			mClearSprite.color.g = g;
 			mClearSprite.color.b = b;
@@ -275,9 +275,9 @@ namespace NotEngine {
 				(float) Graphics::GraphicsBase::DISPLAY_HEIGHT, 0.0f,
 				-1.0f, 1.0f);
 
-			setProjectionMatrix(&ortho);
+			setProjectionMatrix(ortho);
 			mClearBuffer->start();
-			mClearBuffer->put(&mClearSprite);
+			mClearBuffer->put(mClearSprite);
 			render(mClearBuffer);
 		}
 

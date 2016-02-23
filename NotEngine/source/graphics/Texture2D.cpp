@@ -42,12 +42,12 @@ namespace NotEngine {
 			return true;
 		}
 
-		void Texture2D::finalize() {
+		void Texture2D::finalize() const {
 			if (mTextureMemoryUID != 0)
 				GraphicsBase::gpuFree(mTextureMemoryUID);
 		}
 
-		void* Texture2D::getDataPtr() {
+		void* Texture2D::getDataPtr() const {
 				if (mTextureMemoryUID != 0)
 					return sceGxmTextureGetData(&mTexture);
 

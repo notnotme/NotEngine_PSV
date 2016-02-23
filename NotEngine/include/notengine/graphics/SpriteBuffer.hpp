@@ -55,12 +55,12 @@ namespace NotEngine {
 				/// initialize the buffer with a capacity of [capacity] per frame
 				bool initialize(unsigned int capacity, bool dynamic);
 				/// clean up the buffer
-				void finalize();
+				void finalize() const;
 				/// Begin a new batch of sprites, should be called once per frame to reset the buffer offset
 				void start();
 				/// Add a sprite in the batch
-				void put(const Graphics::Sprite* sprite);
-				void put(float x, float y, int offset, Graphics::SpriteLetter* sprite, const std::string text);
+				void put(const Graphics::Sprite& sprite);
+				void put(float x, float y, int offset, Graphics::SpriteLetter& sprite, const std::string text);
 			};
 
 	} // namespace Graphics

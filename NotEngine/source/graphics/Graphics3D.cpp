@@ -170,17 +170,17 @@ namespace NotEngine {
 				GraphicsBase::gpuFree(mBatchIndicesUID);
 		}
 
-		void Graphics3D::setTexture(unsigned int unit, const Graphics::Texture2D* texture) {
+		void Graphics3D::setTexture(const Graphics::Texture2D* texture) const {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetFragmentTexture(base->mContext, unit, &texture->mTexture);
+			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
 
-		void Graphics3D::setProjectionMatrix(const glm::mat4* projection) {
+		void Graphics3D::setProjectionMatrix(const glm::mat4& projection) const {
 			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(*projection));
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 		}
 
-		void Graphics3D::use() {
+		void Graphics3D::use() const {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m3dVertexProgram);
 			sceGxmSetFragmentProgram(base->mContext, m3dFragmentProgram);
@@ -192,7 +192,7 @@ namespace NotEngine {
 			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
 		}
 
-		void Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) {
+		void Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
 			unsigned int countInBuffer = vertices->mVerticesCount;
 			switch(type) {
 				// chek for errors

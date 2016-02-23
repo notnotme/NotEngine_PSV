@@ -96,15 +96,15 @@ namespace NotEngine {
 				/// Initialize the video subsystem
 				bool initialize(bool waitForRetrace);
 				/// Terminate the rendering
-				void waitTerminate();
+				void waitTerminate() const;
 				/// free the video subsystem
 				void finalize();
 
 				/* RENDER ***************************************************/
 				/// Start rendreing into the default render target
-				void startDrawing();
+				void startDrawing() const;
 				/// End rendering
-				void stopDrawing();
+				void stopDrawing() const;
 				/// Add the last buffer to the render queue
 				void swapBuffers();
 				/// Set wait for etrace enabled/disable

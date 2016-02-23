@@ -36,7 +36,7 @@ namespace NotEngine {
 			return mBatchVertices != 0;
 		}
 
-		void SpriteBuffer::finalize() {
+		void SpriteBuffer::finalize() const {
 			GraphicsBase::gpuFree(mBatchVerticesUID);
 		}
 
@@ -45,78 +45,78 @@ namespace NotEngine {
 			mBatchOffset = 0;
 		}
 
-		void SpriteBuffer::put(const Graphics::Sprite* sprite) {
+		void SpriteBuffer::put(const Graphics::Sprite& sprite) {
 			if (mBatchOffset+mBatchCount > mBatchCapacity) {
 				printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 
 			unsigned int index = (mBatchCount)*4;
-			float wdth = (sprite->frame.size.w/2) * sprite->scale.w;
-			float hght = (sprite->frame.size.h/2) * sprite->scale.h;
+			float wdth = (sprite.frame.size.w/2) * sprite.scale.w;
+			float hght = (sprite.frame.size.h/2) * sprite.scale.h;
 
 			mBatchVertices[index].x = -wdth;
 			mBatchVertices[index].y = -hght;
-			mBatchVertices[index].s = sprite->frame.coords.s;
-			mBatchVertices[index].t = sprite->frame.coords.t;
-			mBatchVertices[index].r = sprite->color.r;
-			mBatchVertices[index].g = sprite->color.g;
-			mBatchVertices[index].b = sprite->color.b;
-			mBatchVertices[index].a = sprite->color.a;
-			mBatchVertices[index].angle = sprite->rotation;
-			mBatchVertices[index].tx = sprite->position.x;
-			mBatchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].s = sprite.frame.coords.s;
+			mBatchVertices[index].t = sprite.frame.coords.t;
+			mBatchVertices[index].r = sprite.color.r;
+			mBatchVertices[index].g = sprite.color.g;
+			mBatchVertices[index].b = sprite.color.b;
+			mBatchVertices[index].a = sprite.color.a;
+			mBatchVertices[index].angle = sprite.rotation;
+			mBatchVertices[index].tx = sprite.position.x;
+			mBatchVertices[index].ty = sprite.position.y;
 			index++;
 
 			mBatchVertices[index].x = wdth;
 			mBatchVertices[index].y = -hght;
-			mBatchVertices[index].s = sprite->frame.coords.u;
-			mBatchVertices[index].t = sprite->frame.coords.t;
-			mBatchVertices[index].r = sprite->color.r;
-			mBatchVertices[index].g = sprite->color.g;
-			mBatchVertices[index].b = sprite->color.b;
-			mBatchVertices[index].a = sprite->color.a;
-			mBatchVertices[index].angle = sprite->rotation;
-			mBatchVertices[index].tx = sprite->position.x;
-			mBatchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].s = sprite.frame.coords.u;
+			mBatchVertices[index].t = sprite.frame.coords.t;
+			mBatchVertices[index].r = sprite.color.r;
+			mBatchVertices[index].g = sprite.color.g;
+			mBatchVertices[index].b = sprite.color.b;
+			mBatchVertices[index].a = sprite.color.a;
+			mBatchVertices[index].angle = sprite.rotation;
+			mBatchVertices[index].tx = sprite.position.x;
+			mBatchVertices[index].ty = sprite.position.y;
 			index++;
 
 			mBatchVertices[index].x = wdth;
 			mBatchVertices[index].y = hght;
-			mBatchVertices[index].s = sprite->frame.coords.u;
-			mBatchVertices[index].t = sprite->frame.coords.v;
-			mBatchVertices[index].r = sprite->color.r;
-			mBatchVertices[index].g = sprite->color.g;
-			mBatchVertices[index].b = sprite->color.b;
-			mBatchVertices[index].a = sprite->color.a;
-			mBatchVertices[index].angle = sprite->rotation;
-			mBatchVertices[index].tx = sprite->position.x;
-			mBatchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].s = sprite.frame.coords.u;
+			mBatchVertices[index].t = sprite.frame.coords.v;
+			mBatchVertices[index].r = sprite.color.r;
+			mBatchVertices[index].g = sprite.color.g;
+			mBatchVertices[index].b = sprite.color.b;
+			mBatchVertices[index].a = sprite.color.a;
+			mBatchVertices[index].angle = sprite.rotation;
+			mBatchVertices[index].tx = sprite.position.x;
+			mBatchVertices[index].ty = sprite.position.y;
 			index++;
 
 			mBatchVertices[index].x = -wdth;
 			mBatchVertices[index].y = hght;
-			mBatchVertices[index].s = sprite->frame.coords.s;
-			mBatchVertices[index].t = sprite->frame.coords.v;
-			mBatchVertices[index].r = sprite->color.r;
-			mBatchVertices[index].g = sprite->color.g;
-			mBatchVertices[index].b = sprite->color.b;
-			mBatchVertices[index].a = sprite->color.a;
-			mBatchVertices[index].angle = sprite->rotation;
-			mBatchVertices[index].tx = sprite->position.x;
-			mBatchVertices[index].ty = sprite->position.y;
+			mBatchVertices[index].s = sprite.frame.coords.s;
+			mBatchVertices[index].t = sprite.frame.coords.v;
+			mBatchVertices[index].r = sprite.color.r;
+			mBatchVertices[index].g = sprite.color.g;
+			mBatchVertices[index].b = sprite.color.b;
+			mBatchVertices[index].a = sprite.color.a;
+			mBatchVertices[index].angle = sprite.rotation;
+			mBatchVertices[index].tx = sprite.position.x;
+			mBatchVertices[index].ty = sprite.position.y;
 
 			mBatchCount++;
 		}
 
-		void SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter* sprite, const std::string text) {
+		void SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter& sprite, const std::string text) {
 			unsigned int offset = 0;
-			sprite->position.y = y;
-			sprite->position.x = x;
+			sprite.position.y = y;
+			sprite.position.x = x;
 			for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
-				sprite->setFrame(*it);
+				sprite.setFrame(*it);
 				put(sprite);
-				sprite->position.x += sprite->frame.size.w + charOffset;
+				sprite.position.x += sprite.frame.size.w + charOffset;
 				offset++;
 			}
 		}

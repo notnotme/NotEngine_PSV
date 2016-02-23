@@ -40,9 +40,9 @@ namespace NotEngine {
 				/// Initialize a texture
 				bool initialize(unsigned int w, unsigned int h, SceGxmTextureFormat format);
 				/// finalize a texture
-				void finalize();
+				void finalize() const;
 				/// Return a pointer to the datas (RW)
-				void* getDataPtr();
+				void* getDataPtr() const;
 				/// Set the texture filter
 				void setFilter(SceGxmTextureFilter min, SceGxmTextureFilter mag);
 				/// Set the texture repeat mode

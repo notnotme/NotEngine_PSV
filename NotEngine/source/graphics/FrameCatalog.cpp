@@ -96,15 +96,15 @@ namespace NotEngine {
 			mHeight = 0;
 		}
 
-		unsigned int FrameCatalog::getWidth() {
+		unsigned int FrameCatalog::getWidth() const {
 			return mWidth;
 		}
 
-		unsigned int FrameCatalog::getHeight() {
+		unsigned int FrameCatalog::getHeight() const {
 			return mHeight;
 		}
 
-		std::string FrameCatalog::getTextureName() {
+		std::string FrameCatalog::getTextureName() const {
 			return mTextureName;
 		}
 

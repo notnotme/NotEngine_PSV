@@ -52,7 +52,7 @@ namespace NotEngine {
 				/// initialize the buffer with a capacity of [capacity] per frame
 				bool initialize(unsigned int capacity, bool dynamic);
 				/// clean up the buffer
-				void finalize();
+				void finalize() const;
 				/// Reset the buffer and start drawing from index 0. Must be used maximum once per frame.
 				void start();
 				/// Add vertices in the batch

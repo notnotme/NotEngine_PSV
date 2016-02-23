@@ -386,7 +386,7 @@ namespace NotEngine {
 			return true;
 		}
 
-		void GraphicsBase::waitTerminate() {
+		void GraphicsBase::waitTerminate() const {
 			// wait until rendering is done
 			if (mContext != 0) {
 				sceGxmFinish(mContext);
@@ -470,7 +470,7 @@ namespace NotEngine {
 			mBackBufferIndex = (mBackBufferIndex + 1) % GraphicsBase::DISPLAY_BUFFER_COUNT;
 		}
 
-		void GraphicsBase::startDrawing() {
+		void GraphicsBase::startDrawing() const {
 			sceGxmBeginScene(
 				mContext,
 				0,
@@ -482,7 +482,7 @@ namespace NotEngine {
 				&mDepthSurface);
 		}
 
-		void GraphicsBase::stopDrawing() {
+		void GraphicsBase::stopDrawing() const {
 			sceGxmEndScene(mContext, 0, 0);
 		}
 

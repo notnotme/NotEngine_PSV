@@ -16,7 +16,7 @@ namespace NotEngine {
 			printf("~Director()\n");
 		}
 
-		bool Director::initialize(std::map<std::string, GameState*> states, std::string start) {
+		bool Director::initialize(std::map<std::string, GameState*> states, const std::string start) {
 			mGameStates = states;
 
 			if (mGameStates.find(start) == mGameStates.end()) {
@@ -39,7 +39,7 @@ namespace NotEngine {
 			return true;
 		}
 
-		void Director::finalize() {
+		void Director::finalize() const {
 		}
 
 		void Director::update() {
@@ -70,10 +70,10 @@ namespace NotEngine {
 					printf("Director: GameState failed to initialize\n");
 				}
 			}
-			mCurrentState->update(&mPadData, &mTouchFrontData, &mTouchBackData, mElapsed);
+			mCurrentState->update(mPadData, mTouchFrontData, mTouchBackData, mElapsed);
 		}
 
-		bool Director::isRunning() {
+		bool Director::isRunning() const {
 			return !mQuit;
 		}
 
@@ -91,7 +91,7 @@ namespace NotEngine {
 			}
 		}
 
-		unsigned int Director::getFPS() {
+		unsigned int Director::getFPS() const {
 			return mFps;
 		}
 

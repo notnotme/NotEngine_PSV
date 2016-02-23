@@ -62,17 +62,17 @@ namespace NotEngine {
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
-				void use();
+				void use() const;
 
 				/* RENDER ************************************************/
 				/// Clear the screen. be warned: this function actually unbind the current texture and buffer! Should be avoided if possible or use your own "clear sprite" !!!
 				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
-				void setTexture(unsigned int unit, const Graphics::Texture2D* texture);
+				void setTexture(const Graphics::Texture2D* texture) const;
 				/// Set the projection matrix
-				void setProjectionMatrix(const glm::mat4* projection);
+				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render all sprite added in the buffer since the last call to draw the batch
-				void render(Graphics::SpriteBuffer* spriteBuffer);
+				void render(Graphics::SpriteBuffer* spriteBuffer) const;
 		};
 
 	} // namespace Graphics

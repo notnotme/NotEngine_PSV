@@ -36,7 +36,7 @@ namespace NotEngine {
 			return mBatchVertices != 0;
 		}
 
-		void D3Buffer::finalize() {
+		void D3Buffer::finalize() const {
 			GraphicsBase::gpuFree(mBatchVerticesUID);
 		}
 
