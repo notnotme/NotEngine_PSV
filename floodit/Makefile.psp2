@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2015 Sergi Granell (xerpi)
+# based on Cirne's vita-toolchain test Makefile
+#
+TARGET	= floodit
+
+OBJS	= source/GameSprite.o \
+		  source/GameContext.o \
+		  source/Title.o \
+		  source/Game.o \
+		  source/main.o
+
+LIBS 	= -lnotengine -ljsonxx -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
+			-lScePower_stub
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+CXX 	= $(PREFIX)-g++
+AR      = $(PREFIX)-ar
+STRIP   = $(PREFIX)-strip
+
+CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-constant -I$(INCLUDES)
+CXXFLAGS	= $(CFLAGS) -fno-exceptions
+ASFLAGS		= $(CXXFLAGS)
+
+all: $(TARGET).velf
+
+%.velf: %.elf
+	$(PREFIX)-strip -g $<
+	vita-elf-create $< $@ $(VITASDK)/share/db.json $(VITASDK)/share/extra.json
+
+$(TARGET).elf: $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+
+clean:
+	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS)
