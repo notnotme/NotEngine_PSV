@@ -29,8 +29,11 @@ bool Game::enter() {
 	mPlayerGridMarginY = GraphicsBase::DISPLAY_HEIGHT - mGameGridMarginY - playerGridSize
 		+ playerTileSize/2 + Game::PLAYER_GRID_TILE_MARGIN*2 + Game::GRID_TILE_MARGIN*2;
 
-	mScoreMarginX = mPlayerGridMarginX - playerTileSize/2 + 28;
-	mScoreMarginY = mPlayerGridMarginY - playerTileSize/2 - 48;
+	mScoreMarginX = mPlayerGridMarginX - playerTileSize/2 + Game::CHAR_SIZE/2 + 8; // (+8 to center it..)
+	mScoreMarginY = mPlayerGridMarginY - playerTileSize/2 - Game::CHAR_SIZE;
+
+	mLoseMarginX = GraphicsBase::DISPLAY_WIDTH/2 - (strlen("you LOSE :(") * (Game::CHAR_SIZE-Game::CHAR_OFFSET))/2 + Game::CHAR_OFFSET;
+	mWinMarginX = GraphicsBase::DISPLAY_WIDTH/2 - (strlen("you WIN :(") * (Game::CHAR_SIZE-Game::CHAR_OFFSET))/2 + Game::CHAR_OFFSET;
 
 	// Initialize our sprites
 	FrameCatalog::Frame tileFrame = mGameContext->getSpritesCatalog()->getFrame("tile");
@@ -97,18 +100,18 @@ bool Game::enter() {
 	mQuitSprite.color.r = 255;
 
 	mGameOverSpriteLetter = SpriteLetter();
-	mGameOverSpriteLetter.frame.size.w = 48;
-	mGameOverSpriteLetter.frame.size.h = 48;
-	mGameOverSpriteLetter.color.r = mGameOverSpriteLetter.color.g
-		 = mGameOverSpriteLetter.color.b = 0;
-	mLoseMarginX = GraphicsBase::DISPLAY_WIDTH/2 - (strlen("you LOSE :(") * (48-16))/2 + 16;
-	mWinMarginX = GraphicsBase::DISPLAY_WIDTH/2 - (strlen("you WIN :(") * (48-16))/2 + 16;
+	mGameOverSpriteLetter.frame.size.w = Game::CHAR_SIZE;
+	mGameOverSpriteLetter.frame.size.h = Game::CHAR_SIZE;
+	mGameOverSpriteLetter.color.r = 0;
+	mGameOverSpriteLetter.color.g = 0;
+	mGameOverSpriteLetter.color.b = 0;
 
 	mScoreSpriteLetter = SpriteLetter();
-	mScoreSpriteLetter.frame.size.w = 48;
-	mScoreSpriteLetter.frame.size.h = 48;
-	mScoreSpriteLetter.color.r = mScoreSpriteLetter.color.g
-		 = mScoreSpriteLetter.color.b = 0;
+	mScoreSpriteLetter.frame.size.w = Game::CHAR_SIZE;
+	mScoreSpriteLetter.frame.size.h = Game::CHAR_SIZE;
+	mScoreSpriteLetter.color.r = 0;
+	mScoreSpriteLetter.color.g = 0;
+	mScoreSpriteLetter.color.b = 0;
 
 	newGame();
 	return true;
@@ -341,8 +344,8 @@ void Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 		mGraphics2D->setTexture(mGameContext->getSpritesTexture());
 		mGraphics2D->render(mSpriteBuffer);
 
-		char str[100];
-		snprintf(str, 100, "Left: %2i", mClicks);
+		char str[25];
+		snprintf(str, 25, "Left: %2i", mClicks);
 		mSpriteBuffer->put(mScoreMarginX,mScoreMarginY, -16, mScoreSpriteLetter, std::string(str));
 		mGraphics2D->setTexture(mGameContext->getFontTexture());
 		mGraphics2D->render(mSpriteBuffer);
@@ -354,20 +357,22 @@ void Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 			mGraphics2D->setTexture(mGameContext->getSpritesTexture());
 			mGraphics2D->render(mSpriteBuffer);
 
-			if (mState == WIN) {
-				mSpriteBuffer->put(mWinMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -16, mGameOverSpriteLetter, "You WIN :)");
-				mGraphics2D->setTexture(mGameContext->getFontTexture());
-				mGraphics2D->render(mSpriteBuffer);
-			} else if (mState == LOSE) {
-				mSpriteBuffer->put(mLoseMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -16, mGameOverSpriteLetter, "You LOSE :(");
-				mGraphics2D->setTexture(mGameContext->getFontTexture());
-				mGraphics2D->render(mSpriteBuffer);
+			if (mGameOverSpriteLetter.color.a != 0) {
+				if (mState == WIN) {
+					mSpriteBuffer->put(mWinMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -Game::CHAR_OFFSET, mGameOverSpriteLetter, "You WIN :)");
+					mGraphics2D->setTexture(mGameContext->getFontTexture());
+					mGraphics2D->render(mSpriteBuffer);
+				} else if (mState == LOSE) {
+					mSpriteBuffer->put(mLoseMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -Game::CHAR_OFFSET, mGameOverSpriteLetter, "You LOSE :(");
+					mGraphics2D->setTexture(mGameContext->getFontTexture());
+					mGraphics2D->render(mSpriteBuffer);
+				}
 			}
 		}
 
 #ifdef __DEBUG__
-		snprintf(str, 100, "FPS: %i", mDirector->getFPS());
-		mSpriteBuffer->put(16,16, 0, *mGameContext->getSpriteLetter(), std::string(str));
+		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
+		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
 		mGraphics2D->setTexture(GraphicsBase::getDebugFontTexture());
 		mGraphics2D->render(mSpriteBuffer);
 #endif

@@ -4,7 +4,7 @@
 #include <cmath>
 
 const std::string Title::sGreetStr = std::string("Hi ! Special thanks to xerpi, akabane87, al3x_10m, ezi0, netrix, phaazon, maracuja, Adoru, p0nce, flure, wullon, zerkman, nanard, sam, Msk, " \
-	"latortue, g012, RaHoW, cyberpingui, rez, dubmood, yogibear, kaneel, Zorro 2, Den, titeiko, and well I may forgot people as you are many that I love being with you on IRC ! " \
+	"latortue, g012, RaHoW, xtrium, cyberpingui, rez, dubmood, yogibear, kaneel, Zorro 2, Den, titeiko, and well I may forgot people as you are many that I love being with you on IRC ! " \
 	"Oh! There also the great people in #openpandora: ptitSeb, sebt3, Cloudef, Elw3, endrift, klopsi-u3, Lolla, TrashyMG, undexsym, urjaman, and Wally ^^ Thanks to rejuvenate team :) All graphics used here comes from Google Material icons, font is Droid Sans. " \
 	" This program use the color scheme you can found in flood-it for Kolibrios, by Leency.        See you later :)");
 
@@ -153,9 +153,9 @@ void Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, co
 		}
 
 #ifdef __DEBUG__
-		char str[100];
-		snprintf(str, 100, "FPS: %i", mDirector->getFPS());
-		mSpriteBuffer->put(16,16, 0, *mGameContext->getSpriteLetter(), std::string(str));
+		char str[25];
+		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
+		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
 		mGraphics2D->setTexture(GraphicsBase::getDebugFontTexture());
 		mGraphics2D->render(mSpriteBuffer);
 #endif

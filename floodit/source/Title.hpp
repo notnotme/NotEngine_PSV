@@ -41,7 +41,7 @@ class Title : public GameState {
 		Step mStep;
 
 		static const unsigned int CHAR_SIZE = 48;
-		static const int CHAR_OFFSET = 20;
+		static const int CHAR_OFFSET = 16;
 		static const std::string sGreetStr;
 
 	public:

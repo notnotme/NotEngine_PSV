@@ -31,6 +31,9 @@ class Game : public GameState {
 		static const unsigned int PLAYER_GRID_TILE_SIZE = 128;
 		static const unsigned int PLAYER_GRID_TILE_MARGIN = 8;
 
+		static const unsigned int CHAR_SIZE = 48;
+		static const int CHAR_OFFSET = 20;
+
 		enum Step {
 			ENTER,
 			EXIT,

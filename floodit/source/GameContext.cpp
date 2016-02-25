@@ -19,7 +19,7 @@ GameContext::~GameContext() {
 bool GameContext::initialize() {
 	mSpriteBuffer = 0;
 	mSpriteBuffer = new SpriteBuffer();
-	if (!mSpriteBuffer->initialize(2048, true)) {
+	if (!mSpriteBuffer->initialize(Graphics2D::MAX_SPRITES_PER_BATCH, true)) {
 		printf("SpriteBuffer failed\n");
 		return false;
 	}
