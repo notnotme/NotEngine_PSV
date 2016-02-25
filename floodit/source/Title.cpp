@@ -34,7 +34,9 @@ bool Title::enter() {
 	mTitleSprite.color.a = 255;
 
 	mOverlaySprite = Sprite();
-	mOverlaySprite.color.r = mOverlaySprite.color.g = mOverlaySprite.color.b = 0;
+	mOverlaySprite.color.r = 0;
+	mOverlaySprite.color.g = 0;
+	mOverlaySprite.color.b = 0;
 	mOverlaySprite.color.a = 255;
 	mOverlaySprite.frame.coords = mGameContext->getSpritesCatalog()->getFrame("tile").coords;
 	mOverlaySprite.frame.size.w = GraphicsBase::DISPLAY_WIDTH;

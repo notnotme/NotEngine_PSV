@@ -19,7 +19,7 @@ GameContext::~GameContext() {
 bool GameContext::initialize() {
 	mSpriteBuffer = 0;
 	mSpriteBuffer = new SpriteBuffer();
-	if (!mSpriteBuffer->initialize(1024, true)) {
+	if (!mSpriteBuffer->initialize(2048, true)) {
 		printf("SpriteBuffer failed\n");
 		return false;
 	}
