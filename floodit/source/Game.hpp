@@ -12,7 +12,6 @@ using namespace NotEngine::Game;
 class Game : public GameState {
 
 	private:
-	    ////Leency 06.10.2011, Flood-it! v2.41, GPL
 		static const unsigned int COLOR_1 = 0xf18db6ff;
 		static const unsigned int COLOR_2 = 0x605ca8ff;
 		static const unsigned int COLOR_3 = 0xfddc80ff;
