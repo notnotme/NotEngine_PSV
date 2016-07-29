@@ -2,7 +2,9 @@
 # Copyright (c) 2015 Sergi Granell (xerpi)
 # based on Cirne's vita-toolchain test Makefile
 #
+TITLE_ID = FLDT00001
 TARGET	= floodit
+TARGET_TITLE = Flood It!
 
 OBJS	= source/GameSprite.o \
 		  source/GameContext.o \
@@ -14,7 +16,7 @@ LIBS 	= -lnotengine -ljsonxx -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
 			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
 			-lScePower_stub
 
-PREFIX  = arm-vita-eabi
+PREFIX  = $(VITASDK)/bin/arm-vita-eabi
 CC      = $(PREFIX)-gcc
 CXX 	= $(PREFIX)-g++
 AR      = $(PREFIX)-ar
@@ -24,14 +26,23 @@ CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-const
 CXXFLAGS	= $(CFLAGS) -fno-exceptions
 ASFLAGS		= $(CXXFLAGS)
 
-all: $(TARGET).velf
+all: $(TARGET).vpk
+
+%.vpk: eboot.bin
+	$(VITASDK)/bin/vita-mksfoex -s TITLE_ID=$(TITLE_ID) "$(TARGET_TITLE)" param.sfo
+	@cp eboot.bin vpk
+	@cp param.sfo vpk/sce_sys
+	@cd vpk && zip -r -0 $(TARGET).vpk eboot.bin sce_sys
+
+eboot.bin: $(TARGET).velf
+	$(VITASDK)/bin/vita-make-fself $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<
-	vita-elf-create $< $@ $(VITASDK)/share/db.json $(VITASDK)/share/extra.json
+	$(VITASDK)/bin/vita-elf-create $< $@ $(VITASDK)/share/db.json
 
 $(TARGET).elf: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS)
+	@rm -rf $(TARGET).velf $(TARGET).elf eboot.bin param.sfo $(OBJS)

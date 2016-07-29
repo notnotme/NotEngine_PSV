@@ -2,5 +2,9 @@
 *.o
 *.elf
 *.velf
+*.vpk
+eboot.bin
+param.sfo
+.vscode
 vitamine/
 

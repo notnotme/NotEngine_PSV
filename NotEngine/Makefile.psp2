@@ -26,7 +26,7 @@ SHADERS    = shader/compiled/graphics2d_frag.o \
 			 shader/compiled/graphics3d_frag.o \
 			 shader/compiled/graphics3d_vert.o
 
-PREFIX  = arm-vita-eabi
+PREFIX  = $(VITASDK)/bin/arm-vita-eabi
 CC      = $(PREFIX)-gcc
 CXX 	= $(PREFIX)-g++
 AR      = $(PREFIX)-ar
