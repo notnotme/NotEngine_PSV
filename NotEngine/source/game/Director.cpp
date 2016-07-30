@@ -31,6 +31,9 @@ namespace NotEngine {
 				return false;
 			}
 
+			sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, 1);
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, 1);
 			sceRtcGetCurrentTick(&mCurrentTicks);
 			mElapsed = 0;
 			mFrames = 0;
