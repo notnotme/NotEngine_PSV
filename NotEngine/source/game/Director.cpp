@@ -30,8 +30,9 @@ namespace NotEngine {
 			}
 
 			sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
-			sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, 1);
-			sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, 1);
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_START);
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_START);
+
 			sceRtcGetCurrentTick(&mCurrentTicks);
 			mElapsed = 0;
 			mFrames = 0;
@@ -41,6 +42,8 @@ namespace NotEngine {
 		}
 
 		void Director::finalize() const {
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_BACK, SCE_TOUCH_SAMPLING_STATE_STOP);
+			sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_STOP);
 		}
 
 		void Director::update() {
