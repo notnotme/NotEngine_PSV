@@ -18,14 +18,17 @@ CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-const
 CXXFLAGS	+= $(CFLAGS) -fno-exceptions
 ASFLAGS		= $(CFLAGS)
 
-all: $(TARGET).velf
+all: eboot.bin
+
+eboot.bin: $(TARGET).velf
+	$(VITASDK)/bin/vita-make-fself $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<
-	vita-elf-create $< $@ $(VITASDK)/share/db.json $(VITASDK)/share/extra.json
+	vita-elf-create $< $@ $(VITASDK)/share/db.json
 
 $(TARGET).elf: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
 
 clean:
-	@rm -rf $(TARGET).velf $(TARGET).elf $(OBJS)
+	@rm -rf $(TARGET).velf $(TARGET).elf eboot.bin $(OBJS)
