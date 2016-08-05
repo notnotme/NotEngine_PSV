@@ -9,25 +9,23 @@ namespace NotEngine {
 	namespace Game {
 
 		Director::Director() : System::Singleton<Director>() {
-			printf("Director()\n");
 		}
 
 		Director::~Director() {
-			printf("~Director()\n");
 		}
 
 		bool Director::initialize(std::map<std::string, GameState*> states, const std::string start) {
 			mGameStates = states;
 
 			if (mGameStates.find(start) == mGameStates.end()) {
-				printf("Director cannot find first game state: %s\n", start.c_str());
+				//printf("Director cannot find first game state: %s\n", start.c_str());
 				return false;
 			}
 
 			mPendingState = 0;
 			mCurrentState = states[start];
 			if(! mCurrentState->enter()) {
-				printf("Director GameState failed to initialize\n");
+				//printf("Director GameState failed to initialize\n");
 				return false;
 			}
 
@@ -70,7 +68,7 @@ namespace NotEngine {
 				mPendingState = 0;
 
 				if (! mCurrentState->enter()) {
-					printf("Director: GameState failed to initialize\n");
+					//printf("Director: GameState failed to initialize\n");
 				}
 			}
 			mCurrentState->update(mPadData, mTouchFrontData, mTouchBackData, mElapsed);

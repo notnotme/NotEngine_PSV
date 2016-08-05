@@ -10,16 +10,14 @@ namespace NotEngine {
 	namespace Graphics {
 
 		SpriteBuffer::SpriteBuffer() {
-			printf("SpriteBuffer()\n");
 		}
 
 		SpriteBuffer::~SpriteBuffer() {
-			printf("~SpriteBuffer()\n");
 		}
 
 		bool SpriteBuffer::initialize(unsigned int capacity, bool dynamic) {
 			if (capacity > Graphics2D::MAX_SPRITES_PER_BATCH) {
-				printf("SpriteBuffer size can't be > than %i\n", Graphics2D::MAX_SPRITES_PER_BATCH);
+				//printf("SpriteBuffer size can't be > than %i\n", Graphics2D::MAX_SPRITES_PER_BATCH);
 				return false;
 			}
 			mBatchCount = 0;
@@ -47,7 +45,7 @@ namespace NotEngine {
 
 		void SpriteBuffer::put(const Graphics::Sprite& sprite) {
 			if (mBatchOffset+mBatchCount > mBatchCapacity) {
-				printf("addToBatch discard. Capacity overflow\n");
+				//printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 

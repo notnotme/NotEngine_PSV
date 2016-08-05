@@ -17,7 +17,7 @@ namespace NotEngine {
 		std::string Utils::stringFromFile(const std::string filename) {
 			std::ifstream myfile(filename.c_str());
 			if (!myfile.is_open()) {
-				printf("Failed to open file: %s\n", filename.c_str());
+				//printf("Failed to open file: %s\n", filename.c_str());
 				return "";
 			}
 

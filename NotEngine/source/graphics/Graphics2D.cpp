@@ -17,11 +17,9 @@ namespace NotEngine {
 	namespace Graphics {
 
 		Graphics2D::Graphics2D() : System::Singleton<Graphics2D>() {
-			printf("Graphics2D()\n");
 		}
 
 		Graphics2D::~Graphics2D() {
-			printf("~Graphics2D()\n");
 		}
 
 		bool Graphics2D::initialize() {
@@ -30,12 +28,12 @@ namespace NotEngine {
 			// Check if the 2d shaders are valids
 			int err = sceGxmProgramCheck(s2dVertexProgramGxp);
 			if (err != 0) {
-				printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
+				//printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 			err = sceGxmProgramCheck(s2dFragmentProgramGxp);
 			if (err != 0) {
-				printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
+				//printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -43,14 +41,14 @@ namespace NotEngine {
 			m2dVertexProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dVertexProgramGxp, &m2dVertexProgramId);
 			if (err != 0) {
-				printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
+				//printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
 			m2dFragmentProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dFragmentProgramGxp, &m2dFragmentProgramId);
 			if (err != 0) {
-				printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
+				//printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -123,7 +121,7 @@ namespace NotEngine {
 				1,
 				&m2dVertexProgram);
 			if (err != 0) {
-				printf("m2dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
+				//printf("m2dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -146,7 +144,7 @@ namespace NotEngine {
 				s2dVertexProgramGxp,
 				&m2dFragmentProgram);
 			if (err != 0) {
-				printf("m2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
+				//printf("m2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -158,7 +156,7 @@ namespace NotEngine {
 				&mBatchIndicesUID);
 
 			if (mBatchIndices == 0) {
-				printf("batchIndices not allocated\n");
+				//printf("batchIndices not allocated\n");
 				return false;
 			}
 
@@ -182,14 +180,14 @@ namespace NotEngine {
 
 			mClearTexture = new Texture2D();
 			if (! mClearTexture->initialize(1,1, SCE_GXM_TEXTURE_FORMAT_L8)) {
-				printf("clearTexture->initialize failed\n");
+				//printf("clearTexture->initialize failed\n");
 				return false;
 			}
 
 			// Allocate clear buffer
 			mClearBuffer = new Graphics::SpriteBuffer();
 			if (! mClearBuffer->initialize(32, true)) {
-				printf("clearBuffer not allocated\n");
+				//printf("clearBuffer not allocated\n");
 				return false;
 			}
 

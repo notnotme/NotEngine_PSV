@@ -11,22 +11,20 @@ namespace NotEngine {
 	namespace Graphics {
 
 		FrameCatalog::FrameCatalog() : mWidth(0), mHeight(0) {
-			printf("FrameCatalog()\n");
 		}
 
 		FrameCatalog::~FrameCatalog() {
-			printf("~FrameCatalog()\n");
 		}
 
 		bool FrameCatalog::initialize(const std::string jsonString) {
 			if (jsonString.length() == 0) {
-				printf("FrameCatalog received empty string\n");
+				//printf("FrameCatalog received empty string\n");
 				return false;
 			}
 
 			jsonxx::Object json;
 			if (!json.parse(jsonString + "\n")) {
-				printf("jsonxx failed to parse \n");
+				//printf("jsonxx failed to parse \n");
 				return false;
 			}
 
@@ -47,14 +45,14 @@ namespace NotEngine {
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
 				if (!it->second->get<jsonxx::Object>().has<jsonxx::Object>("frame") ||
 					!it->second->get<jsonxx::Object>().has<jsonxx::Object>("sourceSize")) {
-					printf("bad json, no frame or sourceSize\n");
+					//printf("bad json, no frame or sourceSize\n");
 					return false;
 				}
 
 				jsonxx::Object frameObject = it->second->get<jsonxx::Object>().get<jsonxx::Object>("frame");
 				if (!frameObject.has<jsonxx::Number>("x") || !frameObject.has<jsonxx::Number>("y")
 					|| !frameObject.has<jsonxx::Number>("w") || !frameObject.has<jsonxx::Number>("h")) {
-					printf("bad json, bad frame found\n");
+					//printf("bad json, bad frame found\n");
 					return false;
 				}
 
@@ -83,7 +81,7 @@ namespace NotEngine {
 
 		FrameCatalog::Frame FrameCatalog::getFrame(const std::string name) {
 			if (mCatalog.find(name) == mCatalog.end()) {
-				printf("Frame not found %s, throwing default frame.\n", name.c_str());
+				//printf("Frame not found %s, throwing default frame.\n", name.c_str());
 				return Frame();
 			}
 

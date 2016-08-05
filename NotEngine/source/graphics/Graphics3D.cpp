@@ -17,11 +17,9 @@ namespace NotEngine {
 	namespace Graphics {
 
 		Graphics3D::Graphics3D() : System::Singleton<Graphics3D>() {
-			printf("Graphics3D()\n");
 		}
 
 		Graphics3D::~Graphics3D() {
-			printf("~Graphics3D()\n");
 		}
 
 		bool Graphics3D::initialize() {
@@ -30,12 +28,12 @@ namespace NotEngine {
 			// Check if the 3d shaders are valids
 			int err = sceGxmProgramCheck(s3dVertexProgramGxp);
 			if (err != 0) {
-				printf("graphics3d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
+				//printf("graphics3d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 			err = sceGxmProgramCheck(s3dFragmentProgramGxp);
 			if (err != 0) {
-				printf("graphics3d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
+				//printf("graphics3d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -43,14 +41,14 @@ namespace NotEngine {
 			m3dVertexProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s3dVertexProgramGxp, &m3dVertexProgramId);
 			if (err != 0) {
-				printf("graphics3d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
+				//printf("graphics3d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
 			m3dFragmentProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s3dFragmentProgramGxp, &m3dFragmentProgramId);
 			if (err != 0) {
-				printf("graphics3d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
+				//printf("graphics3d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -106,7 +104,7 @@ namespace NotEngine {
 				1,
 				&m3dVertexProgram);
 			if (err != 0) {
-				printf("m3dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
+				//printf("m3dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -129,7 +127,7 @@ namespace NotEngine {
 				s3dVertexProgramGxp,
 				&m3dFragmentProgram);
 			if (err != 0) {
-				printf("m3dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
+				//printf("m3dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -141,7 +139,7 @@ namespace NotEngine {
 				&mBatchIndicesUID);
 
 			if (mBatchIndices == 0) {
-				printf("batchIndices not allocated\n");
+				//printf("batchIndices not allocated\n");
 				return false;
 			}
 
@@ -198,21 +196,21 @@ namespace NotEngine {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
 					if(countInBuffer % 3 != 0 || countInBuffer < 3)
-						printf("Wrong vertices count for TRIANGLES\n");
+						//printf("Wrong vertices count for TRIANGLES\n");
 					break;
 				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
 				case SCE_GXM_PRIMITIVE_TRIANGLE_FAN:
 				case SCE_GXM_PRIMITIVE_TRIANGLE_STRIP:
 					if(countInBuffer < 3)
-						printf("Wrong vertices count for TRIANGLE_FAN/STRIP/EDGES\n");
+						//printf("Wrong vertices count for TRIANGLE_FAN/STRIP/EDGES\n");
 					break;
 				case SCE_GXM_PRIMITIVE_LINES:
 					if(countInBuffer % 2 != 0 || countInBuffer < 2)
-						printf("Wrong vertices count for LINES\n");
+						//printf("Wrong vertices count for LINES\n");
 					break;
 				case SCE_GXM_PRIMITIVE_POINTS:
 					if(countInBuffer < 1)
-						printf("Wrong primitive count (0)\n");
+						//printf("Wrong primitive count (0)\n");
 					break;
 			}
 

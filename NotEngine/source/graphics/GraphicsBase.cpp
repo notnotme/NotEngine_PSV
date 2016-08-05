@@ -13,11 +13,9 @@ namespace NotEngine {
 		Graphics::Texture2D* GraphicsBase::sDebugFontTexture = 0;
 
 		GraphicsBase::GraphicsBase() : System::Singleton<GraphicsBase>() {
-			printf("GraphicsBase()\n");
 		}
 
 		GraphicsBase::~GraphicsBase() {
-			printf("~GraphicsBase()\n");
 		}
 
 		void* GraphicsBase::patcherAlloc(void *userData, unsigned int size) {
@@ -153,7 +151,7 @@ namespace NotEngine {
 
 			int err = sceGxmInitialize(&initializeParams);
 			if (err != 0) {
-				printf("sceGxmInitialize(): 0x%08X\n", err);
+				//printf("sceGxmInitialize(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -202,7 +200,7 @@ namespace NotEngine {
 			};
 			err = sceGxmCreateContext(&mContextParams, &mContext);
 			if(err != 0) {
-				printf("sceGxmCreateContext(): 0x%08X\n", err);
+				//printf("sceGxmCreateContext(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -218,7 +216,7 @@ namespace NotEngine {
 			};
 			err = sceGxmCreateRenderTarget(&renderTargetParams, &mRenderTarget);
 			if (err != 0) {
-	 			printf("sceGxmCreateRenderTarget(): 0x%08X\n", err);
+	 			//printf("sceGxmCreateRenderTarget(): 0x%08X\n", err);
 	 			return false;
 			}
 
@@ -244,14 +242,14 @@ namespace NotEngine {
 					GraphicsBase::DISPLAY_STRIDE_IN_PIXELS,
 					mDisplayBufferData[i]);
 				if (err != 0) {
-		 			printf("sceGxmColorSurfaceInit(): 0x%08X\n", err);
+		 			//printf("sceGxmColorSurfaceInit(): 0x%08X\n", err);
 		 			return false;
 		 		}
 
 				// create a sync object that we will associate with this buffer
 				err = sceGxmSyncObjectCreate(&mDisplayBufferSync[i]);
 				if (err != 0) {
-		 			printf("sceGxmSyncObjectCreate(): 0x%08X\n", err);
+		 			//printf("sceGxmSyncObjectCreate(): 0x%08X\n", err);
 		 			return false;
 				}
 			}
@@ -286,7 +284,7 @@ namespace NotEngine {
 				depthBufferData,
 				0);
 			if (err != 0) {
-	 			printf("sceGxmDepthStencilSurfaceInit(): 0x%08X\n", err);
+	 			//printf("sceGxmDepthStencilSurfaceInit(): 0x%08X\n", err);
 	 			return false;
 			}
 
@@ -338,7 +336,7 @@ namespace NotEngine {
 			};
 			err = sceGxmShaderPatcherCreate(&patcherParams, &mShaderPatcher);
 			if (err != 0) {
-				printf("sceGxmShaderPatcherCreate(): 0x%08X\n", err);
+				//printf("sceGxmShaderPatcherCreate(): 0x%08X\n", err);
 				return false;
 			}
 
@@ -346,7 +344,7 @@ namespace NotEngine {
 			sFontFrames = 0;
 			sFontFrames = new FrameCatalog::Frame[256];
 			if (sFontFrames == 0) {
-				printf("GraphicsBase can't allocate frames for font\n");
+				//printf("GraphicsBase can't allocate frames for font\n");
 				return false;
 			}
 
@@ -368,7 +366,7 @@ namespace NotEngine {
 			sDebugFontTexture = 0;
 			sDebugFontTexture = new Texture2D();
 			if (!sDebugFontTexture->initialize(GraphicsBase::DEBUG_FONT_TEXTURE_WIDTH, GraphicsBase::DEBUG_FONT_TEXTURE_HEIGHT, GraphicsBase::DEBUG_FONT_TEXTURE_FORMAT)) {
-				printf("GraphicsBase failed to create debug font texture\n");
+				//printf("GraphicsBase failed to create debug font texture\n");
 				return false;
 			}
 			char* buffer = (char*)  sDebugFontTexture->getDataPtr();

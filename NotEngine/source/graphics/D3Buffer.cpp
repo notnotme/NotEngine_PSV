@@ -10,16 +10,14 @@ namespace NotEngine {
 	namespace Graphics {
 
 		D3Buffer::D3Buffer() {
-			printf("D3Buffer()\n");
 		}
 
 		D3Buffer::~D3Buffer() {
-			printf("~D3Buffer()\n");
 		}
 
 		bool D3Buffer::initialize(unsigned int capacity, bool dynamic) {
 			if (capacity > Graphics3D::MAX_VERTICES_PER_BATCH) {
-				printf("D3Buffer size can't be > than %i\n", Graphics3D::MAX_VERTICES_PER_BATCH);
+				//printf("D3Buffer size can't be > than %i\n", Graphics3D::MAX_VERTICES_PER_BATCH);
 				return false;
 			}
 			mVerticesCount = 0;
@@ -47,7 +45,7 @@ namespace NotEngine {
 
 		void D3Buffer::put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
 			if (mVerticesOffset+mVerticesCount > mVerticesCapacity) {
-				printf("addToBatch discard. Capacity overflow\n");
+				//printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 
@@ -65,7 +63,7 @@ namespace NotEngine {
 
 		void D3Buffer::put(const D3Vertice* vertice) {
 			if (mVerticesOffset+mVerticesCount > mVerticesCapacity) {
-				printf("addToBatch discard. Capacity overflow\n");
+				//printf("addToBatch discard. Capacity overflow\n");
 				return;
 			}
 
