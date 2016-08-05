@@ -33,7 +33,7 @@ namespace NotEngine {
 			|| !json.get<jsonxx::Object>("meta").has<jsonxx::String>("image")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("w")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("h")) {
-				printf("bad json, no meta or frames or image: %s\n", jsonString.c_str());
+				//printf("bad json, no meta or frames or image: %s\n", jsonString.c_str());
 				return false;
 			}
 
