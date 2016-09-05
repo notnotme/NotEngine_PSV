@@ -6,6 +6,7 @@
 #include <string>
 #include <psp2/ctrl.h>
 #include <psp2/touch.h>
+#include <psp2/rtc.h>
 
 #include "../system/Singleton.hpp"
 #include "GameState.hpp"
@@ -31,9 +32,9 @@ namespace NotEngine {
 				SceTouchData mTouchFrontData;
 				SceTouchData mTouchBackData;
 
-				uint64_t mCurrentTicks;
-				uint64_t mLastFpsTicks;
-				uint64_t mLastTicks;
+				SceRtcTick mCurrentTicks;
+				SceRtcTick mLastFpsTicks;
+				SceRtcTick mLastTicks;
 				float mElapsed;
 				unsigned int mFps;
 				unsigned int mFrames;

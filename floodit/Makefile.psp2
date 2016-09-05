@@ -35,7 +35,7 @@ all: $(TARGET).vpk
 	@cd vpk && zip -r -0 $(TARGET).vpk eboot.bin sce_sys
 
 eboot.bin: $(TARGET).velf
-	$(VITASDK)/bin/vita-make-fself $< $@
+	$(VITASDK)/bin/vita-make-fself -s $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<

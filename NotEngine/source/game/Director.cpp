@@ -50,10 +50,10 @@ namespace NotEngine {
 			const float tickRate = 1.0f / sceRtcGetTickResolution();
 
 			sceRtcGetCurrentTick(&mCurrentTicks);
-			mElapsed = (float) (mCurrentTicks - mLastTicks) * tickRate;
+			mElapsed = (float) (mCurrentTicks.tick - mLastTicks.tick) * tickRate;
 			mLastTicks = mCurrentTicks;
 
-			if((mCurrentTicks - mLastFpsTicks) * tickRate >= 1) {
+			if((mCurrentTicks.tick - mLastFpsTicks.tick) * tickRate >= 1) {
 				mLastFpsTicks = mCurrentTicks;
 				mFps = mFrames;
 				mFrames = 0;
