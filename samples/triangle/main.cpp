@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <psp2/types.h>
 #include <psp2/ctrl.h>
 #include <psp2/moduleinfo.h>
@@ -21,26 +20,22 @@ int main() {
 
 	// Initialize base graphics system
 	if (ready && !graphicsBase->initialize(false)) {
-		printf("graphicsBase->initialize() fail\n");
 		ready = false;
 	}
 
 	// Initialize the 2D sprite renderer
 	if (ready && !graphics2D->initialize()) {
-		printf("graphics2D->initialize() fail\n");
 		ready = false;
 	}
 
 	// Initialize the 3D renderer
 	if (ready && !graphics3D->initialize()) {
-		printf("graphics3D->initialize() fail\n");
 		ready = false;
 	}
 
 	// Create a buffer for the immediate vertices
 	D3Buffer* d3Buffer = new D3Buffer();
 	if (ready && !d3Buffer->initialize(Graphics3D::MAX_VERTICES_PER_BATCH, true)) {
-		printf("d3Buffer failed to allocate\n");
 		ready = false;
 	}
 
@@ -57,6 +52,7 @@ int main() {
 			ready = false;
 		}
 
+		persp = glm::rotate(persp, 0.001f, glm::vec3(0.0f, 0.0f, 1.0f));
 		// Start rendering
 		graphicsBase->startDrawing();
 			graphics2D->use();
