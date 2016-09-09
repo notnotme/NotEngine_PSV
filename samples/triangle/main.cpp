@@ -39,20 +39,31 @@ int main() {
 		ready = false;
 	}
 
-	glm::mat4 persp = glm::perspective(
-		75.0f,
-		(float) GraphicsBase::DISPLAY_WIDTH/GraphicsBase::DISPLAY_HEIGHT,
-		1.0f, 1024.0f);
+	glm::mat4 mv;
+	glm::mat4 persp;
+	glm::mat4 mvp;
 
 	SceCtrlData pad;
+	float angle = 0.0f;
 	while(ready) {
+		angle += 0.01f;
 		// Read controls and touchscreen
 		sceCtrlPeekBufferPositive(0, &pad, 1);
 		if (pad.buttons & SCE_CTRL_START) {
 			ready = false;
 		}
 
-		persp = glm::rotate(persp, 0.001f, glm::vec3(0.0f, 0.0f, 1.0f));
+		persp = glm::perspective(
+			75.0f,
+			(float) GraphicsBase::DISPLAY_WIDTH/GraphicsBase::DISPLAY_HEIGHT,
+			1.0f, 1024.0f);
+
+		mv = glm::mat4();
+		mv = glm::translate(mv, glm::vec3(0.0f, 0.0f, -10.0f))
+		 * glm::rotate(mv, angle, glm::vec3(1.0f, 0.5f, 1.0f));
+
+		mvp = persp * mv;
+
 		// Start rendering
 		graphicsBase->startDrawing();
 			graphics2D->use();
@@ -60,11 +71,11 @@ int main() {
 
 			graphics3D->use();
 			graphics3D->setTexture(GraphicsBase::getDebugFontTexture());
-			graphics3D->setProjectionMatrix(persp);
+			graphics3D->setProjectionMatrix(mvp);
 			d3Buffer->start();
-			d3Buffer->put( 1, 1,-10,  0.0f,0.0f,  255,0,255,255);
-			d3Buffer->put(-1,-1,-10,  1.0f,1.0f,  255,255,0,255);
-			d3Buffer->put( 1,-1,-10,  1.0f,0.0f,  0,255,255,255);
+			d3Buffer->put( 1.0f, 1.0f,0.0f,  0.0f,0.0f,  255,0,255,255);
+			d3Buffer->put(-1.0f,-1.0f,0.0f,  1.0f,1.0f,  255,255,0,255);
+			d3Buffer->put( 1.0f,-1.0f,0.0f,  1.0f,0.0f,  0,255,255,255);
 			graphics3D->render(SCE_GXM_PRIMITIVE_TRIANGLES, d3Buffer, true);
 
 		graphicsBase->stopDrawing();
