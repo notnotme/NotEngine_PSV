@@ -1,12 +1,13 @@
-#include <stdio.h>
 #include <psp2/types.h>
 #include <psp2/ctrl.h>
 #include <psp2/moduleinfo.h>
+#include <psp2/kernel/processmgr.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <notengine/notengine.hpp>
+#include <psp2shell.h>
 
 PSP2_MODULE_INFO(0, 0, "hello_world")
 
@@ -14,27 +15,37 @@ using namespace NotEngine::Graphics;
 
 /* main */
 int main() {
+	psp2shell_init(3333, 0);
+
 	GraphicsBase* graphicsBase = GraphicsBase::instance();
 	Graphics2D* graphics2D = Graphics2D::instance();
 	bool ready = true;
+	int ret;
 
 	// Initialize base graphics system
-	if (ready && !graphicsBase->initialize(false)) {
-		printf("graphicsBase->initialize() fail\n");
+	ret = graphicsBase->initialize(false);
+	if (ret != GraphicsBase::NO_ERROR) {
+		psp2shell_print("graphicsBase->initialize() fail: %d\n", ret);
 		ready = false;
 	}
 
 	// Initialize the 2D sprite renderer
-	if (ready && !graphics2D->initialize()) {
-		printf("graphics2D->initialize() fail\n");
-		ready = false;
+	if (ready) {
+		ret = graphics2D->initialize();
+		if (ret != Graphics2D::NO_ERROR) {
+			psp2shell_print("graphics2D->initialize() fail: %d\n", ret);
+			ready = false;
+		}
 	}
 
 	// Create a buffer to prepare our sprite to render (64 sprite slot)
 	SpriteBuffer* spriteBuffer = new SpriteBuffer();
-	if (!spriteBuffer->initialize(64, true)) {
-		printf("spriteBuffer failed to allocate\n");
-		ready = false;
+	if (ready) {
+		ret = spriteBuffer->initialize(64, true);
+		if (ret != SpriteBuffer::NO_ERROR) {
+			psp2shell_print("spriteBuffer->initialize() fail: %d\n", ret);
+			ready = false;
+		}
 	}
 
 	// Prepare our sprite model
@@ -65,7 +76,10 @@ int main() {
 
 			// call start when you will render into the buffer the first time
 			spriteBuffer->start();
-			spriteBuffer->put(16,16,0, spriteLetter, "Hello World!");
+			ret = spriteBuffer->put(16,16,0, spriteLetter, "Hello World!");
+			if (ret != SpriteBuffer::NO_ERROR) {
+				psp2shell_print("Error: %d" + ret);
+			}
 
 			// set default texture then render
 			graphics2D->setProjectionMatrix(ortho);
@@ -96,5 +110,8 @@ int main() {
 
 	Graphics2D::deleteInstance();
 	GraphicsBase::deleteInstance();
+
+	psp2shell_exit();
+	sceKernelExitProcess(0);
 	return 0;
 }

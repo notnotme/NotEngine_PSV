@@ -2,9 +2,6 @@
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 #include "../include/notengine/graphics/Graphics2D.hpp"
 
-#include <cstdlib>
-#include <cstdio>
-
 namespace NotEngine {
 
 	namespace Graphics {
@@ -15,10 +12,9 @@ namespace NotEngine {
 		SpriteBuffer::~SpriteBuffer() {
 		}
 
-		bool SpriteBuffer::initialize(unsigned int capacity, bool dynamic) {
+		int SpriteBuffer::initialize(unsigned int capacity, bool dynamic) {
 			if (capacity > Graphics2D::MAX_SPRITES_PER_BATCH) {
-				//printf("SpriteBuffer size can't be > than %i\n", Graphics2D::MAX_SPRITES_PER_BATCH);
-				return false;
+				return SIZE_TO_BIG;
 			}
 			mBatchCount = 0;
 			mBatchCapacity = capacity;
@@ -31,7 +27,7 @@ namespace NotEngine {
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mBatchVerticesUID);
 
-			return mBatchVertices != 0;
+			return mBatchVertices != 0 ? NO_ERROR : INDICES_GPU_ALLOC;
 		}
 
 		void SpriteBuffer::finalize() const {
@@ -43,10 +39,9 @@ namespace NotEngine {
 			mBatchOffset = 0;
 		}
 
-		void SpriteBuffer::put(const Graphics::Sprite& sprite) {
+		int SpriteBuffer::put(const Graphics::Sprite& sprite) {
 			if (mBatchOffset+mBatchCount > mBatchCapacity) {
-				//printf("addToBatch discard. Capacity overflow\n");
-				return;
+				return BUFFER_OVERFLOW;
 			}
 
 			unsigned int index = (mBatchCount)*4;
@@ -105,18 +100,24 @@ namespace NotEngine {
 			mBatchVertices[index].ty = sprite.position.y;
 
 			mBatchCount++;
+			return NO_ERROR;
 		}
 
-		void SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter& sprite, const std::string text) {
+		int SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter& sprite, const std::string text) {
 			unsigned int offset = 0;
 			sprite.position.y = y;
 			sprite.position.x = x;
+			int ret;
 			for(std::string::const_iterator it = text.begin(); it != text.end(); ++it) {
 				sprite.setFrame(*it);
-				put(sprite);
+				ret = put(sprite);
+				if (ret != NO_ERROR) {
+					return ret;
+				}
 				sprite.position.x += sprite.frame.size.w + charOffset;
 				offset++;
 			}
+			return NO_ERROR;
 		}
 
 	} // namespace Graphics

@@ -1,7 +1,6 @@
 #include "../../include/notengine/graphics/FrameCatalog.hpp"
 #include "../../include/notengine/system/Utils.hpp"
 
-#include <cstdio>
 #include <jsonxx.h>
 
 using namespace NotEngine::System;
@@ -16,16 +15,14 @@ namespace NotEngine {
 		FrameCatalog::~FrameCatalog() {
 		}
 
-		bool FrameCatalog::initialize(const std::string jsonString) {
+		int FrameCatalog::initialize(const std::string jsonString) {
 			if (jsonString.length() == 0) {
-				//printf("FrameCatalog received empty string\n");
-				return false;
+				return BAD_JSON;
 			}
 
 			jsonxx::Object json;
 			if (!json.parse(jsonString + "\n")) {
-				//printf("jsonxx failed to parse \n");
-				return false;
+				return BAD_JSON;
 			}
 
 			if (!json.has<jsonxx::Object>("frames") || !json.has<jsonxx::Object>("meta")
@@ -33,8 +30,7 @@ namespace NotEngine {
 			|| !json.get<jsonxx::Object>("meta").has<jsonxx::String>("image")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("w")
 			|| !json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").has<jsonxx::Number>("h")) {
-				//printf("bad json, no meta or frames or image: %s\n", jsonString.c_str());
-				return false;
+				return BADFORMED_CATALOG;
 			}
 
 			mWidth = json.get<jsonxx::Object>("meta").get<jsonxx::Object>("size").get<jsonxx::Number>("w");
@@ -45,15 +41,13 @@ namespace NotEngine {
 			for(jsonxx::Object::container::const_iterator it = framesMap.begin(); it != framesMap.end(); ++it) {
 				if (!it->second->get<jsonxx::Object>().has<jsonxx::Object>("frame") ||
 					!it->second->get<jsonxx::Object>().has<jsonxx::Object>("sourceSize")) {
-					//printf("bad json, no frame or sourceSize\n");
-					return false;
+					return BADFORMED_CATALOG;
 				}
 
 				jsonxx::Object frameObject = it->second->get<jsonxx::Object>().get<jsonxx::Object>("frame");
 				if (!frameObject.has<jsonxx::Number>("x") || !frameObject.has<jsonxx::Number>("y")
 					|| !frameObject.has<jsonxx::Number>("w") || !frameObject.has<jsonxx::Number>("h")) {
-					//printf("bad json, bad frame found\n");
-					return false;
+					return BADFORMED_CATALOG;
 				}
 
 				FrameCoords spriteCoords = (FrameCoords) {
@@ -76,7 +70,7 @@ namespace NotEngine {
 				);
 			}
 
-			return true;
+			return NO_ERROR;
 		}
 
 		FrameCatalog::Frame FrameCatalog::getFrame(const std::string name) {

@@ -26,7 +26,7 @@ class GameContext : public Singleton<GameContext> {
 	public:
 		virtual ~GameContext ();
 
-		bool initialize();
+		int initialize();
 		void finalize();
 
 		Texture2D* getFloorTexture();
@@ -38,5 +38,14 @@ class GameContext : public Singleton<GameContext> {
 		SpriteBuffer* getSpriteBuffer();
 		Sprite* getFloorSprite();
 		SpriteLetter* getSpriteLetter();
+
+		enum ERROR {
+			NO_ERROR = 0,
+			FLOOR_TEXTURE = 1,
+			SPRITES_TEXTURE = 2,
+			FONT_TEXTURE = 3,
+			SPRITE_CATALOG = 4,
+			SPRITE_BUFFER = 5
+		};
 
 };

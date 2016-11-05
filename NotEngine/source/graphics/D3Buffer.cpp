@@ -2,9 +2,6 @@
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 #include "../include/notengine/graphics/Graphics3D.hpp"
 
-#include <cstdlib>
-#include <cstdio>
-
 namespace NotEngine {
 
 	namespace Graphics {
@@ -15,10 +12,9 @@ namespace NotEngine {
 		D3Buffer::~D3Buffer() {
 		}
 
-		bool D3Buffer::initialize(unsigned int capacity, bool dynamic) {
+		int D3Buffer::initialize(unsigned int capacity, bool dynamic) {
 			if (capacity > Graphics3D::MAX_VERTICES_PER_BATCH) {
-				//printf("D3Buffer size can't be > than %i\n", Graphics3D::MAX_VERTICES_PER_BATCH);
-				return false;
+				return SIZE_TO_BIG;
 			}
 			mVerticesCount = 0;
 			mVerticesCapacity = capacity;
@@ -31,7 +27,7 @@ namespace NotEngine {
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mBatchVerticesUID);
 
-			return mBatchVertices != 0;
+			return mBatchVertices != 0 ? NO_ERROR : VERTICES_GPU_ALLOC;
 		}
 
 		void D3Buffer::finalize() const {
@@ -43,10 +39,9 @@ namespace NotEngine {
 			mVerticesOffset = 0;
 		}
 
-		void D3Buffer::put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+		int D3Buffer::put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
 			if (mVerticesOffset+mVerticesCount > mVerticesCapacity) {
-				//printf("addToBatch discard. Capacity overflow\n");
-				return;
+				return BUFFER_OVERFLOW;
 			}
 
 			mBatchVertices[mVerticesCount].x = x;
@@ -59,16 +54,17 @@ namespace NotEngine {
 			mBatchVertices[mVerticesCount].b = b;
 			mBatchVertices[mVerticesCount].a = a;
 			mVerticesCount++;
+			return NO_ERROR;
 		}
 
-		void D3Buffer::put(const D3Vertice* vertice) {
+		int D3Buffer::put(const D3Vertice* vertice) {
 			if (mVerticesOffset+mVerticesCount > mVerticesCapacity) {
-				//printf("addToBatch discard. Capacity overflow\n");
-				return;
+				return BUFFER_OVERFLOW;
 			}
 
 			mBatchVertices[mVerticesCount] = *vertice;
 			mVerticesCount++;
+			return NO_ERROR;
 		}
 
 	} // namespace Graphics

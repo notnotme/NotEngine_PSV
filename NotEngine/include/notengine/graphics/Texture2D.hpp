@@ -38,7 +38,7 @@ namespace NotEngine {
 
 				/* INIT **************************************************/
 				/// Initialize a texture
-				bool initialize(unsigned int w, unsigned int h, SceGxmTextureFormat format);
+				int initialize(unsigned int w, unsigned int h, SceGxmTextureFormat format);
 				/// finalize a texture
 				void finalize() const;
 				/// Return a pointer to the datas (RW)
@@ -53,6 +53,12 @@ namespace NotEngine {
 				static unsigned int getStorageSize(SceGxmTextureFormat format);
 				/// Return the rounded size of a line of pixel for a texture
 				static unsigned int getStride(unsigned int width, SceGxmTextureFormat fmt);
+
+				enum ERROR {
+					NO_ERROR = 0,
+					DATA_GPU_ALLOC = 1
+				};
+
 		};
 
 	} // namespace Graphics

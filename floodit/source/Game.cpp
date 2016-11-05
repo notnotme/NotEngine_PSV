@@ -9,7 +9,7 @@ Game::Game() : GameState() {
 Game::~Game() {
 }
 
-bool Game::enter() {
+int Game::enter() {
 	mGraphicsBase = GraphicsBase::instance();
 	mGraphics2D = Graphics2D::instance();
 	mGameContext = GameContext::instance();
@@ -114,7 +114,7 @@ bool Game::enter() {
 	mScoreSpriteLetter.color.b = 0;
 
 	newGame();
-	return true;
+	return NO_ERROR;
 }
 
 void Game::exit() {
@@ -189,7 +189,7 @@ void Game::updateControls(const SceTouchData& touchFront) {
 	}
 }
 
-void Game::updateScene(float elapsed) {
+int Game::updateScene(float elapsed) {
 	// Update scene and logic according to mStep
 	switch (mStep) {
 		case ENTER:
@@ -219,7 +219,10 @@ void Game::updateScene(float elapsed) {
 				mTopOverlaySprite.color.a += val;
 			} else {
 				mStep = STOP;
-				mDirector->changeState("Title");
+				int ret = mDirector->changeState("Title");
+				if (ret != Director::NO_ERROR) {
+					return ret;
+				}
 			}
 		break;
 		case TURN_START:
@@ -317,14 +320,18 @@ void Game::updateScene(float elapsed) {
 	floorSprite->frame.coords.t += mov1;
 	floorSprite->frame.coords.u += mov;
 	floorSprite->frame.coords.v += mov1;
+	return NO_ERROR;
 }
 
-void Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed) {
+int Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed) {
 	glm::mat4* ortho = mGameContext->getOrthogonalMatrix();
 	Sprite* floorSprite = mGameContext->getFloorSprite();
 
 	updateControls(touchFront);
-	updateScene(elapsed);
+	int ret = updateScene(elapsed);
+	if (ret != NO_ERROR) {
+		return ret;
+	}
 
 	mGraphicsBase->startDrawing();
 		mGraphics2D->use();
@@ -370,7 +377,7 @@ void Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 			}
 		}
 
-#ifdef __DEBUG__
+#ifdef DEBUG
 		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
 		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
 		mGraphics2D->setTexture(GraphicsBase::getDebugFontTexture());
@@ -378,6 +385,7 @@ void Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 #endif
 	mGraphicsBase->stopDrawing();
 	mGraphicsBase->swapBuffers();
+	return NO_ERROR;
 }
 
 const std::string Game::getName() {

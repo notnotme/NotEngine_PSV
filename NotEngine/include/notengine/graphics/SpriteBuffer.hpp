@@ -53,14 +53,22 @@ namespace NotEngine {
 				virtual ~SpriteBuffer();
 
 				/// initialize the buffer with a capacity of [capacity] per frame
-				bool initialize(unsigned int capacity, bool dynamic);
+				int initialize(unsigned int capacity, bool dynamic);
 				/// clean up the buffer
 				void finalize() const;
 				/// Begin a new batch of sprites, should be called once per frame to reset the buffer offset
 				void start();
 				/// Add a sprite in the batch
-				void put(const Graphics::Sprite& sprite);
-				void put(float x, float y, int offset, Graphics::SpriteLetter& sprite, const std::string text);
+				int put(const Graphics::Sprite& sprite);
+				int put(float x, float y, int offset, Graphics::SpriteLetter& sprite, const std::string text);
+
+				enum ERROR {
+					NO_ERROR = 0,
+					SIZE_TO_BIG = 1,
+					INDICES_GPU_ALLOC = 2,
+					BUFFER_OVERFLOW = 3,
+				};
+
 			};
 
 	} // namespace Graphics

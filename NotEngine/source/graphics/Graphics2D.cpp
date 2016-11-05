@@ -1,11 +1,8 @@
 #include "../../include/notengine/graphics/Graphics2D.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <cstdlib>
-#include <cstdio>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 extern const SceGxmProgram graphics2d_vert_gxp;
 extern const SceGxmProgram graphics2d_frag_gxp;
@@ -22,34 +19,30 @@ namespace NotEngine {
 		Graphics2D::~Graphics2D() {
 		}
 
-		bool Graphics2D::initialize() {
+		int Graphics2D::initialize() {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			// Check if the 2d shaders are valids
 			int err = sceGxmProgramCheck(s2dVertexProgramGxp);
 			if (err != 0) {
-				//printf("graphics2d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_PROGRAM_CHECK;
 			}
 			err = sceGxmProgramCheck(s2dFragmentProgramGxp);
 			if (err != 0) {
-				//printf("graphics2d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_PROGRAM_CHECK;
 			}
 
 			// register programs with the patcher
 			m2dVertexProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dVertexProgramGxp, &m2dVertexProgramId);
 			if (err != 0) {
-				//printf("graphics2d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_REGISTER_PROGRAM;
 			}
 
 			m2dFragmentProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s2dFragmentProgramGxp, &m2dFragmentProgramId);
 			if (err != 0) {
-				//printf("graphics2d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_REGISTER_PROGRAM;
 			}
 
 			// get attributes by name to create vertex format bindings
@@ -121,8 +114,7 @@ namespace NotEngine {
 				1,
 				&m2dVertexProgram);
 			if (err != 0) {
-				//printf("m2dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_CREATE_PROGRAM;
 			}
 
 			// Then the fragment shader
@@ -144,8 +136,7 @@ namespace NotEngine {
 				s2dVertexProgramGxp,
 				&m2dFragmentProgram);
 			if (err != 0) {
-				//printf("m2dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_CREATE_PROGRAM;
 			}
 
 			mBatchIndicesUID = 0;
@@ -156,8 +147,7 @@ namespace NotEngine {
 				&mBatchIndicesUID);
 
 			if (mBatchIndices == 0) {
-				//printf("batchIndices not allocated\n");
-				return false;
+				return INDICES_GPU_ALLOC;
 			}
 
 			// Fill the indices buffer as it will never change
@@ -179,19 +169,17 @@ namespace NotEngine {
 			mClearSprite.position.y = GraphicsBase::DISPLAY_HEIGHT/2;
 
 			mClearTexture = new Texture2D();
-			if (! mClearTexture->initialize(1,1, SCE_GXM_TEXTURE_FORMAT_L8)) {
-				//printf("clearTexture->initialize failed\n");
-				return false;
+			if (mClearTexture->initialize(1,1, SCE_GXM_TEXTURE_FORMAT_L8) != Texture2D::NO_ERROR) {
+				return CLEAR_TEXTURE_INITIALIZE;
 			}
 
 			// Allocate clear buffer
 			mClearBuffer = new Graphics::SpriteBuffer();
-			if (! mClearBuffer->initialize(32, true)) {
-				//printf("clearBuffer not allocated\n");
-				return false;
+			if (mClearBuffer->initialize(32, true) != SpriteBuffer::NO_ERROR) {
+				return CLEAR_BUFFER_INITIALIZE;
 			}
 
-			return true;
+			return NO_ERROR;
 		}
 
 		void Graphics2D::finalize() {

@@ -1,6 +1,5 @@
 #include "../../include/notengine/game/Director.hpp"
 
-#include <cstdio>
 #include <psp2/rtc.h>
 #include <psp2/display.h>
 
@@ -14,19 +13,17 @@ namespace NotEngine {
 		Director::~Director() {
 		}
 
-		bool Director::initialize(std::map<std::string, GameState*> states, const std::string start) {
+		int Director::initialize(std::map<std::string, GameState*> states, const std::string start) {
 			mGameStates = states;
 
 			if (mGameStates.find(start) == mGameStates.end()) {
-				//printf("Director cannot find first game state: %s\n", start.c_str());
-				return false;
+				return STATE_NOT_FOUND;
 			}
 
 			mPendingState = 0;
 			mCurrentState = states[start];
-			if(! mCurrentState->enter()) {
-				//printf("Director GameState failed to initialize\n");
-				return false;
+			if(mCurrentState->enter() != 0) {
+				return STATE_INITIALIZE;
 			}
 
 			sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
@@ -38,7 +35,7 @@ namespace NotEngine {
 			mFrames = 0;
 			mLastTicks = mCurrentTicks;
 			mLastFpsTicks = mCurrentTicks;
-			return true;
+			return NO_ERROR;
 		}
 
 		void Director::finalize() const {
@@ -46,7 +43,7 @@ namespace NotEngine {
 			sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, SCE_TOUCH_SAMPLING_STATE_STOP);
 		}
 
-		void Director::update() {
+		int Director::update() {
 			const float tickRate = 1.0f / sceRtcGetTickResolution();
 
 			sceRtcGetCurrentTick(&mCurrentTicks);
@@ -71,10 +68,11 @@ namespace NotEngine {
 				mPendingState = 0;
 
 				if (! mCurrentState->enter()) {
-					//printf("Director: GameState failed to initialize\n");
+					return STATE_INITIALIZE;
 				}
 			}
 			mCurrentState->update(mPadData, mTouchFrontData, mTouchBackData, mElapsed);
+			return NO_ERROR;
 		}
 
 		bool Director::isRunning() const {
@@ -86,12 +84,12 @@ namespace NotEngine {
 			mQuit = true;
 		}
 
-		bool Director::changeState(const std::string name) {
+		int Director::changeState(const std::string name) {
 			if (mGameStates.find(name) != mGameStates.end()) {
 				mPendingState = mGameStates[name];
-				return true;
+				return NO_ERROR;
 			} else {
-				return false;
+				return STATE_NOT_FOUND;
 			}
 		}
 

@@ -94,7 +94,7 @@ namespace NotEngine {
 
 				/* INIT *****************************************************/
 				/// Initialize the video subsystem
-				bool initialize(bool waitForRetrace);
+				int initialize(bool waitForRetrace);
 				/// Terminate the rendering
 				void waitTerminate() const;
 				/// free the video subsystem
@@ -129,6 +129,19 @@ namespace NotEngine {
 				static FrameCatalog::Frame* getFontFrames();
 				/// Return the texture 2d representating the debug font
 				static Texture2D* getDebugFontTexture();
+
+				enum ERROR {
+					NO_ERROR = 0,
+					SCEGXM_INITIALIZE = 1,
+					SCEGXM_CREATE_CONTEXT = 2,
+					SCEGXM_CREATE_RENDER_TARGET = 3,
+					SCEGXM_COLOR_SURFACE_INIT = 4,
+					SCEGXM_SYNC_OBJECT_CREATE = 5,
+					SCEGXM_DEPTH_STENCIL_SURFACE_INIT = 6,
+					SCEGXM_SHADER_PATCHER_CREATE = 7,
+					DEBUGFONT_ALLOC_FAIL = 8,
+					DEBUGFONT_TEXTURE_INITIALIZE = 9
+				};
 
 		};
 

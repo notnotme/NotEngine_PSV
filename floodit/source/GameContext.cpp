@@ -1,14 +1,16 @@
 #include "GameContext.hpp"
 
-#include <cstdio>
 #include <cstring>
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
+#include <psp2shell.h>
 
 #include "../data/floortex.raw.h"
 #include "../data/spritesheet.raw.h"
 #include "../data/gamefont.raw.h"
 #include "../data/spritesheet.h"
+
+extern bool psp2shell;
 
 GameContext::GameContext() {
 }
@@ -16,27 +18,37 @@ GameContext::GameContext() {
 GameContext::~GameContext() {
 }
 
-bool GameContext::initialize() {
+int GameContext::initialize() {
+	int ret;
+
 	mSpriteBuffer = 0;
 	mSpriteBuffer = new SpriteBuffer();
-	if (!mSpriteBuffer->initialize(Graphics2D::MAX_SPRITES_PER_BATCH, true)) {
-		printf("SpriteBuffer failed\n");
-		return false;
+	ret = mSpriteBuffer->initialize(Graphics2D::MAX_SPRITES_PER_BATCH, true);
+	if (ret != SpriteBuffer::NO_ERROR) {
+#ifdef DEBUG
+		if (psp2shell) psp2shell_print("spriteBuffer->initialize() fail: %d\n", ret);
+#endif
+		return SPRITE_BUFFER;
 	}
-
 
 	mSpritesCatalog = 0;
 	mSpritesCatalog = new FrameCatalog();
-	if (!mSpritesCatalog->initialize(std::string(&spritesheet[0]))) {
-		printf("mSpriteCatalog failed\n");
-		return false;
+	ret = mSpritesCatalog->initialize(std::string(&spritesheet[0]));
+	if (ret != FrameCatalog::NO_ERROR) {
+#ifdef DEBUG
+		if (psp2shell) psp2shell_print("spriteCatalog->initialize() fail: %d\n", ret);
+#endif
+		return SPRITE_CATALOG;
 	}
 
 	mSpritesTexture = 0;
 	mSpritesTexture = new Texture2D();
-	if (!mSpritesTexture->initialize(mSpritesCatalog->getWidth(), mSpritesCatalog->getHeight(), SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR)) {
-		printf("mSpritesTexture failed\n");
-		return false;
+	ret = mSpritesTexture->initialize(mSpritesCatalog->getWidth(), mSpritesCatalog->getHeight(), SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
+	if (ret != Texture2D::NO_ERROR) {
+#ifdef DEBUG
+		if (psp2shell) psp2shell_print("spritesTexture->initialize() fail: %d\n", ret);
+#endif
+		return SPRITES_TEXTURE;
 	}
 	unsigned int stride = Texture2D::getStride(mSpritesCatalog->getWidth(), SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
 	unsigned int raw = mSpritesCatalog->getWidth() * Texture2D::getStorageSize(SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
@@ -48,9 +60,12 @@ bool GameContext::initialize() {
 
 	mFloorTexture = 0;
 	mFloorTexture = new Texture2D();
-	if (!mFloorTexture->initialize(16, 16, SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR)) {
-		printf("mFloorTexture failed\n");
-		return false;
+	ret = mFloorTexture->initialize(16, 16, SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
+	if (ret != Texture2D::NO_ERROR) {
+#ifdef DEBUG
+		if (psp2shell) psp2shell_print("floorTexture->initialize() fail: %d\n", ret);
+#endif
+		return FLOOR_TEXTURE;
 	}
 	stride = Texture2D::getStride(16, SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
 	raw = 16 * Texture2D::getStorageSize(SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
@@ -62,9 +77,12 @@ bool GameContext::initialize() {
 
 	mFontTexture = 0;
 	mFontTexture = new Texture2D();
-	if (!mFontTexture->initialize(512, 512, SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR)) {
-		printf("mFontTexture failed\n");
-		return false;
+	ret = mFontTexture->initialize(512, 512, SCE_GXM_TEXTURE_FORMAT_U4U4U4U4_ABGR);
+	if (ret != Texture2D::NO_ERROR) {
+#ifdef DEBUG
+		if (psp2shell) psp2shell_print("fontTexture->initialize() fail: %d\n", ret);
+#endif
+		return FONT_TEXTURE;
 	}
 	mFontTexture->setFilter(SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
 
@@ -96,7 +114,7 @@ bool GameContext::initialize() {
 	mFloorSprite.position.x = GraphicsBase::DISPLAY_WIDTH/2;
 	mFloorSprite.position.y = GraphicsBase::DISPLAY_HEIGHT/2;
 
-	return true;
+	return NO_ERROR;
 }
 
 void GameContext::finalize() {

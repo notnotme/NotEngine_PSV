@@ -92,17 +92,21 @@ class Game : public GameState {
 		State playTurn(unsigned int color);
 
 		void updateControls(const SceTouchData& touchFront);
-		void updateScene(float elapsed);
+		int updateScene(float elapsed);
 		void renderScene();
 
 	public:
 		Game();
 		virtual ~Game();
 
-		virtual bool enter ();
+		virtual int enter ();
 		virtual void exit ();
 
-		virtual void update (const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed);
+		virtual int update (const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed);
 		virtual const std::string getName();
+
+		enum ERROR {
+			NO_ERROR = 0
+		};
 
 };

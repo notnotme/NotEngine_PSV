@@ -48,10 +48,14 @@ class Title : public GameState {
 		Title();
 		virtual ~Title();
 
-		virtual bool enter ();
+		virtual int enter ();
 		virtual void exit ();
 
-		virtual void update (const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed);
+		virtual int update (const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed);
 		virtual const std::string getName();
+
+		enum ERROR {
+			NO_ERROR = 0
+		};
 
 };

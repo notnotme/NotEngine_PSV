@@ -5,6 +5,7 @@
 TITLE_ID = FLDT00001
 TARGET	= floodit
 TARGET_TITLE = Flood It!
+DEBUG = 0
 
 OBJS	= source/GameSprite.o \
 		  source/GameContext.o \
@@ -12,9 +13,17 @@ OBJS	= source/GameSprite.o \
 		  source/Game.o \
 		  source/main.o
 
-LIBS 	= -lnotengine -ljsonxx -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
-			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
-			-lScePower_stub
+ifeq ($(DEBUG), 1)
+	LIBS += -lpsp2shell -lSceNet_stub -lSceNetCtl_stub -lSceAppMgr_stub
+	CFLAGS = -DDEBUG
+else
+	LIBS =
+	DFLAG = -s
+	CFLAGS =
+endif
+
+LIBS 	+= -lnotengine -ljsonxx -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub -lScePower_stub
 
 PREFIX  = $(VITASDK)/bin/arm-vita-eabi
 CC      = $(PREFIX)-gcc
@@ -22,7 +31,7 @@ CXX 	= $(PREFIX)-g++
 AR      = $(PREFIX)-ar
 STRIP   = $(PREFIX)-strip
 
-CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-constant -I$(INCLUDES)
+CFLAGS		+= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-constant -I$(INCLUDES)
 CXXFLAGS	= $(CFLAGS) -fno-exceptions
 ASFLAGS		= $(CXXFLAGS)
 
@@ -35,7 +44,7 @@ all: $(TARGET).vpk
 	@cd vpk && zip -r -0 $(TARGET).vpk eboot.bin sce_sys
 
 eboot.bin: $(TARGET).velf
-	$(VITASDK)/bin/vita-make-fself -s $< $@
+	$(VITASDK)/bin/vita-make-fself $(DFLAG) $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<

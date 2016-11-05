@@ -42,7 +42,7 @@ namespace NotEngine {
 				virtual ~FrameCatalog();
 
 				/// Load a catalog from a file
-				bool initialize(const std::string jsonString);
+				int initialize(const std::string jsonString);
 				/// cleanup a catalog and free datas
 				void finalize();
 				/// Return a spriteframe of the name name
@@ -52,6 +52,13 @@ namespace NotEngine {
 				unsigned int getWidth() const;
 				unsigned int getHeight() const;
 				std::string getTextureName() const;
+
+				enum ERROR {
+					NO_ERROR = 0,
+					BAD_JSON = 1,
+					BADFORMED_CATALOG = 2
+				};
+
 		};
 
 	} // namespace Graphics

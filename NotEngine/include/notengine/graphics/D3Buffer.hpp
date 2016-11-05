@@ -50,14 +50,22 @@ namespace NotEngine {
 				virtual ~D3Buffer();
 
 				/// initialize the buffer with a capacity of [capacity] per frame
-				bool initialize(unsigned int capacity, bool dynamic);
+				int initialize(unsigned int capacity, bool dynamic);
 				/// clean up the buffer
 				void finalize() const;
 				/// Reset the buffer and start drawing from index 0. Must be used maximum once per frame.
 				void start();
 				/// Add vertices in the batch
-				void put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
-				void put(const D3Vertice* vertice);
+				int put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+				int put(const D3Vertice* vertice);
+
+				enum ERROR {
+					NO_ERROR = 0,
+					SIZE_TO_BIG = 1,
+					VERTICES_GPU_ALLOC = 2,
+					BUFFER_OVERFLOW = 3,
+				};
+
 			};
 
 	} // namespace Graphics

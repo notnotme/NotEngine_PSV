@@ -1,11 +1,8 @@
 #include "../../include/notengine/graphics/Graphics3D.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <cstdlib>
-#include <cstdio>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 extern const SceGxmProgram graphics3d_vert_gxp;
 extern const SceGxmProgram graphics3d_frag_gxp;
@@ -22,34 +19,30 @@ namespace NotEngine {
 		Graphics3D::~Graphics3D() {
 		}
 
-		bool Graphics3D::initialize() {
+		int Graphics3D::initialize() {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			// Check if the 3d shaders are valids
 			int err = sceGxmProgramCheck(s3dVertexProgramGxp);
 			if (err != 0) {
-				//printf("graphics3d_vert_gxp sceGxmProgramCheck(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_PROGRAM_CHECK;
 			}
 			err = sceGxmProgramCheck(s3dFragmentProgramGxp);
 			if (err != 0) {
-				//printf("graphics3d_frag_gxp sceGxmProgramCheck(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_PROGRAM_CHECK;
 			}
 
 			// register programs with the patcher
 			m3dVertexProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s3dVertexProgramGxp, &m3dVertexProgramId);
 			if (err != 0) {
-				//printf("graphics3d_vert_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_REGISTER_PROGRAM;
 			}
 
 			m3dFragmentProgramId = 0;
 			err = sceGxmShaderPatcherRegisterProgram(base->mShaderPatcher, s3dFragmentProgramGxp, &m3dFragmentProgramId);
 			if (err != 0) {
-				//printf("graphics3d_frag_gxp sceGxmShaderPatcherRegisterProgram(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_REGISTER_PROGRAM;
 			}
 
 			// get attributes by name to create vertex format bindings
@@ -104,8 +97,7 @@ namespace NotEngine {
 				1,
 				&m3dVertexProgram);
 			if (err != 0) {
-				//printf("m3dVertexProgram sceGxmShaderPatcherCreateVertexProgram(): 0x%08X\n", err);
-				return false;
+				return VERTEX_SCEGXM_CREATE_PROGRAM;
 			}
 
 			// Then the fragment shader
@@ -127,8 +119,7 @@ namespace NotEngine {
 				s3dVertexProgramGxp,
 				&m3dFragmentProgram);
 			if (err != 0) {
-				//printf("m3dFragmentProgram sceGxmShaderPatcherCreateFragmentProgram(): 0x%08X\n", err);
-				return false;
+				return FRAGMENT_SCEGXM_CREATE_PROGRAM;
 			}
 
 			mBatchIndicesUID = 0;
@@ -139,8 +130,7 @@ namespace NotEngine {
 				&mBatchIndicesUID);
 
 			if (mBatchIndices == 0) {
-				//printf("batchIndices not allocated\n");
-				return false;
+				return INDICES_GPU_ALLOC;
 			}
 
 			// Fill the indices buffer as it will never change (used only for immediate rendering)
@@ -148,7 +138,7 @@ namespace NotEngine {
 				mBatchIndices[i] = i;
 			}
 
-			return true;
+			return NO_ERROR;
 		}
 
 		void Graphics3D::finalize() {
@@ -190,27 +180,31 @@ namespace NotEngine {
 			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
 		}
 
-		void Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
+		int Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
 			unsigned int countInBuffer = vertices->mVerticesCount;
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
-					if(countInBuffer % 3 != 0 || countInBuffer < 3)
-						//printf("Wrong vertices count for TRIANGLES\n");
+					if(countInBuffer % 3 != 0 || countInBuffer < 3) {
+						return WRONG_VERTICES_COUNT;
+					}
 					break;
 				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
 				case SCE_GXM_PRIMITIVE_TRIANGLE_FAN:
 				case SCE_GXM_PRIMITIVE_TRIANGLE_STRIP:
-					if(countInBuffer < 3)
-						//printf("Wrong vertices count for TRIANGLE_FAN/STRIP/EDGES\n");
+					if(countInBuffer < 3) {
+						return WRONG_VERTICES_COUNT;
+					}
 					break;
 				case SCE_GXM_PRIMITIVE_LINES:
-					if(countInBuffer % 2 != 0 || countInBuffer < 2)
-						//printf("Wrong vertices count for LINES\n");
+					if(countInBuffer % 2 != 0 || countInBuffer < 2) {
+						return WRONG_VERTICES_COUNT;
+					}
 					break;
 				case SCE_GXM_PRIMITIVE_POINTS:
-					if(countInBuffer < 1)
-						//printf("Wrong primitive count (0)\n");
+					if(countInBuffer < 1) {
+						return WRONG_VERTICES_COUNT;
+					}
 					break;
 			}
 
@@ -236,6 +230,8 @@ namespace NotEngine {
 
 			if (vertices->mDynamic)
 				vertices->mVerticesOffset += vertCount;
+
+			return NO_ERROR;
 		}
 
 	} // namespace Graphics

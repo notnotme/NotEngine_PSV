@@ -45,13 +45,20 @@ namespace NotEngine {
 			public:
 				virtual ~Director();
 
-				bool initialize (std::map<std::string, GameState*> states, const std::string start);
+				int initialize (std::map<std::string, GameState*> states, const std::string start);
 				void finalize () const;
-				void update ();
+				int update ();
 				bool isRunning() const;
 				void stop();
-				bool changeState(const std::string name);
+				int changeState(const std::string name);
 				unsigned int getFPS() const;
+
+				enum ERROR {
+					NO_ERROR = 0,
+					STATE_INITIALIZE = 1,
+					STATE_NOT_FOUND = 2
+				};
+
 		};
 
 	} // namespace Game

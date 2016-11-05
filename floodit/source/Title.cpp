@@ -14,7 +14,7 @@ Title::Title() : GameState() {
 Title::~Title() {
 }
 
-bool Title::enter() {
+int Title::enter() {
 	mGraphicsBase = GraphicsBase::instance();
 	mGraphics2D = Graphics2D::instance();
 	mGameContext = GameContext::instance();
@@ -54,13 +54,13 @@ bool Title::enter() {
 	mScrollTreshold = -(Title::sGreetStr.length() * (float) (Title::CHAR_SIZE-Title::CHAR_OFFSET));
 
 	mStep = ENTER;
-	return true;
+	return NO_ERROR;
 }
 
 void Title::exit() {
 }
 
-void Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed) {
+int Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, const SceTouchData& touchBack, float elapsed) {
 	Sprite* floorSprite = mGameContext->getFloorSprite();
 	glm::mat4* ortho = mGameContext->getOrthogonalMatrix();
 
@@ -103,7 +103,10 @@ void Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, co
 			mPlaySprite.color.a-= val;
 			if (mTitleSprite.color.a <= 6) {
 				mStep = STOP;
-				mDirector->changeState("Game");
+				int ret = mDirector->changeState("Game");
+				if (ret != Director::NO_ERROR) {
+					return ret;
+				}
 			}
 		break;
 		case IDLE:
@@ -152,7 +155,7 @@ void Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, co
 			mGraphics2D->render(mSpriteBuffer);
 		}
 
-#ifdef __DEBUG__
+#ifdef DEBUG
 		char str[25];
 		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
 		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
@@ -161,6 +164,7 @@ void Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, co
 #endif
 	mGraphicsBase->stopDrawing();
 	mGraphicsBase->swapBuffers();
+	return NO_ERROR;
 }
 
 const std::string Title::getName() {

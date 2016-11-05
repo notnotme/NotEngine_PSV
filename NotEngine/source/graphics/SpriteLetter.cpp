@@ -1,8 +1,6 @@
 #include "../../include/notengine/graphics/SpriteLetter.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <cstdio>
-
 namespace NotEngine {
 
 	namespace Graphics {

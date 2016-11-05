@@ -51,7 +51,7 @@ namespace NotEngine {
 
 				/* INIT **************************************************/
 				/// Initialize 2d subsystem
-				bool initialize();
+				int initialize();
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
@@ -62,7 +62,20 @@ namespace NotEngine {
 
 				void setProjectionMatrix(const glm::mat4& projection) const;
 
-				void render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const;
+				int render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const;
+
+				enum ERROR {
+					NO_ERROR = 0,
+					VERTEX_SCEGXM_PROGRAM_CHECK = 1,
+					FRAGMENT_SCEGXM_PROGRAM_CHECK = 2,
+					VERTEX_SCEGXM_REGISTER_PROGRAM = 3,
+					FRAGMENT_SCEGXM_REGISTER_PROGRAM = 4,
+					VERTEX_SCEGXM_CREATE_PROGRAM = 5,
+					FRAGMENT_SCEGXM_CREATE_PROGRAM = 6,
+					INDICES_GPU_ALLOC = 7,
+					WRONG_VERTICES_COUNT = 8
+				};
+
 		};
 
 	} // namespace Graphics

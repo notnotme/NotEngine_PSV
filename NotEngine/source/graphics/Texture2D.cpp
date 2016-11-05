@@ -1,7 +1,6 @@
 #include "../../include/notengine/graphics/Texture2D.hpp"
 #include "../../include/notengine/graphics/GraphicsBase.hpp"
 
-#include <cstdio>
 #include <cstring>
 
 namespace NotEngine {
@@ -14,7 +13,7 @@ namespace NotEngine {
 		Texture2D::~Texture2D() {
 		}
 
-		bool Texture2D::initialize(unsigned int w, unsigned int h, SceGxmTextureFormat fmt) {
+		int Texture2D::initialize(unsigned int w, unsigned int h, SceGxmTextureFormat fmt) {
 			mWidth = w;
 			mHeight = h;
 			mFormat = fmt;
@@ -27,8 +26,7 @@ namespace NotEngine {
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mTextureMemoryUID);
 			if (textureData == 0) {
-				//printf("Texture2D::initialize fail at gpuAlloc\n");
-				return false;
+				return DATA_GPU_ALLOC;
 			}
 
 			memset(textureData, 0xff, storageSize);
@@ -37,7 +35,7 @@ namespace NotEngine {
 				textureData, fmt,
 				w, h, 0);
 
-			return true;
+			return NO_ERROR;
 		}
 
 		void Texture2D::finalize() const {

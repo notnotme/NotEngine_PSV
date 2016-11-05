@@ -58,7 +58,7 @@ namespace NotEngine {
 
 				/* INIT **************************************************/
 				/// Initialize 2d subsystem
-				bool initialize();
+				int initialize();
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
@@ -73,6 +73,20 @@ namespace NotEngine {
 				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render all sprite added in the buffer since the last call to draw the batch
 				void render(Graphics::SpriteBuffer* spriteBuffer) const;
+
+				enum ERROR {
+					NO_ERROR = 0,
+					VERTEX_SCEGXM_PROGRAM_CHECK = 1,
+					FRAGMENT_SCEGXM_PROGRAM_CHECK = 2,
+					VERTEX_SCEGXM_REGISTER_PROGRAM = 3,
+					FRAGMENT_SCEGXM_REGISTER_PROGRAM = 4,
+					VERTEX_SCEGXM_CREATE_PROGRAM = 5,
+					FRAGMENT_SCEGXM_CREATE_PROGRAM = 6,
+					INDICES_GPU_ALLOC = 7,
+					CLEAR_TEXTURE_INITIALIZE = 8,
+					CLEAR_BUFFER_INITIALIZE = 9
+				};
+
 		};
 
 	} // namespace Graphics
