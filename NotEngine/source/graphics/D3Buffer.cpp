@@ -39,6 +39,10 @@ namespace NotEngine {
 			mVerticesOffset = 0;
 		}
 
+		int D3Buffer::put(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+			return put(x,y,z, .0f,.0f, r, g, b, a);
+		}
+
 		int D3Buffer::put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
 			if (mVerticesOffset+mVerticesCount > mVerticesCapacity) {
 				return BUFFER_OVERFLOW;

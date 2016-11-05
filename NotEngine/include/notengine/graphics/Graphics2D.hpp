@@ -9,6 +9,7 @@
 #include "../system/Singleton.hpp"
 #include "Texture2D.hpp"
 #include "Sprite.hpp"
+#include "IndiceBuffer.hpp"
 #include "SpriteBuffer.hpp"
 
 namespace NotEngine {
@@ -39,8 +40,7 @@ namespace NotEngine {
 				SceGxmVertexProgram* m2dVertexProgram;
 				SceGxmFragmentProgram* m2dFragmentProgram;
 
-				unsigned short* mBatchIndices;
-				SceUID mBatchIndicesUID;
+				IndiceBuffer* mIndiceBuffer;
 
 				/// Objects to use for clear operation
 				SpriteBuffer* mClearBuffer;
@@ -68,11 +68,11 @@ namespace NotEngine {
 				/// Clear the screen. be warned: this function actually unbind the current texture and buffer! Should be avoided if possible or use your own "clear sprite" !!!
 				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
-				void setTexture(const Graphics::Texture2D* texture) const;
+				void setTexture(const Texture2D* texture) const;
 				/// Set the projection matrix
 				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render all sprite added in the buffer since the last call to draw the batch
-				void render(Graphics::SpriteBuffer* spriteBuffer) const;
+				void render(SpriteBuffer* spriteBuffer) const;
 
 				enum ERROR {
 					NO_ERROR = 0,

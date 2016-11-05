@@ -60,7 +60,7 @@ namespace NotEngine {
 				void start();
 				/// Add a sprite in the batch
 				int put(const Graphics::Sprite& sprite);
-				int put(float x, float y, int offset, Graphics::SpriteLetter& sprite, const std::string text);
+				int put(float x, float y, int offset, SpriteLetter& sprite, const std::string text);
 
 				enum ERROR {
 					NO_ERROR = 0,

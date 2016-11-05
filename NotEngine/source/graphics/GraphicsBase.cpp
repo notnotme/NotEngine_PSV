@@ -9,7 +9,7 @@ namespace NotEngine {
 	namespace Graphics {
 
 		FrameCatalog::Frame* GraphicsBase::sFontFrames = 0;
-		Graphics::Texture2D* GraphicsBase::sDebugFontTexture = 0;
+		Texture2D* GraphicsBase::sDebugFontTexture = 0;
 
 		GraphicsBase::GraphicsBase() : System::Singleton<GraphicsBase>() {
 		}

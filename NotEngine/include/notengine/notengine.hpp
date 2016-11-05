@@ -9,6 +9,7 @@
 #include "graphics/Texture2D.hpp"
 #include "graphics/Sprite.hpp"
 #include "graphics/SpriteLetter.hpp"
+#include "graphics/IndiceBuffer.hpp"
 #include "graphics/SpriteBuffer.hpp"
 #include "graphics/D3Buffer.hpp"
 

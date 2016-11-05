@@ -139,27 +139,23 @@ namespace NotEngine {
 				return FRAGMENT_SCEGXM_CREATE_PROGRAM;
 			}
 
-			mBatchIndicesUID = 0;
-			mBatchIndices = (unsigned short*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-				MAX_SPRITES_PER_BATCH*(sizeof(unsigned short)*6),
-				SCE_GXM_MEMORY_ATTRIB_READ,
-				&mBatchIndicesUID);
-
-			if (mBatchIndices == 0) {
+			mIndiceBuffer = new IndiceBuffer();
+			err = mIndiceBuffer->initialize(Graphics2D::MAX_SPRITES_PER_BATCH*6);
+			if (err != IndiceBuffer::NO_ERROR) {
 				return INDICES_GPU_ALLOC;
 			}
 
 			// Fill the indices buffer as it will never change
 			unsigned int size = Graphics2D::MAX_SPRITES_PER_BATCH*6;
 			unsigned short j = 0;
+			mIndiceBuffer->start();
 			for (unsigned int i=0; i<size; i+=6, j+=4) {
-				mBatchIndices[i] = j + 3;
-				mBatchIndices[i+1] = j + 2;
-				mBatchIndices[i+2] = j;
-				mBatchIndices[i+3] = j;
-				mBatchIndices[i+4] = j + 2;
-				mBatchIndices[i+5] = j + 1;
+				mIndiceBuffer->put(j + 3);
+				mIndiceBuffer->put(j + 2);
+				mIndiceBuffer->put(j);
+				mIndiceBuffer->put(j);
+				mIndiceBuffer->put(j + 2);
+				mIndiceBuffer->put(j + 1);
 			}
 
 			// Initialize the clear sprite and clear texture
@@ -174,7 +170,7 @@ namespace NotEngine {
 			}
 
 			// Allocate clear buffer
-			mClearBuffer = new Graphics::SpriteBuffer();
+			mClearBuffer = new SpriteBuffer();
 			if (mClearBuffer->initialize(32, true) != SpriteBuffer::NO_ERROR) {
 				return CLEAR_BUFFER_INITIALIZE;
 			}
@@ -195,8 +191,10 @@ namespace NotEngine {
 				sceGxmShaderPatcherUnregisterProgram(base->mShaderPatcher, m2dVertexProgramId);
 			}
 
-			if (mBatchIndicesUID != 0)
-				GraphicsBase::gpuFree(mBatchIndicesUID);
+			if (mIndiceBuffer != 0) {
+				mIndiceBuffer->finalize();
+				delete mIndiceBuffer;
+			}
 
 			if (mClearTexture != 0) {
 				mClearTexture->finalize();
@@ -209,7 +207,7 @@ namespace NotEngine {
 			}
 		}
 
-		void Graphics2D::setTexture(const Graphics::Texture2D* texture) const {
+		void Graphics2D::setTexture(const Texture2D* texture) const {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
@@ -230,7 +228,7 @@ namespace NotEngine {
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
-		void Graphics2D::render(Graphics::SpriteBuffer* spriteBuffer) const {
+		void Graphics2D::render(SpriteBuffer* spriteBuffer) const {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			if (base->mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
@@ -242,7 +240,7 @@ namespace NotEngine {
 			sceGxmDraw(base->mContext,
 						SCE_GXM_PRIMITIVE_TRIANGLES,
 						SCE_GXM_INDEX_FORMAT_U16,
-						&mBatchIndices[spriteBuffer->mBatchOffset*6],
+						&mIndiceBuffer->mIndices[spriteBuffer->mBatchOffset*6],
 						batchCount*6);
 
 			if (spriteBuffer->mDynamic)
@@ -257,8 +255,8 @@ namespace NotEngine {
 			mClearSprite.color.a = a;
 
 			static const glm::mat4 ortho = glm::ortho(
-				0.0f, (float) Graphics::GraphicsBase::DISPLAY_WIDTH,
-				(float) Graphics::GraphicsBase::DISPLAY_HEIGHT, 0.0f,
+				0.0f, (float) GraphicsBase::DISPLAY_WIDTH,
+				(float) GraphicsBase::DISPLAY_HEIGHT, 0.0f,
 				-1.0f, 1.0f);
 
 			setProjectionMatrix(ortho);

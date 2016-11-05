@@ -122,20 +122,16 @@ namespace NotEngine {
 				return FRAGMENT_SCEGXM_CREATE_PROGRAM;
 			}
 
-			mBatchIndicesUID = 0;
-			mBatchIndices = (unsigned short*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
-				MAX_VERTICES_PER_BATCH*(sizeof(unsigned short)),
-				SCE_GXM_MEMORY_ATTRIB_READ,
-				&mBatchIndicesUID);
-
-			if (mBatchIndices == 0) {
+			mIndiceBuffer = new IndiceBuffer();
+			err = mIndiceBuffer->initialize(Graphics3D::MAX_VERTICES_PER_BATCH);
+			if (err != IndiceBuffer::NO_ERROR) {
 				return INDICES_GPU_ALLOC;
 			}
 
 			// Fill the indices buffer as it will never change (used only for immediate rendering)
+			mIndiceBuffer->start();
 			for (unsigned short i=0; i<Graphics3D::MAX_VERTICES_PER_BATCH; i++) {
-				mBatchIndices[i] = i;
+				mIndiceBuffer->put(i);
 			}
 
 			return NO_ERROR;
@@ -154,11 +150,13 @@ namespace NotEngine {
 				sceGxmShaderPatcherUnregisterProgram(base->mShaderPatcher, m3dVertexProgramId);
 			}
 
-			if (mBatchIndicesUID != 0)
-				GraphicsBase::gpuFree(mBatchIndicesUID);
+			if (mIndiceBuffer != 0) {
+				mIndiceBuffer->finalize();
+				delete mIndiceBuffer;
+			}
 		}
 
-		void Graphics3D::setTexture(const Graphics::Texture2D* texture) const {
+		void Graphics3D::setTexture(const Texture2D* texture) const {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
@@ -225,7 +223,7 @@ namespace NotEngine {
 			sceGxmDraw(base->mContext,
 						type,
 						SCE_GXM_INDEX_FORMAT_U16,
-						&mBatchIndices[vertices->mVerticesOffset],
+						&mIndiceBuffer->mIndices[vertices->mVerticesOffset],
 						vertCount);
 
 			if (vertices->mDynamic)

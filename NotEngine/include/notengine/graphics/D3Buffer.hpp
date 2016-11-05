@@ -56,6 +56,7 @@ namespace NotEngine {
 				/// Reset the buffer and start drawing from index 0. Must be used maximum once per frame.
 				void start();
 				/// Add vertices in the batch
+				int put(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				int put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				int put(const D3Vertice* vertice);
 

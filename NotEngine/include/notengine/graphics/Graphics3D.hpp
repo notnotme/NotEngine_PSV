@@ -8,6 +8,7 @@
 
 #include "../system/Singleton.hpp"
 #include "Texture2D.hpp"
+#include "IndiceBuffer.hpp"
 #include "D3Buffer.hpp"
 
 namespace NotEngine {
@@ -37,8 +38,7 @@ namespace NotEngine {
 				SceGxmVertexProgram* m3dVertexProgram;
 				SceGxmFragmentProgram* m3dFragmentProgram;
 
-				unsigned short* mBatchIndices;
-				SceUID mBatchIndicesUID;
+				IndiceBuffer* mIndiceBuffer;
 
 				/// Disallow public instanciating
 				Graphics3D ();
@@ -58,7 +58,7 @@ namespace NotEngine {
 				void use() const;
 				/* RENDER ************************************************/
 				/// Set the current texture to use for render operation
-				void setTexture(const Graphics::Texture2D* texture) const;
+				void setTexture(const Texture2D* texture) const;
 
 				void setProjectionMatrix(const glm::mat4& projection) const;
 

@@ -39,7 +39,7 @@ namespace NotEngine {
 			mBatchOffset = 0;
 		}
 
-		int SpriteBuffer::put(const Graphics::Sprite& sprite) {
+		int SpriteBuffer::put(const Sprite& sprite) {
 			if (mBatchOffset+mBatchCount > mBatchCapacity) {
 				return BUFFER_OVERFLOW;
 			}
@@ -103,7 +103,7 @@ namespace NotEngine {
 			return NO_ERROR;
 		}
 
-		int SpriteBuffer::put(float x, float y, int charOffset, Graphics::SpriteLetter& sprite, const std::string text) {
+		int SpriteBuffer::put(float x, float y, int charOffset, SpriteLetter& sprite, const std::string text) {
 			unsigned int offset = 0;
 			sprite.position.y = y;
 			sprite.position.x = x;
