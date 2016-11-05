@@ -1,0 +1,34 @@
+#
+# Copyright (c) 2015 Sergi Granell (xerpi)
+# based on Cirne's vita-toolchain test Makefile
+#
+TARGET	= cube
+OBJS	= main.o
+LIBS 	= -lnotengine -lpsp2shell -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
+			-lSceNet_stub -lSceNetCtl_stub -lSceAppMgr_stub
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+CXX 	= $(PREFIX)-g++
+AR      = $(PREFIX)-ar
+STRIP   = $(PREFIX)-strip
+
+CFLAGS		= -Wl,-q -Wall -O3 -mfloat-abi=hard -ffast-math -fsingle-precision-constant
+CXXFLAGS	+= $(CFLAGS) -fno-exceptions
+ASFLAGS		= $(CFLAGS)
+
+all: eboot.bin
+
+eboot.bin: $(TARGET).velf
+	$(VITASDK)/bin/vita-make-fself $< $@
+
+%.velf: %.elf
+	$(PREFIX)-strip -g $<
+	vita-elf-create $< $@ $(VITASDK)/share/db.json
+
+$(TARGET).elf: $(OBJS)
+	$(CXX) $(CXXFLAGS) $^ $(LIBS) -o $@
+
+clean:
+	@rm -rf $(TARGET).velf $(TARGET).elf eboot.bin $(OBJS)

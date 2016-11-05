@@ -1,5 +1,5 @@
 #ifndef INDICEBUFFER_HPP
-#define	INDICEBUFFER_HPP
+#define INDICEBUFFER_HPP
 
 #pragma once
 #include <climits>
@@ -21,9 +21,9 @@ namespace NotEngine {
 
 				/// Total capacity of the batch per frame
 				unsigned int mCapacity;
-				/// Current offset where to write sprite added in the buffer
+				/// Current offset of the indices
 				unsigned int mOffset;
-				/// Current sprite count in the buffer
+				/// Current indices count in the buffer
 				unsigned int mCount;
 
 				/// Pointer to use for datas
@@ -40,9 +40,9 @@ namespace NotEngine {
 				int initialize(unsigned int capacity);
 				/// clean up the buffer
 				void finalize() const;
-				/// Begin a new batch of sprites, should be called once per frame to reset the buffer offset
+				/// Begin a new batch of indicess
 				void start();
-				/// Add a sprite in the batch
+				/// Add an indice in the batch
 				int put(unsigned short indice);
 
 				enum ERROR {
