@@ -10,6 +10,9 @@ Install:
  - Enter into the NotEngine project directory type "make -f Makefile.psp2 && make -f Makefile.psp2 install"
  - You're up to go
 
+You also need to install PSP2SHELL if you want to compile the samples.
+See https://github.com/Cpasjuste/PSP2SHELL
+
 Todo:
  - Add some methods to render simple 2d shape (circle, grid, rectangle..) in Graphics2D with/without texture
  - Add more options in the 3d shader (add light if I can)
