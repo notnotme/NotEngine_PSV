@@ -179,6 +179,10 @@ namespace NotEngine {
 		}
 
 		int Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
+			return render(type, mIndiceBuffer, vertices, texture);
+		}
+
+		int Graphics3D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture) const {
 			unsigned int countInBuffer = vertices->mVerticesCount;
 			switch(type) {
 				// chek for errors
@@ -223,7 +227,7 @@ namespace NotEngine {
 			sceGxmDraw(base->mContext,
 						type,
 						SCE_GXM_INDEX_FORMAT_U16,
-						&mIndiceBuffer->mIndices[vertices->mVerticesOffset],
+						&indices->mIndices[vertices->mVerticesOffset],
 						vertCount);
 
 			if (vertices->mDynamic)
