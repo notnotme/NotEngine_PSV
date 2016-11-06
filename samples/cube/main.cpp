@@ -24,7 +24,7 @@ int main() {
 	int ret;
 
 	// Initialize base graphics system
-	ret = graphicsBase->initialize(false);
+	ret = graphicsBase->initialize(true);
 	if (ret != GraphicsBase::NO_ERROR) {
 		psp2shell_print("graphicsBase->initialize() fail: %d\n", ret);
 		ready = false;
@@ -57,11 +57,49 @@ int main() {
 			ready = false;
 		}
 	}
-
 	d3Buffer->start();
-	d3Buffer->put( 1.0f, 1.0f,0.0f,  0.0f,0.0f,  255,0,255,255);
-	d3Buffer->put(-1.0f,-1.0f,0.0f,  1.0f,1.0f,  255,255,0,255);
-	d3Buffer->put( 1.0f,-1.0f,0.0f,  1.0f,0.0f,  0,255,255,255);
+	d3Buffer->put(-1.0f, -1.0f,  1.0f,  255,   0,   0, 255);
+	d3Buffer->put( 1.0f, -1.0f,  1.0f,    0, 255,   0, 255);
+	d3Buffer->put( 1.0f,  1.0f,  1.0f,    0,   0, 255, 255);
+	d3Buffer->put(-1.0f,  1.0f,  1.0f,  255, 255, 255, 255);
+	d3Buffer->put(-1.0f, -1.0f, -1.0f,  255,   0,   0, 255);
+	d3Buffer->put( 1.0f, -1.0f, -1.0f,    0, 255,   0, 255);
+	d3Buffer->put( 1.0f,  1.0f, -1.0f,    0,   0, 255, 255);
+	d3Buffer->put(-1.0f,  1.0f, -1.0f,  255, 255, 255, 255);
+
+	// Create an indice buffer for vertices
+	IndiceBuffer* indiceBuffer = new IndiceBuffer();
+	if (ready) {
+		ret = indiceBuffer->initialize(36);
+		if (ret != IndiceBuffer::NO_ERROR) {
+			psp2shell_print("indiceBuffer->initialize() fail: %d\n", ret);
+			ready = false;
+		}
+	}
+	indiceBuffer->start();
+	indiceBuffer->put(0); indiceBuffer->put(1);
+	indiceBuffer->put(2); indiceBuffer->put(2);
+	indiceBuffer->put(3); indiceBuffer->put(0);
+
+	indiceBuffer->put(1); indiceBuffer->put(5);
+	indiceBuffer->put(6); indiceBuffer->put(6);
+	indiceBuffer->put(2); indiceBuffer->put(1);
+
+	indiceBuffer->put(7); indiceBuffer->put(6);
+	indiceBuffer->put(5); indiceBuffer->put(5);
+	indiceBuffer->put(4); indiceBuffer->put(7);
+
+	indiceBuffer->put(4); indiceBuffer->put(0);
+	indiceBuffer->put(3); indiceBuffer->put(3);
+	indiceBuffer->put(7); indiceBuffer->put(4);
+
+	indiceBuffer->put(4); indiceBuffer->put(5);
+	indiceBuffer->put(1); indiceBuffer->put(1);
+	indiceBuffer->put(0); indiceBuffer->put(4);
+
+	indiceBuffer->put(3); indiceBuffer->put(2);
+	indiceBuffer->put(6); indiceBuffer->put(6);
+	indiceBuffer->put(7); indiceBuffer->put(3);
 
 	glm::mat4 mv;
 	glm::mat4 persp;
@@ -70,7 +108,7 @@ int main() {
 	SceCtrlData pad;
 	float angle = 0.0f;
 	while(ready) {
-		angle += 0.01f;
+		angle += 0.02f;
 		// Read controls and touchscreen
 		sceCtrlPeekBufferPositive(0, &pad, 1);
 		if (pad.buttons & SCE_CTRL_START) {
@@ -84,7 +122,7 @@ int main() {
 
 		mv = glm::mat4();
 		mv = glm::translate(mv, glm::vec3(0.0f, 0.0f, -10.0f))
-		 * glm::rotate(mv, angle, glm::vec3(1.0f, 0.5f, 1.0f));
+		 * glm::rotate(mv, angle, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		mvp = persp * mv;
 
@@ -96,7 +134,7 @@ int main() {
 			graphics3D->use();
 			graphics3D->setTexture(GraphicsBase::getDebugFontTexture());
 			graphics3D->setProjectionMatrix(mvp);
-			graphics3D->render(SCE_GXM_PRIMITIVE_TRIANGLES, d3Buffer, false);
+			graphics3D->render(SCE_GXM_PRIMITIVE_TRIANGLES, indiceBuffer, d3Buffer, false, 0, 36);
 
 		graphicsBase->stopDrawing();
 		graphicsBase->swapBuffers();
@@ -107,6 +145,9 @@ int main() {
 
 	d3Buffer->finalize();
 	delete d3Buffer;
+
+	indiceBuffer->finalize();
+	delete indiceBuffer;
 
 	graphics3D->finalize();
 	graphics2D->finalize();
