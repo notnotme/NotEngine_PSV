@@ -132,7 +132,6 @@ int main() {
 			graphics2D->clear(0x00, 0x00, 0x00, 0xff);
 
 			graphics3D->use();
-			graphics3D->setTexture(GraphicsBase::getDebugFontTexture());
 			graphics3D->setProjectionMatrix(mvp);
 			graphics3D->render(SCE_GXM_PRIMITIVE_TRIANGLES, indiceBuffer, d3Buffer, false, 0, 36);
 
