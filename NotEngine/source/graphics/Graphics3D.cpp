@@ -179,32 +179,31 @@ namespace NotEngine {
 		}
 
 		int Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
-			return render(type, mIndiceBuffer, vertices, texture);
+			return render(type, mIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
 		}
 
-		int Graphics3D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture) const {
-			unsigned int countInBuffer = vertices->mVerticesCount;
+		int Graphics3D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount) const {
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
-					if(countInBuffer % 3 != 0 || countInBuffer < 3) {
+					if(indiceCount % 3 != 0 || indiceCount < 3) {
 						return WRONG_VERTICES_COUNT;
 					}
 					break;
 				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
 				case SCE_GXM_PRIMITIVE_TRIANGLE_FAN:
 				case SCE_GXM_PRIMITIVE_TRIANGLE_STRIP:
-					if(countInBuffer < 3) {
+					if(indiceCount < 3) {
 						return WRONG_VERTICES_COUNT;
 					}
 					break;
 				case SCE_GXM_PRIMITIVE_LINES:
-					if(countInBuffer % 2 != 0 || countInBuffer < 2) {
+					if(indiceCount % 2 != 0 || indiceCount < 2) {
 						return WRONG_VERTICES_COUNT;
 					}
 					break;
 				case SCE_GXM_PRIMITIVE_POINTS:
-					if(countInBuffer < 1) {
+					if(indiceCount < 1) {
 						return WRONG_VERTICES_COUNT;
 					}
 					break;
@@ -223,15 +222,14 @@ namespace NotEngine {
 			}
 			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
 
-			unsigned int vertCount = countInBuffer - vertices->mVerticesOffset;
 			sceGxmDraw(base->mContext,
 						type,
 						SCE_GXM_INDEX_FORMAT_U16,
-						&indices->mIndices[vertices->mVerticesOffset],
-						vertCount);
+						&indices->mIndices[startIndice],
+						indiceCount);
 
 			if (vertices->mDynamic)
-				vertices->mVerticesOffset += vertCount;
+				vertices->mVerticesOffset += indiceCount;
 
 			return NO_ERROR;
 		}

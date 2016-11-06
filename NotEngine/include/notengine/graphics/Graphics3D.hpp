@@ -63,7 +63,7 @@ namespace NotEngine {
 				void setProjectionMatrix(const glm::mat4& projection) const;
 
 				int render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const;
-				int render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture) const;
+				int render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount) const;
 
 				enum ERROR {
 					NO_ERROR = 0,
