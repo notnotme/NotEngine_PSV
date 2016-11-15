@@ -10,6 +10,7 @@
 #include "Texture2D.hpp"
 #include "Sprite.hpp"
 #include "IndiceBuffer.hpp"
+#include "D2Buffer.hpp"
 #include "SpriteBuffer.hpp"
 
 namespace NotEngine {
@@ -36,6 +37,8 @@ namespace NotEngine {
 				const SceGxmProgramParameter* mShaderAngleAttr;
 				const SceGxmProgramParameter* mShaderTranslationAttr;
 				const SceGxmProgramParameter* mShaderMatrixProjUnif;
+				const SceGxmProgramParameter* mShaderTextureEnableUnif;
+				const SceGxmProgramParameter* mShaderTRSEnableUnif;
 
 				SceGxmVertexProgram* m2dVertexProgram;
 				SceGxmFragmentProgram* m2dFragmentProgram;
@@ -73,6 +76,10 @@ namespace NotEngine {
 				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render all sprite added in the buffer since the last call to draw the batch
 				void render(SpriteBuffer* spriteBuffer) const;
+				/// Render all shapes added in the buffer since the last draw (optional texture)
+				int render(SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) const;
+				/// Render all shapes added in the buffer since the last draw using an index buffer (optional texture)
+				int render(SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) const;
 
 				enum ERROR {
 					NO_ERROR = 0,
@@ -84,7 +91,8 @@ namespace NotEngine {
 					FRAGMENT_SCEGXM_CREATE_PROGRAM = 6,
 					INDICES_GPU_ALLOC = 7,
 					CLEAR_TEXTURE_INITIALIZE = 8,
-					CLEAR_BUFFER_INITIALIZE = 9
+					CLEAR_BUFFER_INITIALIZE = 9,
+					WRONG_VERTICES_COUNT = 10
 				};
 
 		};

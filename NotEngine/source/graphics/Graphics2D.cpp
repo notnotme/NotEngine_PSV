@@ -51,8 +51,11 @@ namespace NotEngine {
 			mShaderColorAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aColor");
 			mShaderAngleAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aAngle");
 			mShaderTranslationAttr = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "aTranslation");
-			// gte uniforms
+			// get uniforms
 			mShaderMatrixProjUnif = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "pm");
+			mShaderTextureEnableUnif = sceGxmProgramFindParameterByName(s2dFragmentProgramGxp, "textureEnable");
+			mShaderTRSEnableUnif = sceGxmProgramFindParameterByName(s2dVertexProgramGxp, "trsEnable");
+
 
 			// create the 2d vertex format
 			SceGxmVertexAttribute g2dVertexAttributes[5];
@@ -225,6 +228,7 @@ namespace NotEngine {
 			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_DISABLED);
 			sceGxmSetFrontDepthFunc(base->mContext, SCE_GXM_DEPTH_FUNC_ALWAYS);
 
+			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
@@ -236,6 +240,12 @@ namespace NotEngine {
 				sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
 			}
 
+
+			float textureEnable = 1.0f;
+			float trsEnable = 1.0f;
+			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
 						SCE_GXM_PRIMITIVE_TRIANGLES,
@@ -245,6 +255,65 @@ namespace NotEngine {
 
 			if (spriteBuffer->mDynamic)
 				spriteBuffer->mBatchOffset += batchCount;
+		}
+
+		int Graphics2D::render(SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) const {
+			return render(type, mIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
+		}
+
+		int Graphics2D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) const {
+			switch(type) {
+				// chek for errors
+				case SCE_GXM_PRIMITIVE_TRIANGLES:
+					if(indiceCount % 3 != 0 || indiceCount < 3) {
+						return WRONG_VERTICES_COUNT;
+					}
+					break;
+				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
+				case SCE_GXM_PRIMITIVE_TRIANGLE_FAN:
+				case SCE_GXM_PRIMITIVE_TRIANGLE_STRIP:
+					if(indiceCount < 3) {
+						return WRONG_VERTICES_COUNT;
+					}
+					break;
+				case SCE_GXM_PRIMITIVE_LINES:
+					if(indiceCount % 2 != 0 || indiceCount < 2) {
+						return WRONG_VERTICES_COUNT;
+					}
+					break;
+				case SCE_GXM_PRIMITIVE_POINTS:
+					if(indiceCount < 1) {
+						return WRONG_VERTICES_COUNT;
+					}
+					break;
+			}
+
+			GraphicsBase* base = GraphicsBase::instance();
+
+			if (base->mLastBatchVerticesUID != vertices->mBatchVerticesUID) {
+				base->mLastBatchVerticesUID = vertices->mBatchVerticesUID;
+				sceGxmSetVertexStream(base->mContext, 0, vertices->mBatchVertices);
+			}
+
+			float textureEnable = 0.0f;
+			if (texture) {
+				textureEnable = 1.0f;
+			}
+			float trsEnable = 0.0f;
+
+			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+
+			sceGxmDraw(base->mContext,
+						type,
+						SCE_GXM_INDEX_FORMAT_U16,
+						&indices->mIndices[startIndice],
+						indiceCount);
+
+			if (vertices->mDynamic)
+				vertices->mVerticesOffset += indiceCount;
+
+			return NO_ERROR;
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {

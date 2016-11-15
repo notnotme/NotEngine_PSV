@@ -49,7 +49,7 @@ namespace NotEngine {
 			mShaderPositionAttr = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "aPosition");
 			mShaderTextureAttr = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "aTexcoord");
 			mShaderColorAttr = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "aColor");
-			// gte uniforms
+			// get uniforms
 			mShaderMatrixProjUnif = sceGxmProgramFindParameterByName(s3dVertexProgramGxp, "pm");
 			mShaderTextureEnableUnif = sceGxmProgramFindParameterByName(s3dFragmentProgramGxp, "textureEnable");
 

@@ -5,24 +5,32 @@ void main(
 	float aAngle,
 	float2 aTranslation,
 	uniform float4x4 pm,
+	uniform float trsEnable,
 	float4 out vColor    : COLOR,
 	float4 out vPosition : POSITION,
 	float2 out vTexcoord : TEXCOORD0)
 {
-	float3x3 rotate_mat = float3x3
-		(cos(aAngle), sin(aAngle), 0.0f,
-		-sin(aAngle), cos(aAngle), 0.0f,
-		 0.0f,        0.0f,        1.0f);
+	float4 outPosition;
+	if (trsEnable > 0.5f) {
+		float3x3 rotate_mat = float3x3
+			(cos(aAngle), sin(aAngle), 0.0f,
+			-sin(aAngle), cos(aAngle), 0.0f,
+			0.0f,        0.0f,        1.0f);
 
-	float4x4 translate_mat = float4x4
-		(1.0f,              0.0f,            0.0f, 0.0f,
-		 0.0f,              1.0f,            0.0f, 0.0f,
-		 0.0f,              0.0f,            1.0f, 0.0f,
-		 aTranslation.x,   aTranslation.y, 0.0f, 1.0f);
+		float4x4 translate_mat = float4x4
+			(1.0f,              0.0f,            0.0f, 0.0f,
+			0.0f,              1.0f,            0.0f, 0.0f,
+			0.0f,              0.0f,            1.0f, 0.0f,
+			aTranslation.x,   aTranslation.y, 0.0f, 1.0f);
 
-	float3 xformed = mul(rotate_mat, float3(aPosition, 0.f));
+		float3 xformed = mul(rotate_mat, float3(aPosition, 0.f));
 
-	vPosition = mul(float4(xformed, 1.0f), mul(translate_mat, pm));
+		outPosition = mul(float4(xformed, 1.0f), mul(translate_mat, pm));
+	} else {
+		outPosition = mul(float4(aPosition, 0.0f, 1.f), pm);
+	}
+
 	vTexcoord = aTexcoord;
 	vColor = aColor;
+	vPosition = outPosition;
 }

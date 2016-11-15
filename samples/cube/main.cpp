@@ -48,7 +48,7 @@ int main() {
 		}
 	}
 
-	// Create a buffer for the immediate vertices
+	// Create a buffer for the vertices
 	D3Buffer* d3Buffer = new D3Buffer();
 	if (ready) {
 		ret = d3Buffer->initialize(Graphics3D::MAX_VERTICES_PER_BATCH, false);
