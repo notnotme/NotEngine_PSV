@@ -56,6 +56,8 @@ namespace NotEngine {
 			public:
 				// (screen is 960x544px, for 16x16px tiles, it is 540 tiles per layer). Should be okay
 				static const unsigned int MAX_SPRITES_PER_BATCH = 2048;
+				// 4096 vertices for shapes
+				static const unsigned int MAX_VERTICES_PER_BATCH = 4096;
 
 				virtual ~Graphics2D ();
 

@@ -12,6 +12,7 @@ OBJS       = source/graphics/Texture2D.o \
 			 source/graphics/Sprite.o \
 			 source/graphics/SpriteLetter.o \
 			 source/graphics/IndiceBuffer.o \
+			 source/graphics/D2Buffer.o \
 			 source/graphics/SpriteBuffer.o \
 			 source/graphics/D3Buffer.o \
 			 source/graphics/GraphicsBase.o \

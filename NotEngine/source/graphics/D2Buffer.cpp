@@ -13,7 +13,7 @@ namespace NotEngine {
 		}
 
 		int D2Buffer::initialize(unsigned int capacity, bool dynamic) {
-			if (capacity > Graphics3D::MAX_VERTICES_PER_BATCH) {
+			if (capacity > Graphics2D::MAX_VERTICES_PER_BATCH) {
 				return SIZE_TO_BIG;
 			}
 			mVerticesCount = 0;
