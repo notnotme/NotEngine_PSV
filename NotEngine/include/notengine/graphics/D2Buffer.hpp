@@ -1,5 +1,5 @@
 #ifndef D2BUFFER_HPP
-#define	D2BUFFER_HPP
+#define D2BUFFER_HPP
 
 #pragma once
 #include <psp2/types.h>
