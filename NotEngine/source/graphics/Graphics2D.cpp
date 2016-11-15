@@ -149,7 +149,7 @@ namespace NotEngine {
 			}
 
 			// Fill the indices buffer as it will never change
-			unsigned int size = Graphics2D::MAX_SPRITES_PER_BATCH*6;
+			unsigned int size = MAX_VERTICES_PER_BATCH;
 			unsigned short j = 0;
 			mIndiceBuffer->start();
 			for (unsigned int i=0; i<size; i+=6, j+=4) {

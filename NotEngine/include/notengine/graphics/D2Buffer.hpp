@@ -23,6 +23,9 @@ namespace NotEngine {
 					unsigned char g;
 					unsigned char b;
 					unsigned char a;
+					float unused0; // angle
+					float unused1; // translation
+					float unused2;
 					// todo: add padding ?
 				} __attribute__ ((packed));
 
