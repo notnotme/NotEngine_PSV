@@ -60,7 +60,6 @@ namespace NotEngine {
 				SceGxmRenderTarget* mRenderTarget;
 
 				// Todo: Duplicate and move those buffer into each Renderer for each uniform
-				// They are not shared and seem to cause bugs
 				void *mVertexUniformDefaultBuffer;
 				void *mFragmentUniformDefaultBuffer;
 				SceUID mLastBatchVerticesUID;
