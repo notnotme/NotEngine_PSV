@@ -43,7 +43,8 @@ namespace NotEngine {
 				SceGxmVertexProgram* m2dVertexProgram;
 				SceGxmFragmentProgram* m2dFragmentProgram;
 
-				IndiceBuffer* mIndiceBuffer;
+				IndiceBuffer* mSpriteIndiceBuffer;
+				IndiceBuffer* mShapeIndiceBuffer;
 
 				/// Objects to use for clear operation
 				SpriteBuffer* mClearBuffer;
@@ -91,10 +92,11 @@ namespace NotEngine {
 					FRAGMENT_SCEGXM_REGISTER_PROGRAM = 4,
 					VERTEX_SCEGXM_CREATE_PROGRAM = 5,
 					FRAGMENT_SCEGXM_CREATE_PROGRAM = 6,
-					INDICES_GPU_ALLOC = 7,
-					CLEAR_TEXTURE_INITIALIZE = 8,
-					CLEAR_BUFFER_INITIALIZE = 9,
-					WRONG_VERTICES_COUNT = 10
+					SPRITES_INDICES_GPU_ALLOC = 7,
+					SHAPES_INDICES_GPU_ALLOC = 8,
+					CLEAR_TEXTURE_INITIALIZE = 9,
+					CLEAR_BUFFER_INITIALIZE = 10,
+					WRONG_VERTICES_COUNT = 11
 				};
 
 		};

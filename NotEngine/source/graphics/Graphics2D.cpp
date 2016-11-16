@@ -142,23 +142,35 @@ namespace NotEngine {
 				return FRAGMENT_SCEGXM_CREATE_PROGRAM;
 			}
 
-			mIndiceBuffer = new IndiceBuffer();
-			err = mIndiceBuffer->initialize(Graphics2D::MAX_SPRITES_PER_BATCH*6);
+			mSpriteIndiceBuffer = new IndiceBuffer();
+			err = mSpriteIndiceBuffer->initialize(MAX_VERTICES_PER_BATCH);
 			if (err != IndiceBuffer::NO_ERROR) {
-				return INDICES_GPU_ALLOC;
+				return SPRITES_INDICES_GPU_ALLOC;
 			}
 
-			// Fill the indices buffer as it will never change
+			// Fill the sprite indices buffer as it will never change
 			unsigned int size = MAX_VERTICES_PER_BATCH;
 			unsigned short j = 0;
-			mIndiceBuffer->start();
+			mSpriteIndiceBuffer->start();
 			for (unsigned int i=0; i<size; i+=6, j+=4) {
-				mIndiceBuffer->put(j + 3);
-				mIndiceBuffer->put(j + 2);
-				mIndiceBuffer->put(j);
-				mIndiceBuffer->put(j);
-				mIndiceBuffer->put(j + 2);
-				mIndiceBuffer->put(j + 1);
+				mSpriteIndiceBuffer->put(j + 3);
+				mSpriteIndiceBuffer->put(j + 2);
+				mSpriteIndiceBuffer->put(j);
+				mSpriteIndiceBuffer->put(j);
+				mSpriteIndiceBuffer->put(j + 2);
+				mSpriteIndiceBuffer->put(j + 1);
+			}
+
+			mShapeIndiceBuffer = new IndiceBuffer();
+			err = mShapeIndiceBuffer->initialize(MAX_VERTICES_PER_BATCH);
+			if (err != IndiceBuffer::NO_ERROR) {
+				return SHAPES_INDICES_GPU_ALLOC;
+			}
+
+			// Fill the shape indices buffer as it will never change
+			mShapeIndiceBuffer->start();
+			for (unsigned int i=0; i<size; i++) {
+				mShapeIndiceBuffer->put(i);
 			}
 
 			// Initialize the clear sprite and clear texture
@@ -194,9 +206,14 @@ namespace NotEngine {
 				sceGxmShaderPatcherUnregisterProgram(base->mShaderPatcher, m2dVertexProgramId);
 			}
 
-			if (mIndiceBuffer != 0) {
-				mIndiceBuffer->finalize();
-				delete mIndiceBuffer;
+			if (mSpriteIndiceBuffer != 0) {
+				mSpriteIndiceBuffer->finalize();
+				delete mSpriteIndiceBuffer;
+			}
+
+			if (mShapeIndiceBuffer != 0) {
+				mShapeIndiceBuffer->finalize();
+				delete mShapeIndiceBuffer;
 			}
 
 			if (mClearTexture != 0) {
@@ -240,7 +257,6 @@ namespace NotEngine {
 				sceGxmSetVertexStream(base->mContext, 0, spriteBuffer->mBatchVertices);
 			}
 
-
 			float textureEnable = 1.0f;
 			float trsEnable = 1.0f;
 			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
@@ -250,7 +266,7 @@ namespace NotEngine {
 			sceGxmDraw(base->mContext,
 						SCE_GXM_PRIMITIVE_TRIANGLES,
 						SCE_GXM_INDEX_FORMAT_U16,
-						&mIndiceBuffer->mIndices[spriteBuffer->mBatchOffset*6],
+						&mSpriteIndiceBuffer->mIndices[spriteBuffer->mBatchOffset*6],
 						batchCount*6);
 
 			if (spriteBuffer->mDynamic)
@@ -258,7 +274,7 @@ namespace NotEngine {
 		}
 
 		int Graphics2D::render(SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) const {
-			return render(type, mIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
+			return render(type, mShapeIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
 		}
 
 		int Graphics2D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) const {
