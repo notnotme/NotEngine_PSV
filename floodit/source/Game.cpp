@@ -335,12 +335,11 @@ int Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, cons
 
 	mGraphicsBase->startDrawing();
 		mGraphics2D->use();
-		mGraphics2D->setProjectionMatrix(*ortho);
 		mSpriteBuffer->start();
 
 		mSpriteBuffer->put(*floorSprite);
 		mGraphics2D->setTexture(mGameContext->getFloorTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		mSpriteBuffer->put(mBackOverlaySprite);
 		for(unsigned int i=0; i<Game::GRID_SIZE*Game::GRID_SIZE; i++) {
@@ -349,30 +348,30 @@ int Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, cons
 				mSpriteBuffer->put(mPlayerGrid[i]);
 		}
 		mGraphics2D->setTexture(mGameContext->getSpritesTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		char str[25];
 		snprintf(str, 25, "Left: %2i", mClicks);
 		mSpriteBuffer->put(mScoreMarginX,mScoreMarginY, -16, mScoreSpriteLetter, std::string(str));
 		mGraphics2D->setTexture(mGameContext->getFontTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		if (mTopOverlaySprite.color.a != 0) {
 			mSpriteBuffer->put(mTopOverlaySprite);
 			mSpriteBuffer->put(mQuitSprite);
 			mSpriteBuffer->put(mRestartSprite);
 			mGraphics2D->setTexture(mGameContext->getSpritesTexture());
-			mGraphics2D->render(mSpriteBuffer);
+			mGraphics2D->render(*ortho, mSpriteBuffer);
 
 			if (mGameOverSpriteLetter.color.a != 0) {
 				if (mState == WIN) {
 					mSpriteBuffer->put(mWinMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -Game::CHAR_OFFSET, mGameOverSpriteLetter, "You WIN :)");
 					mGraphics2D->setTexture(mGameContext->getFontTexture());
-					mGraphics2D->render(mSpriteBuffer);
+					mGraphics2D->render(*ortho, mSpriteBuffer);
 				} else if (mState == LOSE) {
 					mSpriteBuffer->put(mLoseMarginX,GraphicsBase::DISPLAY_HEIGHT*0.4, -Game::CHAR_OFFSET, mGameOverSpriteLetter, "You LOSE :(");
 					mGraphics2D->setTexture(mGameContext->getFontTexture());
-					mGraphics2D->render(mSpriteBuffer);
+					mGraphics2D->render(*ortho, mSpriteBuffer);
 				}
 			}
 		}
@@ -381,7 +380,7 @@ int Game::update(const SceCtrlData& inputs, const SceTouchData& touchFront, cons
 		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
 		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
 		mGraphics2D->setTexture(GraphicsBase::getDebugFontTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 #endif
 	mGraphicsBase->stopDrawing();
 	mGraphicsBase->swapBuffers();

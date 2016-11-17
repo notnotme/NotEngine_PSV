@@ -133,26 +133,25 @@ int Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 	// Render
 	mGraphicsBase->startDrawing();
 		mGraphics2D->use();
-		mGraphics2D->setProjectionMatrix(*ortho);
 
 		mSpriteBuffer->start();
 		mSpriteBuffer->put(*floorSprite);
 		mGraphics2D->setTexture(mGameContext->getFloorTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		mSpriteBuffer->put(mTitleSprite);
 		mSpriteBuffer->put(mPlaySprite);
 		mGraphics2D->setTexture(mGameContext->getSpritesTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		mSpriteBuffer->put(mScrollOffset, GraphicsBase::DISPLAY_HEIGHT-Title::CHAR_SIZE/2, -Title::CHAR_OFFSET, mScrollSprite, sGreetStr);
 		mGraphics2D->setTexture(mGameContext->getFontTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 
 		if (mOverlaySprite.color.a > 0) {
 			mSpriteBuffer->put(mOverlaySprite);
 			mGraphics2D->setTexture(mGameContext->getSpritesTexture());
-			mGraphics2D->render(mSpriteBuffer);
+			mGraphics2D->render(*ortho, mSpriteBuffer);
 		}
 
 #ifdef DEBUG
@@ -160,7 +159,7 @@ int Title::update(const SceCtrlData& inputs, const SceTouchData& touchFront, con
 		snprintf(str, 25, "FPS: %i", mDirector->getFPS());
 		mSpriteBuffer->put(16,16, -4, *mGameContext->getSpriteLetter(), std::string(str));
 		mGraphics2D->setTexture(GraphicsBase::getDebugFontTexture());
-		mGraphics2D->render(mSpriteBuffer);
+		mGraphics2D->render(*ortho, mSpriteBuffer);
 #endif
 	mGraphicsBase->stopDrawing();
 	mGraphicsBase->swapBuffers();

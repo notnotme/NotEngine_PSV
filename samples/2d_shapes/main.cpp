@@ -70,18 +70,18 @@ int main() {
 			graphics2D->clear(0xff, 0xff, 0xff, 0xff);
 
 			d2Buffer->start();
-			d2Buffer->put( 10,  10,  255,   0,   0, 255);
-			d2Buffer->put(100,  10,    0, 255,   0, 255);
-			d2Buffer->put(100, 100,    0,   0, 255, 255);
-			d2Buffer->put( 10, 100,  255, 255, 255, 255);
+			d2Buffer->put(100, 100,  255,   0,   0, 255);
+			d2Buffer->put(100, 150,    0,   0, 255, 255);
+			d2Buffer->put(150, 150,  255, 255, 255, 255);
+			d2Buffer->put(150, 100,    0, 255,   0, 255);
+			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_TRIANGLE_FAN, d2Buffer, false);
 
-			graphics2D->setProjectionMatrix(ortho);
-			graphics2D->render(SCE_GXM_PRIMITIVE_TRIANGLE_FAN, d2Buffer, false);
+			d2Buffer->put(300, 300,  255, 0, 0, 255);
+			d2Buffer->put(300, 350,  255, 0, 0, 255);
+			d2Buffer->put(350, 350,  255, 0, 0, 255);
+			d2Buffer->put(350, 300,  255, 0, 0, 255);
+			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_TRIANGLE_FAN, d2Buffer, false);
 
-			d2Buffer->put(200, 50,  255,   0,   0, 255);
-			d2Buffer->put(150, 150,   0, 255,   0, 255);
-			d2Buffer->put(250, 150,   0,   0, 255, 255);
-			graphics2D->render(SCE_GXM_PRIMITIVE_TRIANGLES, d2Buffer, false);
 
 		// stop and swap display
 		graphicsBase->stopDrawing();

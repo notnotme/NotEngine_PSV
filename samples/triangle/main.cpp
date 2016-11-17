@@ -90,12 +90,11 @@ int main() {
 
 			graphics3D->use();
 			graphics3D->setTexture(GraphicsBase::getDebugFontTexture());
-			graphics3D->setProjectionMatrix(mvp);
 			d3Buffer->start();
 			d3Buffer->put( 1.0f, 1.0f,0.0f,  0.0f,0.0f,  255,0,255,255);
 			d3Buffer->put(-1.0f,-1.0f,0.0f,  1.0f,1.0f,  255,255,0,255);
 			d3Buffer->put( 1.0f,-1.0f,0.0f,  1.0f,0.0f,  0,255,255,255);
-			graphics3D->render(SCE_GXM_PRIMITIVE_TRIANGLES, d3Buffer, true);
+			graphics3D->render(mvp, SCE_GXM_PRIMITIVE_TRIANGLES, d3Buffer, true);
 
 		graphicsBase->stopDrawing();
 		graphicsBase->swapBuffers();

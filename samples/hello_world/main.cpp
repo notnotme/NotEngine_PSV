@@ -82,9 +82,8 @@ int main() {
 			}
 
 			// set default texture then render
-			graphics2D->setProjectionMatrix(ortho);
 			graphics2D->setTexture(GraphicsBase::getDebugFontTexture());
-			graphics2D->render(spriteBuffer);
+			graphics2D->render(ortho, spriteBuffer);
 
 			/*
 			graphics2D->setTexture(0, myTexture);
