@@ -23,7 +23,7 @@ namespace NotEngine {
 			// Allocate buffers
 			mIndicesUID = 0;
 			mIndices = (unsigned short*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW,
 				capacity * sizeof(unsigned short),
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mIndicesUID);

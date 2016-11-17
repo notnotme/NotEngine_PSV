@@ -55,16 +55,14 @@ namespace NotEngine {
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
-				void use() const;
+				void use();
 				/* RENDER ************************************************/
 				/// Set the current texture to use for render operation
 				void setTexture(const Texture2D* texture) const;
-				/// Set the projection matrix
-				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render a D3Buffer using vertice type (optional texture)
-				int render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const;
+				int render(const glm::mat4& projection, SceGxmPrimitiveType type, D3Buffer* vertices, bool texture);
 				/// Render a D3Buffer using vertice type and using an index buffer (optional texture)
-				int render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount) const;
+				int render(const glm::mat4& projection, SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount);
 
 				enum ERROR {
 					NO_ERROR = 0,

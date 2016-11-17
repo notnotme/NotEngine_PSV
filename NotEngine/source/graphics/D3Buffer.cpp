@@ -22,7 +22,7 @@ namespace NotEngine {
 
 			// Allocate buffers
 			mBatchVertices = (D3Vertice*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW,
 				capacity*(sizeof(D3Vertice)),
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mBatchVerticesUID);
@@ -40,7 +40,7 @@ namespace NotEngine {
 		}
 
 		int D3Buffer::put(float x, float y, float z, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-			return put(x,y,z, .0f,.0f, r, g, b, a);
+			return put(x,y,z, .0f,.0f, r,g,b,a);
 		}
 
 		int D3Buffer::put(float x, float y, float z, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {

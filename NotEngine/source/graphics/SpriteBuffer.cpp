@@ -22,7 +22,7 @@ namespace NotEngine {
 
 			// Allocate buffers
 			mBatchVertices = (SpriteVertice*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW,
 				capacity*(sizeof(SpriteVertice)*4),
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mBatchVerticesUID);

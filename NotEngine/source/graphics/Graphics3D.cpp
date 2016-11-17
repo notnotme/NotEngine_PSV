@@ -161,28 +161,20 @@ namespace NotEngine {
 			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
 
-		void Graphics3D::setProjectionMatrix(const glm::mat4& projection) const {
-			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
-		}
-
-		void Graphics3D::use() const {
+		void Graphics3D::use() {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m3dVertexProgram);
 			sceGxmSetFragmentProgram(base->mContext, m3dFragmentProgram);
 
 			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_ENABLED);
 			sceGxmSetFrontDepthFunc(base->mContext, SCE_GXM_DEPTH_FUNC_LESS);
-
-			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
-			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
 		}
 
-		int Graphics3D::render(SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) const {
-			return render(type, mIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
+		int Graphics3D::render(const glm::mat4& projection, SceGxmPrimitiveType type, D3Buffer* vertices, bool texture) {
+			return render(projection, type, mIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
 		}
 
-		int Graphics3D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount) const {
+		int Graphics3D::render(const glm::mat4& projection, SceGxmPrimitiveType type, IndiceBuffer* indices, D3Buffer* vertices, bool texture, int startIndice, int indiceCount) {
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
@@ -220,7 +212,12 @@ namespace NotEngine {
 			if (texture) {
 				textureEnable = 1.0f;
 			}
-			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			void* fragmentUniformBuffer;
+			void* vertexMTXUniformBuffer;
+			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &fragmentUniformBuffer);
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexMTXUniformBuffer);
+			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			sceGxmSetUniformDataF(vertexMTXUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 
 			sceGxmDraw(base->mContext,
 						type,

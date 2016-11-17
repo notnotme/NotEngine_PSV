@@ -232,24 +232,16 @@ namespace NotEngine {
 			sceGxmSetFragmentTexture(base->mContext, 0, &texture->mTexture);
 		}
 
-		void Graphics2D::setProjectionMatrix(const glm::mat4& projection) const {
-			GraphicsBase* base = GraphicsBase::instance();
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
-		}
-
-		void Graphics2D::use() const {
+		void Graphics2D::use() {
 			GraphicsBase* base = GraphicsBase::instance();
 			sceGxmSetVertexProgram(base->mContext, m2dVertexProgram);
 			sceGxmSetFragmentProgram(base->mContext, m2dFragmentProgram);
 
 			sceGxmSetFrontDepthWriteEnable(base->mContext, SCE_GXM_DEPTH_WRITE_DISABLED);
 			sceGxmSetFrontDepthFunc(base->mContext, SCE_GXM_DEPTH_FUNC_ALWAYS);
-
-			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &base->mFragmentUniformDefaultBuffer);
-			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &base->mVertexUniformDefaultBuffer);
 		}
 
-		void Graphics2D::render(SpriteBuffer* spriteBuffer) const {
+		void Graphics2D::render(const glm::mat4& projection, SpriteBuffer* spriteBuffer) {
 			GraphicsBase* base = GraphicsBase::instance();
 
 			if (base->mLastBatchVerticesUID != spriteBuffer->mBatchVerticesUID) {
@@ -259,8 +251,15 @@ namespace NotEngine {
 
 			float textureEnable = 1.0f;
 			float trsEnable = 1.0f;
-			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+			void* vertexUniformBuffer;
+			void* fragmentUniformBuffer;
+			void* vertexMTXUniformBuffer;
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexUniformBuffer);
+			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &fragmentUniformBuffer);
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexMTXUniformBuffer);
+			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			sceGxmSetUniformDataF(vertexMTXUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
@@ -273,11 +272,11 @@ namespace NotEngine {
 				spriteBuffer->mBatchOffset += batchCount;
 		}
 
-		int Graphics2D::render(SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) const {
-			return render(type, mShapeIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
+		int Graphics2D::render(const glm::mat4& projection, SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) {
+			return render(projection, type, mShapeIndiceBuffer, vertices, texture, vertices->mVerticesOffset, vertices->mVerticesCount - vertices->mVerticesOffset);
 		}
 
-		int Graphics2D::render(SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) const {
+		int Graphics2D::render(const glm::mat4& projection, SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) {
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
@@ -316,9 +315,15 @@ namespace NotEngine {
 				textureEnable = 1.0f;
 			}
 			float trsEnable = 0.0f;
-
-			sceGxmSetUniformDataF(base->mFragmentUniformDefaultBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
-			sceGxmSetUniformDataF(base->mVertexUniformDefaultBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+			void* vertexUniformBuffer;
+			void* fragmentUniformBuffer;
+			void* vertexMTXUniformBuffer;
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexUniformBuffer);
+			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &fragmentUniformBuffer);
+			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexMTXUniformBuffer);
+			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
+			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
+			sceGxmSetUniformDataF(vertexMTXUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 
 			sceGxmDraw(base->mContext,
 						type,
@@ -333,7 +338,6 @@ namespace NotEngine {
 		}
 
 		void Graphics2D::clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-			setTexture(mClearTexture);
 			mClearSprite.color.r = r;
 			mClearSprite.color.g = g;
 			mClearSprite.color.b = b;
@@ -344,10 +348,10 @@ namespace NotEngine {
 				(float) GraphicsBase::DISPLAY_HEIGHT, 0.0f,
 				-1.0f, 1.0f);
 
-			setProjectionMatrix(ortho);
+			setTexture(mClearTexture);
 			mClearBuffer->start();
 			mClearBuffer->put(mClearSprite);
-			render(mClearBuffer);
+			render(ortho, mClearBuffer);
 		}
 
 	} // namespace Graphics

@@ -68,21 +68,19 @@ namespace NotEngine {
 				/// free the 2d subsystem
 				void finalize();
 				/// Call it before start drawing with g2d
-				void use() const;
+				void use();
 
 				/* RENDER ************************************************/
 				/// Clear the screen. be warned: this function actually unbind the current texture and buffer! Should be avoided if possible or use your own "clear sprite" !!!
 				void clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 				/// Set the current texture to use for render operation
 				void setTexture(const Texture2D* texture) const;
-				/// Set the projection matrix
-				void setProjectionMatrix(const glm::mat4& projection) const;
 				/// Render all sprite added in the buffer since the last call to draw the batch
-				void render(SpriteBuffer* spriteBuffer) const;
+				void render(const glm::mat4& projection, SpriteBuffer* spriteBuffer);
 				/// Render all shapes added in the buffer since the last draw (optional texture)
-				int render(SceGxmPrimitiveType type, D2Buffer* vertices, bool texture) const;
+				int render(const glm::mat4& projection, SceGxmPrimitiveType type, D2Buffer* vertices, bool texture);
 				/// Render all shapes added in the buffer since the last draw using an index buffer (optional texture)
-				int render(SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) const;
+				int render(const glm::mat4& projection, SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount);
 
 				enum ERROR {
 					NO_ERROR = 0,

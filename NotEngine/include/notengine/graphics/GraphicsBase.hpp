@@ -59,9 +59,6 @@ namespace NotEngine {
 				SceGxmShaderPatcher* mShaderPatcher;
 				SceGxmRenderTarget* mRenderTarget;
 
-				// Todo: Duplicate and move those buffer into each Renderer for each uniform
-				void *mVertexUniformDefaultBuffer;
-				void *mFragmentUniformDefaultBuffer;
 				SceUID mLastBatchVerticesUID;
 
 				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];

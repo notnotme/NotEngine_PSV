@@ -22,7 +22,7 @@ namespace NotEngine {
 
 			// Allocate buffers
 			mBatchVertices = (D2Vertice*) GraphicsBase::gpuAlloc(
-				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+				SCE_KERNEL_MEMBLOCK_TYPE_USER_RW,
 				capacity*(sizeof(D2Vertice)),
 				SCE_GXM_MEMORY_ATTRIB_READ,
 				&mBatchVerticesUID);
@@ -40,7 +40,7 @@ namespace NotEngine {
 		}
 
 		int D2Buffer::put(float x, float y, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
-			return put(x,y, .0f,.0f, r, g, b, a);
+			return put(x,y, .0f,.0f, r,g,b,a);
 		}
 
 		int D2Buffer::put(float x, float y, float s, float t, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
