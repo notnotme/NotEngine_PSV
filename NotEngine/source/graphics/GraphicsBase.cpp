@@ -226,7 +226,7 @@ namespace NotEngine {
 					SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
 					&mDisplayBufferUid[i]);
 
-				memset(mDisplayBufferData[i], 0xff000000, 4*GraphicsBase::DISPLAY_STRIDE_IN_PIXELS*GraphicsBase::DISPLAY_HEIGHT);
+				memset(mDisplayBufferData[i], 0x00, 4*GraphicsBase::DISPLAY_STRIDE_IN_PIXELS*GraphicsBase::DISPLAY_HEIGHT);
 				err = sceGxmColorSurfaceInit(
 					&mDisplaySurface[i],
 					(SceGxmColorFormat) DISPLAY_COLOR_FORMAT,
