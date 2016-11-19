@@ -60,6 +60,7 @@ namespace NotEngine {
 				SceGxmRenderTarget* mRenderTarget;
 
 				SceUID mLastBatchVerticesUID;
+				SceGxmPolygonMode mLastPolygonMode;
 
 				void* mDisplayBufferData[DISPLAY_BUFFER_COUNT];
 				SceUID mDisplayBufferUid[DISPLAY_BUFFER_COUNT];

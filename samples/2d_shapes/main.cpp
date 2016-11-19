@@ -77,15 +77,25 @@ int main() {
 			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_TRIANGLE_FAN, d2Buffer, false);
 
 			d2Buffer->put(300, 300,  255, 0, 0, 255);
-			d2Buffer->put(300, 350,  255, 0, 0, 255);
-			d2Buffer->put(350, 350,  255, 0, 0, 255);
-			d2Buffer->put(350, 300,  255, 0, 0, 255);
-			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_POINTS, d2Buffer, false);
+			d2Buffer->put(400, 400,  255, 0, 0, 255);
+			d2Buffer->put(400, 300,  255, 0, 0, 255);
+			d2Buffer->put(300, 400,  255, 0, 0, 255);
+			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_LINES, d2Buffer, false);
 
-			d2Buffer->put(500, 500,  255, 0, 255, 255);
-			d2Buffer->put(500, 400,  255, 0, 255, 255);
-			d2Buffer->put(400, 400,  255, 0, 255, 255);
-			d2Buffer->put(400, 500,  255, 0, 255, 255);
+			d2Buffer->put(600, 300,  255, 0, 255, 255);
+			d2Buffer->put(600, 450,  255, 0, 255, 255);
+			d2Buffer->put(800, 450,  255, 0, 255, 255);
+			d2Buffer->put(800, 300,  255, 0, 255, 255);
+			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_TRIANGLE_FAN, d2Buffer, false);
+
+			d2Buffer->put(600, 100,  0, 0, 255, 255);
+			d2Buffer->put(600, 250,  0, 0, 255, 255);
+			d2Buffer->put(600, 250,  0, 0, 255, 255);
+			d2Buffer->put(800, 250,  0, 0, 255, 255);
+			d2Buffer->put(800, 250,  0, 0, 255, 255);
+			d2Buffer->put(800, 100,  0, 0, 255, 255);
+			d2Buffer->put(800, 100,  0, 0, 255, 255);
+			d2Buffer->put(600, 100,  0, 0, 255, 255);
 			graphics2D->render(ortho, SCE_GXM_PRIMITIVE_LINES, d2Buffer, false);
 
 		// stop and swap display

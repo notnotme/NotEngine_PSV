@@ -259,6 +259,11 @@ namespace NotEngine {
 			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
 			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
 
+			if (base->mLastPolygonMode != SCE_GXM_POLYGON_MODE_TRIANGLE_FILL) {
+				base->mLastPolygonMode = SCE_GXM_POLYGON_MODE_TRIANGLE_FILL;
+				sceGxmSetFrontPolygonMode(base->mContext, SCE_GXM_POLYGON_MODE_TRIANGLE_FILL);
+			}
+
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
 						SCE_GXM_PRIMITIVE_TRIANGLES,
@@ -275,11 +280,16 @@ namespace NotEngine {
 		}
 
 		int Graphics2D::render(const glm::mat4& projection, SceGxmPrimitiveType type, IndiceBuffer* indices, D2Buffer* vertices, bool texture, int startIndice, int indiceCount) {
+			GraphicsBase* base = GraphicsBase::instance();
 			switch(type) {
 				// chek for errors
 				case SCE_GXM_PRIMITIVE_TRIANGLES:
 					if(indiceCount % 3 != 0 || indiceCount < 3) {
 						return WRONG_VERTICES_COUNT;
+					}
+					if (base->mLastPolygonMode != SCE_GXM_POLYGON_MODE_TRIANGLE_FILL) {
+						base->mLastPolygonMode = SCE_GXM_POLYGON_MODE_TRIANGLE_FILL;
+						sceGxmSetFrontPolygonMode(base->mContext, SCE_GXM_POLYGON_MODE_TRIANGLE_FILL);
 					}
 					break;
 				case SCE_GXM_PRIMITIVE_TRIANGLE_EDGES: // not sure about this one
@@ -288,20 +298,23 @@ namespace NotEngine {
 					if(indiceCount < 3) {
 						return WRONG_VERTICES_COUNT;
 					}
+					if (base->mLastPolygonMode != SCE_GXM_POLYGON_MODE_TRIANGLE_FILL) {
+						base->mLastPolygonMode = SCE_GXM_POLYGON_MODE_TRIANGLE_FILL;
+						sceGxmSetFrontPolygonMode(base->mContext, SCE_GXM_POLYGON_MODE_TRIANGLE_FILL);
+					}
 					break;
 				case SCE_GXM_PRIMITIVE_LINES:
 					if(indiceCount % 2 != 0 || indiceCount < 2) {
 						return WRONG_VERTICES_COUNT;
 					}
-					break;
-				case SCE_GXM_PRIMITIVE_POINTS:
-					if(indiceCount < 1) {
-						return WRONG_VERTICES_COUNT;
+					if (base->mLastPolygonMode != SCE_GXM_POLYGON_MODE_LINE) {
+						base->mLastPolygonMode = SCE_GXM_POLYGON_MODE_LINE;
+						sceGxmSetFrontPolygonMode(base->mContext, SCE_GXM_POLYGON_MODE_LINE);
 					}
 					break;
+				case SCE_GXM_PRIMITIVE_POINTS:
+					return UNSUPPORTED_FEATURE;
 			}
-
-			GraphicsBase* base = GraphicsBase::instance();
 
 			if (base->mLastBatchVerticesUID != vertices->mBatchVerticesUID) {
 				base->mLastBatchVerticesUID = vertices->mBatchVerticesUID;
