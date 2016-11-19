@@ -253,13 +253,11 @@ namespace NotEngine {
 			float trsEnable = 1.0f;
 			void* vertexUniformBuffer;
 			void* fragmentUniformBuffer;
-			void* vertexMTXUniformBuffer;
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexUniformBuffer);
 			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &fragmentUniformBuffer);
-			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexMTXUniformBuffer);
+			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
 			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
-			sceGxmSetUniformDataF(vertexMTXUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 
 			unsigned int batchCount = spriteBuffer->mBatchCount - spriteBuffer->mBatchOffset;
 			sceGxmDraw(base->mContext,
@@ -317,13 +315,11 @@ namespace NotEngine {
 			float trsEnable = 0.0f;
 			void* vertexUniformBuffer;
 			void* fragmentUniformBuffer;
-			void* vertexMTXUniformBuffer;
 			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexUniformBuffer);
 			sceGxmReserveFragmentDefaultUniformBuffer(base->mContext, &fragmentUniformBuffer);
-			sceGxmReserveVertexDefaultUniformBuffer(base->mContext, &vertexMTXUniformBuffer);
+			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 			sceGxmSetUniformDataF(vertexUniformBuffer, mShaderTRSEnableUnif, 0, 1, &trsEnable);
 			sceGxmSetUniformDataF(fragmentUniformBuffer, mShaderTextureEnableUnif, 0, 1, &textureEnable);
-			sceGxmSetUniformDataF(vertexMTXUniformBuffer, mShaderMatrixProjUnif, 0, 16, glm::value_ptr(projection));
 
 			sceGxmDraw(base->mContext,
 						type,
