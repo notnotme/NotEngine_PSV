@@ -22,7 +22,7 @@ else
 	CFLAGS =
 endif
 
-LIBS 	+= -lnotengine -ljsonxx -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+LIBS 	+= -lnotengine -ljsonxx -lSceDisplay_stub -lSceGxm_stub \
 			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub -lScePower_stub
 
 PREFIX  = $(VITASDK)/bin/arm-vita-eabi
@@ -44,7 +44,7 @@ all: $(TARGET).vpk
 	@cd vpk && zip -r -0 $(TARGET).vpk eboot.bin sce_sys
 
 eboot.bin: $(TARGET).velf
-	$(VITASDK)/bin/vita-make-fself $(DFLAG) $< $@
+	$(VITASDK)/bin/vita-make-fself -c $(DFLAG) $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<

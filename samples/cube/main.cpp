@@ -1,6 +1,5 @@
 #include <psp2/types.h>
 #include <psp2/ctrl.h>
-#include <psp2/moduleinfo.h>
 #include <psp2/kernel/processmgr.h>
 
 #include <glm/glm.hpp>
@@ -8,8 +7,6 @@
 
 #include <notengine/notengine.hpp>
 #include <psp2shell.h>
-
-PSP2_MODULE_INFO(0, 0, "cube")
 
 using namespace NotEngine::Graphics;
 

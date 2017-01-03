@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-#include <psp2/moduleinfo.h>
 #include <psp2/power.h>
 #include <psp2/kernel/processmgr.h>
 #include <notengine/notengine.hpp>
@@ -10,8 +9,6 @@
 #include "GameContext.hpp"
 #include "Title.hpp"
 #include "Game.hpp"
-
-PSP2_MODULE_INFO(0, 0, "floodit")
 
 using namespace NotEngine::Graphics;
 using namespace NotEngine::Game;

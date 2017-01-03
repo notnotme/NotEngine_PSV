@@ -4,7 +4,7 @@
 #
 TARGET	= hello_world
 OBJS	= main.o
-LIBS 	= -lnotengine -lpsp2shell -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
+LIBS 	= -lnotengine -lpsp2shell -lSceDisplay_stub -lSceGxm_stub \
 			-lSceSysmodule_stub -lSceCtrl_stub -lSceAudio_stub -lSceTouch_stub \
 			-lSceNet_stub -lSceNetCtl_stub -lSceAppMgr_stub
 
@@ -21,7 +21,7 @@ ASFLAGS		= $(CFLAGS)
 all: eboot.bin
 
 eboot.bin: $(TARGET).velf
-	$(VITASDK)/bin/vita-make-fself $< $@
+	$(VITASDK)/bin/vita-make-fself -c $< $@
 
 %.velf: %.elf
 	$(PREFIX)-strip -g $<
